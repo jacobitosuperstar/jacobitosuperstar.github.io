@@ -1,0 +1,27 @@
+baseURL = "http://jacobobedoya.com/"
+languageCode = "en-us"
+title = "jacobitosuperstar"
+assetDir = "static/assets/"
+DefaultContentLanguage = "es"
+defaultContentLanguageInSubdir = true
+summaryLength = 70
+staticDir = "static"
+
+[languages]
+  [languages.es]
+    languageName = "Español"
+    weight = 1
+  [languages.en]
+    languageName = "English"
+    weight = 2
+
+[params]
+  email = "jacobobedoya@gmail.com"
+  instagram = "https://www.instagram.com/jacobitosuperstar/"
+  github = "https://github.com/jacobitosuperstar"
+  linkedin = "https://www.linkedin.com/in/jacobo-mateo-bedoya-oquendo-233a46202/"
+
+[taxonomies]
+  category = 'categories'
+  series = 'series'
+  tag = 'tags'

@@ -1,0 +1,23 @@
+{{ define "content" }}
+
+<div class="container">
+  {{ range where .Site.Pages "Type" "post" }}
+<h2 style="text-align: left; text-transform: uppercase;">
+  <a href="{{ .Permalink }}">
+    {{ .Title }}
+    </a>
+  </h2>
+  <p style="text-align: justify;">
+    {{ .Summary }}
+    <a href="{{ .Permalink }}">
+      {{ .Params.read_more}}
+    </a>
+  </p>
+  <p class="text-muted" style="font-size: 1rem">
+    <b>Tags:</b>
+    {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+  </p>
+  {{ end }}
+</div>
+
+{{ end }}

@@ -1,0 +1,22 @@
+{{ define "content" }}
+
+<div class="container">
+  <div class="row mt-6">
+  {{ range where .Site.Pages "Type" "stories" }}
+    <div class="col-6 col-lg-3" style="vertical-align:center; text-align: center">
+      <a href="{{ .Permalink }}">
+        {{ $image := .Resources.GetMatch .Params.image }}
+        {{ if $image }}
+          <img class="img-fluid img-thumbnail" src="{{ (  $image.Crop "900x500 webp Center" ).RelPermalink }}">
+        {{ else }}
+        <h2>
+          {{ .Title }}
+        </h2>
+        {{ end }} <!-- end if -->
+      </a>
+    </div>
+  {{ end }} <!-- end for -->
+  </div>
+</div>
+
+{{ end }}
