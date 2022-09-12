@@ -4,7 +4,7 @@ slug: my_number_1_admirer
 date: 2022-08-26T19:42:53-05:00
 draft: false
 
-categories: ["story"]
+categories: ["historia"]
 image: mi_admiradora_número_1.png
 ---
 

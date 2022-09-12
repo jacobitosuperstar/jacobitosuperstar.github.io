@@ -4,7 +4,7 @@ slug: the_best_day_of_my_life
 date: 2022-08-26T19:41:35-05:00
 draft: false
 
-categories: ["story"]
+categories: ["historia"]
 image: el_mejor_día_de_mi_vida.png
 ---
 

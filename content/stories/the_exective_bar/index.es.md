@@ -4,7 +4,7 @@ slug: the_executive_bar
 date: 2022-08-26T19:42:09-05:00
 draft: false
 
-categories: ["story"]
+categories: ["historia"]
 image: la_barra_ejecutiva.png
 ---
 

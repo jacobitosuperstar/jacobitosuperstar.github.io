@@ -1,7 +1,7 @@
 {{ define "content" }}
 
 <div class="container">
-  {{ range where .Site.Pages "Type" "post" }}
+  {{ range where .Site.Pages "Type" "posts" }}
 <h2 style="text-align: left; text-transform: uppercase;">
   <a href="{{ .Permalink }}">
     {{ .Title }}

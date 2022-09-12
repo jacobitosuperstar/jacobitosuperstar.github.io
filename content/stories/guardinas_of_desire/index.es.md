@@ -4,7 +4,7 @@ slug: guardians_of_desire
 date: 2022-08-26T19:42:39-05:00
 draft: false
 
-categories: ["story"]
+categories: ["historias"]
 image: guardianes_del_deseo.png
 ---
 
