@@ -1,7 +1,7 @@
 {{ define "content" }}
 
 <div class="container">
-  {{ range where .Site.Pages "Type" "posts" }}
+  {{ range where .Site.RegularPages "Type" "posts" }}
 <h2 style="text-align: left; text-transform: uppercase;">
   <a href="{{ .Permalink }}">
     {{ .Title }}
@@ -10,7 +10,7 @@
   <p style="text-align: justify;">
     {{ .Summary }}
     <a href="{{ .Permalink }}">
-      {{ .Params.read_more}}
+      {{ .Params.read_more }}
     </a>
   </p>
   <p class="text-muted" style="font-size: 1rem">
