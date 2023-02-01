@@ -1,14 +1,14 @@
 ---
 title: Institución Universitaria ITM
-date: 2020-04-01T12:00:00-05:00
+date: 2016-10-01T12:00:00-05:00
 draft: false
 
 job_title: Data Analyst (Contractor)
 start_date: October 2016
-end_date: January 2022
+end_date: January 2021
 ---
 
-#### Accomplishments
+**University Indicators and Academic Monitoring Platform**
 
 Create a web portal that keeps track of all the students associated with
 scholarships financed by the city of Medellín. It also  generated early alarms

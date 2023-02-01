@@ -1,6 +1,6 @@
 ---
 title: LaunchMobility
-date: 2020-04-01T12:00:00-05:00
+date: 2022-06-01T12:00:00-05:00
 draft: false
 
 job_title: Junior Developer (Contractor)
@@ -8,7 +8,7 @@ start_date: June 2022
 end_date: October 2022
 ---
 
-#### Accomplishments
+**LaunchMobility Backend Platform**
 
 None. Culture shock with the company. My way of work wasn't a match and I felt
 that changing my way of doing things to fulfill the company's needs required a

@@ -1,6 +1,6 @@
 ---
 title: Sophos Solutions
-date: 2020-04-01T12:00:00-05:00
+date: 2022-04-01T12:00:00-05:00
 draft: false
 
 job_title: Developer (Full time)
@@ -8,9 +8,8 @@ start_date: April 2022
 end_date: July 2022
 ---
 
-#### Accomplishments
-
 **Monitoring Platform for a Mine**
+
 Because there was a communication gap between the Spanish speaking team, that
 started the platform and the English speaking team that was going to continue
 developing it, my role at the beginning was to be a communication bridge
