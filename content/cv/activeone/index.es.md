@@ -8,16 +8,12 @@ start_date: Abril 2020
 end_date: Marzo 2021
 ---
 
-#### Responsabilidades y funciones
+#### Logros
 
-* Crear y desarrollar nuevo programas o sistemas.
-* Evaluar sistemas nuevos y existentes.
-* Mejorar programas existentes.
-* Realizar el mantenimiento correspondiente a los sistemas existentes,
-    realizando el monitorio y corrección de los defectos detectados, así como
-    elaborar el código en lenguajes especializados para nuevos programas.
-* Establecer prácticas que aseguren la integridad y calidad del diseño y
-    desarrollo del proyecto.
-* Trabajar en conjunto con el resto del equipo, es decir, gerentes del
-    proyecto, diseñadores gráficos, otros desarrolladores, administradores de
-    bases de datos y el personal de ventas y marketing
+Crear una herramienta que puede transferir datos entre las soluciones de
+almacenamiento de AWS y Microsoft Azure a través de un stream de datos.
+
+Crear una Metaclase y un decorador de funciones para loggear toda la
+funcionalidad de la aplicación, sin tener que agregar nada además de la
+Metaclase a las clases y colocar el decorador en las funciones más críticas de
+la plataforma.
