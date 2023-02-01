@@ -8,6 +8,7 @@ start_date: August 2022
 end_date: --
 ---
 
-**LabelPC**
+#### LabelPC
 
-Setting up the code documentation with Sphinx.
+Setting up the code documentation with Sphinx, and publishing the website in
+Read the Docs.

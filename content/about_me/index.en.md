@@ -8,6 +8,8 @@ draft: false
 
 ## **ABOUT ME**
 
+I am Jacobo Mateo Bedoya Oquendo, Mechanical Engineer.
+
 Soy Jacobo Mateo Bedoya Oquendo, Ingeniero Mecánico, y me he desempeñado
 principalmente en el desarrollo de herramientas para el análisis de
 información, aunque este último año he estado trabajando en negocios

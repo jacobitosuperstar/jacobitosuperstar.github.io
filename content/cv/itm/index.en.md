@@ -8,15 +8,14 @@ start_date: October 2016
 end_date: January 2021
 ---
 
-**University Indicators and Academic Monitoring Platform**
+#### University Indicators and Academic Monitoring Platform
 
-Create a web portal that keeps track of all the students associated with
-scholarships financed by the city of Medellín. It also  generated early alarms
-indicating low performance in their grades and possible desertion from the
-university, for the Well being department of the university.
+Create a web portal that monitors all the students who are beneficiaries of the
+scholarships awarded by the Medellín mayor's office, in order to generate early
+alarms indicating low academic performance and possible desertion, for the
+intervention of the university welfare department.
 
-Create an indicator for the quality of education of the university that
-measures if the university turned a good student in an excellent student, an
-excellent student to a great student, a bad student to a good student, and so
-on. The idea was to measure the quality of the studies and the probability of
-the upwards mobility of the student given the results.
+Create an indicator that measures the impact of the university in a student,
+measuring if the university turned a bad student into a good one, a good
+student into an excellent one, and what happens with the already excellent
+students that the university has.
