@@ -8,7 +8,7 @@ start_date: Abril 2022
 end_date: Julio 2022
 ---
 
-#### Plataforma de Monitoreo para una Mina
+#### Plataforma de Monitoreo para Minas
 
 Debido a que había una vacío de comunicación entre el equipo que habla español,
 que fueron los que iniciaron con la creación de la plataforma, y el equipo que
