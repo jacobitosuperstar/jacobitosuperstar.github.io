@@ -8,7 +8,7 @@ start_date: April 2022
 end_date: July 2022
 ---
 
-#### Monitoring Platform for a Mine
+#### Monitoring Platform for Mines
 
 Because there was a communication gap between the Spanish speaking team, that
 started the platform and the English speaking team that was going to continue

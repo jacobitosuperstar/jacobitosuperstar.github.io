@@ -8,7 +8,7 @@ start_date: April 2021
 end_date: March 2022
 ---
 
-#### Proceedings Digitalization/Classification/Storage Paltform
+#### Proceedings Digitalization/Classification/Storage Platform
 
 Creating a tool to transfer files between the AWS and Azure storage services
 through a stream of data from one service to another.
