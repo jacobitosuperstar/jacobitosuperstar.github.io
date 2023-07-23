@@ -5,7 +5,7 @@ date: 2022-08-26T19:42:53-05:00
 draft: false
 
 categories: ["story"]
-image: mi_admiradora_número_1.png
+image: mi_admiradora_número_1.jpeg
 ---
 
 En la mañana dos notificaciones de Facebook, una de un mensaje de texto y la

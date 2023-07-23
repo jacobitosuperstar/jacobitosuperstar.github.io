@@ -5,7 +5,7 @@ date: 2022-08-26T19:42:09-05:00
 draft: false
 
 categories: ["historia"]
-image: la_barra_ejecutiva.png
+image: la_barra_ejecutiva.jpeg
 ---
 
 La vi parada en una esquina, sino fuera porque el silencioso viento movía

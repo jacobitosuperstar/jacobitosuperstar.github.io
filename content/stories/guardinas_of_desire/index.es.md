@@ -5,7 +5,7 @@ date: 2022-08-26T19:42:39-05:00
 draft: false
 
 categories: ["historias"]
-image: guardianes_del_deseo.png
+image: guardianes_del_deseo.jpeg
 ---
 
 Ella estaba sentada al frente mío mirando fijamente su vaso de té, estaba

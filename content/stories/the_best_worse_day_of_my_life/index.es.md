@@ -5,7 +5,7 @@ date: 2022-08-26T19:41:35-05:00
 draft: false
 
 categories: ["historia"]
-image: el_mejor_día_de_mi_vida.png
+image: el_mejor_día_de_mi_vida.jpeg
 ---
 
 Allí estaba ella, una mujer de inigualable belleza, que con un dulce tono de
