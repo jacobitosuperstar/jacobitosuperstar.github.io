@@ -8,74 +8,68 @@ categories: ["story"]
 image: la_barra_ejecutiva.jpeg
 ---
 
-La vi parada en una esquina, sino fuera porque el silencioso viento movía
-suavemente su cabello, ella, desde esa distancia, se veía como la más hermosa
-obra de arte, algo que se debe observar de lejos y no se debe tocar.
+I saw her standing on a corner, and if not for the silent wind gently moving
+her hair, she looked like the most beautiful work of art, something to be
+admired from afar and not touched.
 
-Cuando finalmente camino lo suficientemente cerca, la combinación entre el
-perfume que traía puesto y el olor natural de su cuerpo es tal, que mi boca
-sonríe en contra de mi voluntad. Escucho un “Hola” sobre mi hombro y mientras
-giro mi rostro, no puedo parar de pedir que esto no sea un sueño. Ni siquiera
-en las numerosas noches que he estado sólo en mi cama imaginando un momento
-similar, existía una mujer tan hermosa como ella.
+When I finally walked close enough, the combination of her perfume and natural
+scent made my mouth smile against my will. I heard a "Hello" over my shoulder,
+and as I turned my face, I couldn't stop hoping this wasn't a dream. Even in
+the numerous nights I had been alone in my bed, imagining a similar moment,
+there was never a woman as beautiful as her.
 
-“¿Conoces la historia de la princesa que se para sobre la colina?”, dije
-alzando mi voz, mientras dejaba de mirar el piso y mis ojos subían buscando su
-mirada. Ella me miraba de manera extraña mientras sostenía su celular,
-aparentemente no era para mí el saludo, pero igual, al escuchar aquellas
-palabras tan peculiares, me hizo señas con su mano derecha de que esperara.
-Luego de terminar la llamada dijo, “¿Qué manera más curiosa de saludar a una
-mujer que acabas de conocer…?”.
+"Do you know the story of the princess standing on the hill?" I said, raising
+my voice, no longer looking at the floor, and my eyes sought her gaze. She
+looked at me strangely while holding her cellphone. Apparently, the greeting
+wasn't for me, but upon hearing those peculiar words, she signaled with her
+right hand for me to wait. After finishing the call, she said, "What an odd way
+to greet a woman you've just met..."
 
-Apenado, no puedo hacer más que soltar una pequeña risa, la cual fue
-rápidamente cortada por la sensación de su mano agarrando la mía , “Ven tomemos
-algo y me terminas de contar la historia de la princesa”. Tan pronto la toqué,
-entré en aquel cuarto oscuro donde sólo la puedo ver, sentir y escuchar a ella.
-Sus manos tenían un tacto demasiado suave, como si estuviera agarrando una
-pequeña bola de algodón. Ella tiene una hermosa piel canela, un largo cabello
-castaño y tenía un hermoso esmalte naranja en las uñas. Traía puestos unos
-tenis blancos y un sencillo pero elegante vestido corto de color negro.
+Embarrassed, all I could do was release a small laugh, which was quickly cut
+short by the sensation of her hand holding mine. "Come, let's have a drink, and
+you can finish telling me the story of the princess." As soon as I touched her,
+I entered that dark room where I could only see, feel, and hear her. Her hands
+were too soft, as if I were holding a small ball of cotton. She had beautiful
+cinnamon-colored skin, long brown hair, and wore a simple yet elegant short
+black dress with white sneakers.
 
-No podía percatarme de nada diferente a su rostro, todo lo que no era ella, se
-veía borroso y todo lo que no era su voz, se escuchaba como un molesto pitido
-atrás en mi cabeza. No puedo decir con certeza de qué estábamos hablando,
-estaba completamente concentrado en ver cada una de las preciosas figuras que
-se van formando en sus rosados labios, conforme las palabras salen de su boca,
-y en seguir, los sutiles cambios de dirección en su mirada, mientras vamos
-adentrándonos en aquella conversación.
+I couldn't notice anything other than her face; everything else appeared
+blurry, and anything other than her voice sounded like an annoying noise in the
+background of my mind. I can't say for certain what we were talking about; I
+was completely focused on observing each of the precious shapes forming on her
+rosy lips as the words left her mouth and on following the subtle changes in
+the direction of her gaze as we delved into that conversation.
 
-Al sentir como una mano de tacto tosco posa sobre mi hombro, aquel cuarto en el
-que estaba con ella se quiebra y con esto, las figuras borrosas van tomando
-forma y los sonidos comienzan a tener sentido. Aquella mano era de un hombre
-moreno, algo obeso y de baja estatura, que de manera rápida y sin ningún tipo
-de delicadeza le dijo, “Le vas a prestar el servicio a él o puedes estar
-conmigo un rato”. Ella intenta decir algo y posa por un instante su mirada
-sobre mí, pero luego mira al hombre y dice, “No tengo problema desde que no sea
-mucho tiempo, la noche es larga y la quiero trabajar toda”. Él la agarra de la
-mano y se pierden fuera de mi mirada.
+Feeling a rough touch on my shoulder, that room in which I was with her
+shattered, and with it, the blurry figures took shape, and the sounds began to
+make sense. It was the hand of a dark-skinned, somewhat obese, and short man
+who quickly and unceremoniously said, "Will you attend to him, or can you be
+with me for a while?" She tried to say something and briefly looked at me, but
+then she looked at the man and said, "I have no problem, as long as it's not
+for too long. The night is long, and I want to work it all." He grabbed her
+hand, and they disappeared from my sight.
 
-Noto que había entrado por un pasillo adornado con luces de neón azules.
-Escucho a lejos los sonidos distorsionados de la música y el hablar de un
-hombre en un micrófono, narrando los diferentes shows que habrán en el bar.
-Una luz rojiza llena el lugar, tubos de neón verde y morado decoran los
-alrededores de la pista central, de la cual emana una luz blanca tan pronto
-comienzan los bailes.
+I noticed that I had entered a corridor adorned with blue neon lights. I could
+hear the distorted sounds of music and a man speaking into a microphone,
+narrating the different shows that would be happening at the bar. A reddish
+light filled the place, and green and purple neon tubes decorated the
+surroundings of the central dance floor, from which white light emanated as the
+dances began.
 
-Puedo ver como las mujeres desfilan constantemente por las mesas buscando
-clientes y propinas, esperando formar parte del ambiente alegre de una mesa
-generosa. Bajo la mirada y me digo a mi mismo, "¿Cómo más habría de ser?",
-sólo es necesario que rose aquellos sueños con la suave yema de mis dedeos para
-que se quiebren sobre mí, aunque en esta ocasión, ¿qué sueño se habría de
-alcanzar, si todo se hizo bajo el deseo de conseguir un cliente?. Amargado y
-herido, agarro las últimas dos cervezas que quedaron en la mesa y me dirijo
-lentamente a la barra de aquel bar a terminarlas en silencio.
+I could see women constantly parading around the tables, looking for customers
+and tips, hoping to be part of the joyful atmosphere of a generous table. I
+lowered my gaze and said to myself, "What else could it be?" It only took the
+gentle touch of my fingers to shatter those dreams over me. But this time, what
+dream could be achieved when everything was done to get a customer? Bitter and
+hurt, I grabbed the last two beers left on the table and slowly headed to the
+bar to finish them in silence.
 
-“Que pena”, me dice una mujer desnuda que aparentemente acabó de terminar un
-baile, “¿Me puedes sostener esto?, sino me pongo la ropa interior, los hombres
-me intentan meter los dedos cuando paso por las mesas”. No puedo evitar
-pronunciar un “lo siento”, ante tan penosa situación. Ella dice, "No es nada” y
-me sonríe antes de seguir con su camino.
+"What a shame," said a naked woman who had apparently just finished dancing,
+"Can you hold this for me? If I don't put on my underwear, men try to stick
+their fingers in when I pass by the tables." I couldn't help but say, "I'm
+sorry," in such a pitiful situation. She said, "It's nothing," and smiled
+before continuing on her way.
 
-Dejo las botellas en la barra y tan pronto comienzo mi salida de aquel lugar,
-mitad borracho, mitad decepcionado, vuelvo a sentir el suave agarre de su mano
-y escucho, “¿Recuerdas en qué íbamos?”.
+I left the bottles at the bar, and as I began my exit from that place, half
+drunk, half disappointed, I felt the gentle grip of her hand again, and heard,
+"Do you remember where we left off?"
