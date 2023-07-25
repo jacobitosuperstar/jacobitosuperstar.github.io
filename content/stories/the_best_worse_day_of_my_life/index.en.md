@@ -8,70 +8,59 @@ categories: ["story"]
 image: el_mejor_día_de_mi_vida.jpeg
 ---
 
-Allí estaba ella, una mujer de inigualable belleza, que con un dulce tono de
-voz decía las palabras que quería escuchar, y con una mirada fija, coqueta, me
-hacía sentir justo de la manera que me quería sentir. La combinación de estas
-características y las tiernas muecas que se hacen en su rostro al hablar, hacen
-sentir las propuestas más optimistas de la vida alcanzables.
+There she was, a woman of unparalleled beauty, speaking words I wanted to hear
+with a sweet tone, her fixed, flirtatious gaze making me feel just the way I
+wanted. The combination of these traits and her gentle facial expressions make
+life's optimistic proposals feel achievable.
 
-Daniela es su nombre, nos estaba invitando a Andrés, uno de mis amigos más
-cercanos, y a mí a pasar la noche en una montaña cercana al pueblo, en donde
-nos sentaríamos alrededor de una fogata, junto a ella y dos de sus amigas.
-Mientras escuchaba esto, la imagen mental de tan prometedora noche se va
-formando en mi mente. Podía sentir el calor de la fogata, escuchar las risas en
-las interminables conversaciones y mi mirada enceguecida por el brillo del
-fuego, la luna y los flashes de las cámaras que inmortalizarían aquel momento.
+Her name is Daniela. She invited my close friend, Andrés, and me to spend the
+night on a mountain near the town. We would sit around a bonfire with her and
+two of her friends. As I listened, a mental image of that promising night
+formed. I could feel the warmth of the fire, hear laughter in endless
+conversations, and my sight dazzled by fire, moon, and flashes of immortalizing
+cameras.
 
-Al terminar su propuesta, sus grandes ojos cafés se centran en mí e imponen una
-pequeña sonrisa en mi rostro. Me es imposible ocultar mi felicidad y profunda
-entrega a la realización de aquella propuesta. Finalmente iba a alcanzar ese
-cáliz que contiene en su interior un algo que siempre me ha faltado, siempre
-esquivo, un tanto más lejos del alcance de mi agarre, donde en el mejor de los
-casos, sólo puedo rosarlo con la yema de mis dedos, antes de caer en aquel
-castigo divino por intentarlo tomar.
+After her proposal, her big brown eyes focused on me, imposing a slight smile
+on my face. I couldn't hide my happiness and deep commitment to making it
+happen. I would finally grasp that chalice holding something I've always
+lacked, just out of reach. In the best case, I could only brush it with my
+fingertips before facing divine punishment for attempting to take it.
 
-Isabel, una amiga igual de cercana, cuya relación con Andrés es indeterminada
-para todo el que no vive la complejidad de ésta, es quien habíamos ido a
-visitar inicialmente, pero con la presencia de Daniela, su prima, las
-prioridades de mi visitan habrían de cambiar completamente.
+Isabel, an equally close friend, has an uncertain relationship with Andrés,
+understood by only those who grasp its complexity. Initially, we visited
+Isabel, but Daniela's presence shifted our priorities entirely.
 
-Aquella promesa de felicidad no duró por mucho tiempo, con una sonrisa penosa
-pero picaresca y un dulce tono de voz, que mí oído sigue de arriba a abajo,
-como si escuchara una sinfonía perfecta e irrepetible, Isabel dijo las palabras
-que disiparían todas las imágenes mentales de aquel posible futuro. “Ellos ya
-se tienen que ir”, le dijo a Daniela, “es mejor que se vayan rápido, ahora que
-el tráfico no es un problema”.
+The promise of happiness didn't last long. Isabel's pensive yet mischievous
+smile and her sweet voice, a symphony that captivates my ears, dissipate all
+mental images of that potential future. "They have to leave," she told Daniela.
+"Better for them to go quickly when traffic is not an issue."
 
-Realmente lo intenté, tuve una pequeña discusión con Isabel, luché por aquel
-futuro, aquel momento que estaba a sólo unos instantes más de lograrse, y
-aunque el destino ya había dado su dictamen yo quería... más ahora que todo se
-sentía tan… Andrés, al poner su mano en mi hombro, me hizo caer en cuenta de
-que luchar ya era inútil, es hora de partir.
+I tried hard, arguing with Isabel, fighting for that future, a moment only
+seconds away from realization. Although destiny had already ruled, I wanted
+more now that everything felt so... Andrés, placing his hand on my shoulder,
+made me realize that fighting was futile; it's time to leave.
 
-“Ya saben donde vamos a estar por si quieren ir”, dijo Daniela cuando nos
-estábamos subiendo al carro, había un tono desafiante, buscando que no le
-hiciéramos caso a Isabel. Quizás, ella de verdad sí nos quería presentes en
-aquel momento, y sabía que ésta invitación, éste plan en específico, era justo
-lo que habíamos estado esperando todas nuestras vidas.
+As we got into the car, Daniela said challengingly, "You know where we'll be if
+you want to come." Maybe she truly wanted us there, knowing this invitation,
+this specific plan, was exactly what we'd been waiting for all our lives.
 
-Esas palabras se repiten en mi mente una y otra vez mientras observo
-silenciosamente el camino. Andrés, incómodo con el silencio hace movimientos
-con la cabeza, no sabe que decir o que hacer, pero él sabe tan bien como yo que
-oportunidades como ésta se repiten pocas veces, demasiado pocas como darnos el
-lujo de rechazarlas. Es imposible romper el silencio, ambos estamos
-profundamente derrotados.
+Those words repeat in my mind as I silently observe the road. Andrés,
+uncomfortable with the silence, makes head gestures, unsure of what to say or
+do. He knows, as well as I do, that opportunities like this come too seldom,
+too few to reject. Breaking the silence is impossible; both of us are deeply
+defeated.
 
-Un profesor me decía que para poder hablar había que escribir muy bien, a veces
-unas palabras dichas de una manera en específico pueden significar mucho más de
-lo que se desea. En éste caso las palabras de Daniela transformaron un fin de
-semana perfecto en una oportunidad pérdida, en algo más que pudo haber sido
-pero no fue. No eran promesas de amor o de sexo, era algo mucho más importante,
-era la oportunidad de agarrar aquel cáliz y probar de el, aquel algo, ese algo
-tan distante y tan faltante en mi alma, que no me deja ser feliz.
+A teacher once told me that to speak well, one must write well. Words spoken a
+certain way can mean more than intended. In this case, Daniela's words
+transformed a perfect weekend into a lost opportunity, something more that
+could have been but wasn't. They weren't promises of love or sex; it was
+something much more profound—an opportunity to grasp that divine chalice and
+taste its contents, that distant, missing something in my soul, that prevents
+me from being truly happy.
 
-No puedo culpar a nadie, ni a Daniela por darme esperanza, ni a Isabel por
-quitármela, ni a Andrés por resignarse… yo tengo una fe infinita en la bondad
-de la vida y me entrego al pensamiento de que si ese día en específico no logre
-probar de aquel divino cáliz, otro día quizás encontraré la manera de volver a
-aquel momento en donde si estuvo en mis manos... me sumergiré en el río del
-tiempo y nadaré en contra de su corriente hasta que un día finalmente….
+I cannot blame anyone—neither Daniela for giving me hope, nor Isabel for taking
+it away, nor Andrés for resigning himself. I have boundless faith in life's
+goodness and embrace the thought that if I didn't get to taste that divine
+chalice on that specific day, perhaps one day I'll find a way to return to that
+moment when it was within my reach. I'll immerse myself in the river of time,
+swimming against its current until one day, finally...
