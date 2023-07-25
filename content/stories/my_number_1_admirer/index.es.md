@@ -8,60 +8,51 @@ categories: ["historia"]
 image: mi_admiradora_número_1.jpeg
 ---
 
-En la mañana dos notificaciones de Facebook, una de un mensaje de texto y la
-otra, una solicitud de amistad, me habrían llegado al celular. “Me gustaron
-mucho tus historias”, decía aquel mensaje, tanto el mensaje, como la solicitud
-eran de la misma persona. Me pareció curioso, pero tan pronto la acepté me puse
-a revisar cada una de sus fotos, publicaciones y amigos, esperando que no sea
-un perfil falso. Que fuera una hermosa mujer la que aparecía en aquel perfil y
-tuviera varias fotos en un provocativo traje de baño, no tuvo nada que ver con
-mi exhaustiva revisión.
+Por la mañana, recibí dos notificaciones de Facebook, un mensaje de texto y una
+solicitud de amistad en mi teléfono. El mensaje decía: "Me gustaron mucho tus
+historias", tanto el mensaje como la solicitud de amistad eran de la misma
+persona. Curioso, acepté y revisé sus fotos, esperando que no fuera un perfil
+falso. Para mi sorpresa, era una hermosa mujer con fotos cautivadoras en traje
+de baño, pero eso no tenía nada que ver con mi exhaustiva revisión.
 
-Estaba sentado en su cama y ella estaba allí acostada dándome la espalda, hacía
-pereza, se acababa de despertar. Levante del suelo su guitarra y le pregunté,
-"Te molesta si toco algo de música", “Nunca”, me respondió rápidamente, “pero,
-ahora llueve y quiero escuchar la lluvia un rato”, decía mientras torpemente
-apartaba la guitarra para colocar su cabeza en mis piernas. La puse gentilmente
-en el suelo y centre mi mirada en ella un momento, no pasó mucho tiempo hasta
-yo despertar. Estaba todavía allí sentado, con las fotos de la mujer que
-parecía ser mi admiradora en la pantalla de mi celular. Había soñado con
-aquella tarde, un día que se encontraba en aquel pasado que tanto anhelo poder
-volver a vivir.
+Sentado en su cama, ella yacía perezosamente con la espalda hacia mí después de
+despertar. Tomé su guitarra y le pregunté: "¿Te importa si toco algo de
+música?". "Nunca", respondió rápidamente, "pero, está lloviendo ahora y quiero
+escuchar la lluvia un rato". Dijo mientras torpemente apartaba la guitarra para
+apoyar la cabeza en mi regazo. Con delicadeza, coloqué la guitarra en el suelo
+y la observé por un momento, poco después de despertar. Todavía estaba sentado
+allí, con las fotos de lo que parecía ser una admiradora en la pantalla de mi
+teléfono. Había soñado con aquella tarde, un momento pasado que anhelaba
+revivir.
 
-Después del medio día un nuevo mensaje me habría llegado, “Gracias por
-aceptarme, ¿te puedo preguntar algo?”. No puedo evitar sonreír y entregarme
-ciegamente a aquella esperanza, mi plan era iniciar a través de esa pregunta la
-conversación con la que habríamos de entrelazar nuestras vidas, y así aquellos
-lejanos recuerdos los habría de volver a vivir, alcanzando el momento en donde
-podré encontrar ese algo, esa esencia propia de mi alma perdida en un lugar del
-pasado.
+Después del mediodía, llegó un nuevo mensaje: "Gracias por aceptarme, ¿puedo
+preguntarte algo?". No pude resistirlo y una pequeña sonrisa se dibujó en mi
+rostro, no podía hacer otra cosa más que aferrarme a esa esperanza. Mi plan era
+iniciar una conversación a partir de esa pregunta, que entrelazaría nuestras
+vidas y así revivir esos lejanos recuerdos, alcanzar ese algo, esa esencia de
+mi alma perdida en el pasado.
 
-“Pregúntame!”, respondo inmediatamente.
-“Estoy trabajando en un proyecto de marketing por internet y estamos buscando
-personas…”
+"¡Pregunta lo que quieras!", respondí inmediatamente. "Estoy trabajando en un
+proyecto de marketing por internet y estoy buscando personas..."
 
-No me molesto en leer el resto del mensaje, ni continuar la conversación. Veo
-una última vez sus fotos de perfil, mientras me la imagino en traje de baño,
-llamándome para que nade con ella una tarde de Domingo. Tan pronto la elimino
-de mi lista de amigos me pregunto, ¿qué tipo de esperanza habría de tener, si
-los recuerdos que quiero revivir forman parte de aquel sueño que el destino
-disfruta viéndome no cumplir?. Es cruel, me deja rosarlo con la yema de mis
-dedos antes de alejarlo un tanto, lo suficiente para que quede apenas lejos de
-mi alcance.
+No me molesté en leer el resto o continuar la conversación. Miré por última vez
+las fotos de su perfil, imaginándome cómo me invitaría a nadar en una tarde de
+domingo luciendo uno de esos provocativos trajes de baño. Al eliminarla de mi
+lista de amigos, me pregunté qué esperanza podía tener cuando los recuerdos que
+quería revivir eran parte de un sueño que el destino disfruta viéndome no
+cumplir. Es cruel, me permite rozarlo con la yema de mis dedos antes de
+alejarlo lo suficiente como para que esté fuera de mi alcance.
 
-Me encuentro tocando suavemente su mejilla, en donde el sonido de la lluvia
-opaca aquellas palabras y extraños ruidos que hace cuando duerme. Las paredes
-de su cuarto son azul claro y el piso se encuentra cubierto con un tapete azul
-oscuro, ella me decía que había decorado el cuarto así para parecer que está
-durmiendo tranquila en mitad del océano. Aparto mi mirada de ella y veo como la
-guitarra comienza a flotar lejos de nosotros en lo que parece ser agua. Cuando
-la guitarra finalmente se pierde en el horizonte, despierto en camino a
+Tocando suavemente su mejilla, la lluvia ahogaba sus palabras y extraños ruidos
+que hace mientras duerme. Las paredes de su habitación son de color azul claro
+y la alfombra es azul oscuro. Ella me dijo que decoró la habitación así para
+parecer que estaba durmiendo tranquila en medio del océano. Aparté la mirada de
+ella y vi cómo la guitarra parecía flotar lejos de nosotros en lo que parecía
+ser agua. A medida que desaparecía en el horizonte, desperté, en camino a
 visitarla.
 
-Siempre limpio un poco y coloco nuevas flores cuando voy, un girasol y un
-tulipán, eran sus flores favoritas, siempre jugaba con sus pétalos hasta que le
-daba alergia y me tocaba lavarle las manos con alcohol. A veces me acuesto
-sobre aquella loza de mármol y le cuento todo lo que ha pasado desde la última
-vez que hablamos. A veces me pierdo en el tiempo y me toca irme corriendo
-porque se me ha hecho tarde. Siempre me voy intranquilo y sintiéndome mal,
-nunca le pregunto como le esta yendo en su vida amorosa…
+Cuando la visito, limpio un poco y coloco flores frescas, sus favoritas, un
+girasol y un tulipán. Ella solía jugar con sus pétalos. A veces me acuesto en
+la lápida de mármol y le cuento todo desde nuestra última conversación. Otras
+veces, me pierdo en el tiempo, apresurándome porque llego tarde. Siempre me voy
+inquieto, sintiéndome mal, nunca pregunto cómo le va en su vida amorosa...

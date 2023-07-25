@@ -8,60 +8,49 @@ categories: ["story"]
 image: mi_admiradora_número_1.jpeg
 ---
 
-En la mañana dos notificaciones de Facebook, una de un mensaje de texto y la
-otra, una solicitud de amistad, me habrían llegado al celular. “Me gustaron
-mucho tus historias”, decía aquel mensaje, tanto el mensaje, como la solicitud
-eran de la misma persona. Me pareció curioso, pero tan pronto la acepté me puse
-a revisar cada una de sus fotos, publicaciones y amigos, esperando que no sea
-un perfil falso. Que fuera una hermosa mujer la que aparecía en aquel perfil y
-tuviera varias fotos en un provocativo traje de baño, no tuvo nada que ver con
-mi exhaustiva revisión.
+In the morning, two Facebook notifications, one text message, and a friend
+request came to my phone. "I really liked your stories," said the message, both
+the message and the friend request came from the same person. Curious, I
+accepted and checked their photos, hoping it wasn't a fake profile. To my
+surprise, it was a beautiful woman with alluring swimsuit pictures, but that
+had nothing to do with my exhaustive review.
 
-Estaba sentado en su cama y ella estaba allí acostada dándome la espalda, hacía
-pereza, se acababa de despertar. Levante del suelo su guitarra y le pregunté,
-"Te molesta si toco algo de música", “Nunca”, me respondió rápidamente, “pero,
-ahora llueve y quiero escuchar la lluvia un rato”, decía mientras torpemente
-apartaba la guitarra para colocar su cabeza en mis piernas. La puse gentilmente
-en el suelo y centre mi mirada en ella un momento, no pasó mucho tiempo hasta
-yo despertar. Estaba todavía allí sentado, con las fotos de la mujer que
-parecía ser mi admiradora en la pantalla de mi celular. Había soñado con
-aquella tarde, un día que se encontraba en aquel pasado que tanto anhelo poder
-volver a vivir.
+Sitting on her bed, she lazily lay with her back turned after waking up. I
+picked up her guitar and asked, "Mind if I play some music?." "Never," she
+quickly replied, "but, it's raining now and I want to hear the rain for a
+while." She said while clumsily moving the guitar away to rest her head on my
+lap. I gently placed the guitar on the floor, gazing at her for a while, not
+long after I woke up. I was still sitting there, with the pictures of what
+seemed to be a admirer on my phone's screen. I had dreamt of that afternoon, a
+past moment I longed to relive.
 
-Después del medio día un nuevo mensaje me habría llegado, “Gracias por
-aceptarme, ¿te puedo preguntar algo?”. No puedo evitar sonreír y entregarme
-ciegamente a aquella esperanza, mi plan era iniciar a través de esa pregunta la
-conversación con la que habríamos de entrelazar nuestras vidas, y así aquellos
-lejanos recuerdos los habría de volver a vivir, alcanzando el momento en donde
-podré encontrar ese algo, esa esencia propia de mi alma perdida en un lugar del
-pasado.
+After noon, a new message arrived: "Thanks for accepting me, can I ask you
+something?" Unable to resist a little smille comes from me, and I couldn't do
+anything but to embrace that hope. My plan was to start a conversation from
+that question, that would intertwine our lives, and like that relive those
+distant memories, reaching that something, that essence of my lost soul in the
+past.
 
-“Pregúntame!”, respondo inmediatamente.
-“Estoy trabajando en un proyecto de marketing por internet y estamos buscando
-personas…”
+"Ask away!" I replied immediately. "I'm working on an internet marketing
+project and looking for people..."
 
-No me molesto en leer el resto del mensaje, ni continuar la conversación. Veo
-una última vez sus fotos de perfil, mientras me la imagino en traje de baño,
-llamándome para que nade con ella una tarde de Domingo. Tan pronto la elimino
-de mi lista de amigos me pregunto, ¿qué tipo de esperanza habría de tener, si
-los recuerdos que quiero revivir forman parte de aquel sueño que el destino
-disfruta viéndome no cumplir?. Es cruel, me deja rosarlo con la yema de mis
-dedos antes de alejarlo un tanto, lo suficiente para que quede apenas lejos de
-mi alcance.
+I didn't bother reading the rest or continuing the conversation. I looked at
+her profile photos one last time, imagining her inviting me for a Sunday
+afternoon swim while wearing one of those provocative swimsuits. As I removed
+her from my friends' list, I wondered what hope I could have when the memories
+I wanted to relive were part of a dream that the destiny enjoys watching me
+fail to fulfill?. It is cruel, it lets me graze it my fingertips before
+pulling it back from me just enought to be out of my reach.
 
-Me encuentro tocando suavemente su mejilla, en donde el sonido de la lluvia
-opaca aquellas palabras y extraños ruidos que hace cuando duerme. Las paredes
-de su cuarto son azul claro y el piso se encuentra cubierto con un tapete azul
-oscuro, ella me decía que había decorado el cuarto así para parecer que está
-durmiendo tranquila en mitad del océano. Aparto mi mirada de ella y veo como la
-guitarra comienza a flotar lejos de nosotros en lo que parece ser agua. Cuando
-la guitarra finalmente se pierde en el horizonte, despierto en camino a
-visitarla.
+I gently touched her cheek, the rain drowns out those words and strange noises
+she makes while asleep. Her room's walls are light blue and the carpet is dark
+blue. She told me that she decorated the room like that to appear to be
+sleeping peacefully in the middle of the ocean. I looked away from her, and the
+guitar seemed to float away in water. As it vanished on the horizon, I woke up,
+on my way to visit her.
 
-Siempre limpio un poco y coloco nuevas flores cuando voy, un girasol y un
-tulipán, eran sus flores favoritas, siempre jugaba con sus pétalos hasta que le
-daba alergia y me tocaba lavarle las manos con alcohol. A veces me acuesto
-sobre aquella loza de mármol y le cuento todo lo que ha pasado desde la última
-vez que hablamos. A veces me pierdo en el tiempo y me toca irme corriendo
-porque se me ha hecho tarde. Siempre me voy intranquilo y sintiéndome mal,
-nunca le pregunto como le esta yendo en su vida amorosa…
+When I visit, I clean a bit and place fresh flowers, her favorites, a sunflower
+and a tulip. She used to play with their petals. Sometimes I lay on the marble
+slab, telling her everything since our last talk. Other times, I get lost in
+time, rushing out because I'm late. I always leave uneasy, feeling bad, I never
+ask about how her love life is going...
