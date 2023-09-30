@@ -1,6 +1,6 @@
 ---
 title: File Transfer Between Cloud Services (AWS to Azure)
-date: 2022-08-30T12:00:00-05:00
+date: 2023-02-15T12:00:00-05:00
 draft: false
 
 read_more: Read more...
