@@ -33,8 +33,8 @@ For this you should have general knowledge of Python, and be familiar with
 Python.
 
 ```toml
-
 [packages]
+numpy = "==1.26.0"
 laspy = {extras = ["lazrs"], version = "==2.5.1"}
 
 [requires]

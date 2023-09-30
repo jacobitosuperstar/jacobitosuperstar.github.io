@@ -2,6 +2,6 @@
 title: CV
 slug: cv
 type: page
-weight: 1000000000000000000
+weight: 1000
 draft: false
 ---

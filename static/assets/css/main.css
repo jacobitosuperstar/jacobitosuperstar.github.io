@@ -1,9 +1,3 @@
-/* line-height: 2rem; */
-
-/* estilos que se aplicarán a toda la página */
-*{
-}
-
 /* cuerpo  */
 html{
     height: 100%;
@@ -12,8 +6,8 @@ html{
 /* body tag */
 body {
     font-family: 'Merriweather', serif;
-    background: whitesmoke;
-    color: #333333;
+    color: whitesmoke;
+		background: black;
     margin: 0;
     min-height: 100%;
     display: flex;
@@ -47,35 +41,15 @@ main{
     padding-right:1rem;
 }
 
-/* barra de navegación */
-.navbar{
-    font-family: 'Merriweather', serif;
-    font-size: 1rem;
-    font-weight: 900;
-    background-color: #E3F2FD;
-}
-
 /* contenedor, se usa para sentrar el texto y tener márgenes  */
 .container {
     margin:auto;
     padding:0.5rem;
 }
 
-/* colores de los objetos presentes en la barra de navegación  */
-.site-header .navbar-nav .nav-link {
-    color: crimson;
-}
-
-/* Colores cuando pongo el mouse sobre el link  */
-/* site-header y navbar-nav tienen que ser los padres del elemento */
-.site-header .navbar-nav .nav-link:hover {
-    color: maroon;
-    font-weight: bold;
-}
-
 /* sección de contenido  */
 .content-section {
-    background: #ffffff;
+    background: black;
     padding: 0.626rem 1.25rem;
     border: 1rem solid #dddddd;
     border-radius: 0.2rem;
@@ -84,47 +58,9 @@ main{
 
 /* pie de página  */
 .footer{
-    color: #ffffff;
-    background-color: #E3F2FD;
+    color: whitesmoke;
+    background-color: black;
     padding: 1rem;
     width: 100%;
     margin: auto;
-}
-
-.featurette-heading {
-  font-weight: 3.5rem;
-  line-height: 1;
-  letter-spacing: -.05rem;
-  margin-top: 7rem;
-  font-size : 3rem;
-}
-
-/* overlay de las imágenes para el blog  */
-.overlay {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100%;
-  width: 100%;
-  opacity: 0;
-  transition: .5s ease;
-  background-color: #9D98F6;
-}
-
-.overlay:hover {
-  opacity: 1;
-}
-
-.text {
-  color: #FFD2CD;
-  font-size: 1.2rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  text-align: center;
 }

@@ -1,6 +1,6 @@
 ---
-title: JMBO
-type: page
-weight: -1
+title: jacobitosuperstar
+type: brand
+weight: -1000
 draft: false
 ---

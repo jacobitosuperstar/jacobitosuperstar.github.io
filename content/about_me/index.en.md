@@ -1,8 +1,8 @@
 ---
-title: ABOUT
+title: ABOUT ME
 slug: about_me
 type: page
-weight: 999999999999999999
+weight: 999
 draft: false
 ---
 

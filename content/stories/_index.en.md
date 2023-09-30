@@ -2,6 +2,6 @@
 title: STORIES
 slug: story
 type: page
-weight: 1
+weight: 2
 draft: false
 ---

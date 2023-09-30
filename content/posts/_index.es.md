@@ -1,7 +1,7 @@
 ---
-title: CV
-slug: cv
+title: POSTS
 type: page
-weight: 1000
+weight: 1
 draft: false
 ---
+

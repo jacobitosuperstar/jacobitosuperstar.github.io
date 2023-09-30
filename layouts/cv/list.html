@@ -11,7 +11,9 @@
       <table class="table table-borderless">
         {{ range where .Site.Pages "Type" "cv" }}
         <tr>
-        <td style="text-align:center;vertical-align:middle;">
+        <td
+					style="text-align:center; vertical-align:middle; color: whitesmoke; background: black;"
+				>
           <h2>{{ .Title }}</h2>
           <p>
             <span class="d-none d-sm-inline">
@@ -23,7 +25,9 @@
              {{ .Params.end_date }}</br>
            </span>
         </td>
-        <td>
+        <td
+					style="text-align:justify; vertical-align:middle; color: whitesmoke; background: black;"
+				>
            <p>{{ .Content }}</p>
         </td>
         </tr>

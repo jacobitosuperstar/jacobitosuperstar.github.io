@@ -1,7 +1,7 @@
 ---
 title: ACERCA DE MÍ
 type: page
-weight: 999999999999999999
+weight: 999
 draft: false
 ---
 
