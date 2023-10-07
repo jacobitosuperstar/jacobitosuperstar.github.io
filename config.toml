@@ -28,7 +28,8 @@ staticDir = "static"
     lineNumbersInTable = true
     noClasses = true
     noHl = false
-    style = 'vim'
+    # style = 'vim'
+    style = 'modus-vivendi'
     tabWidth = 4
 
 [permalinks]

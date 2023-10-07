@@ -26,7 +26,10 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarToggler">
-      <ul class="navbar-nav nav-justified w-100 text-center" style="vertical-align: middle;">
+      <ul
+        class="navbar-nav nav-justified w-100 text-center"
+        style="vertical-align: middle; text-transform: uppercase;"
+      >
         {{ range (where .Site.Pages "Type" "page").ByWeight }}
         <li class="nav-item">
             <div class="container">

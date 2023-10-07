@@ -2,18 +2,21 @@
 
 <div class="container">
 
-  {{ $image := .Resources.GetMatch .Params.image }}
-  {{ if $image }}
-  <img class="img-fluid" src="{{ (  $image.Crop "2048x450 webp Center q100" ).RelPermalink }}">
-  {{ else }}
-  <h2>{{ .Title }}</h2>
-  {{ end }}
+  <div
+    class="container"
+    style="text-align: center; text-transform: uppercase;"
+  >
+    <h2>{{ .Title }}</h2>
+  </div>
 
   <p style="text-align: justify;">
     {{ .Content }}
   </p>
-  <b>Category:</b>
-  {{ with .Params.categories }}{{ delimit . ", " }}{{ end }}
+
+  <p style="text-align: justify; text-transform: capitalize">
+    <b>Category:</b>
+    {{ with .Params.categories }}{{ delimit . ", " }}{{ end }}
+  </p>
 
 </div>
 
