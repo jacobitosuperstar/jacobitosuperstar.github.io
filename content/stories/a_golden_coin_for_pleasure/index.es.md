@@ -62,7 +62,7 @@ el sexo es bueno, tienes problema con que hagamos unos videos?". Mis respuestas
 fueron muy insípidas la verdad, estoy seguro que no generé nada adicional a
 lástima, pero no importa, ella me puede tener toda la lástima que quiera.
 
-Todo salió bien al final, no puedo decir que no hay algo de dolor al ser intimo
+Todo salió bien al final, no puedo decir que no hay algo de dolor al ser íntimo
 con una persona para la cuál no soy alguien más en una larga lista de clientes
 y falsos pretendientes. Al darme un último dulce beso y verla partir, no puedo
 parar de pensar. El dolor de mi pasado ha matado todas las cosas sagradas en
