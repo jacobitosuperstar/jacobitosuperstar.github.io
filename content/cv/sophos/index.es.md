@@ -8,18 +8,19 @@ start_date: Abril 2022
 end_date: Julio 2022
 ---
 
-#### Plataforma de Monitoreo para Minas
+### Plataforma de Monitoreo para Minas
 
-Debido a que había una vacío de comunicación entre el equipo que habla español,
-que fueron los que iniciaron con la creación de la plataforma, y el equipo que
-sólo habla inglés, que eran los que iban a continuar desarrollándola, mi rol al
-principio fue ser el puente entre ambos equipos en un nivel técnico. Debido a
-esto, nos fue posible entender y documentar el código, arreglar los problemas
-de infraestructura que estábamos teniendo con Kubernetes y entregar los debidos
-resultados al cliente.
+Continué el desarrollo y la escalabilidad de una plataforma de monitoreo minero
+para mitigar el riesgo geológico.
 
-Mi corto tiempo con el equipo fue causado por una operación que tenía mi padre
-y mi atención en otros deberes era requerida en un 100%. Ellos me ofreción
-vacaciones pagas o trabajar medio tiempo para que pudiera estar con mi padre,
-pero no lo pude aceptar porque no estaba seguro de la cantidad de tiempo que
-iba a estar alejado del trabajo.
+Debido a que existía una brecha de comunicación entre el equipo de habla
+hispana que inició la plataforma y el equipo de habla inglesa que continuaría
+desarrollándola, mi rol al principio fue servir como un puente de comunicación
+a nivel técnico entre ambos equipos. Gracias a ello, pudimos comprender y
+documentar el código base, solucionar los problemas de infraestructura que
+teníamos con Kubernetes y entregar los resultados necesarios al cliente.
+
+Mi breve paso por el equipo se debió a una cirugía que tendría mi padre y que
+requería mi atención al 100%. La empresa me ofreció vacaciones pagadas o
+trabajo de medio día para que pudiera quedarme con mi padre y no renunciar,
+pero no pude aceptarlo porque no estaba seguro del tiempo que estaría ausente.

@@ -8,7 +8,7 @@ start_date: March 2020
 end_date: --
 ---
 
-#### Herramientas Internas de la Compañía
+### Herramientas Internas de la Compañía
 
 Crear un portal web para que mis clientes puedan crear ordenes, tener registro
 del estado del envío de los productos y descargar los documentos requeridos
