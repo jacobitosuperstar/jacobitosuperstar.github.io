@@ -10,10 +10,11 @@ end_date: --
 
 ### LabelPC
 
-Colaboro en el desarrollo y mantenimiento del código de la aplicación LabelPC,
-que es un etiquetador de nubes de puntos. En esta aplicación, identificamos las
-diferentes salas de una instalación de almacenamiento para medir la capacidad
-de almacenamiento de pallets, el área y el volumen.
+Actualmente colaborando en el desarrollo y mantenimiento del código de la
+aplicación LabelPC, que es un etiquetador de nubes de puntos. En esta
+aplicación, identificamos las diferentes salas de una instalación de
+almacenamiento para medir la capacidad de almacenamiento de pallets, el área y
+el volumen.
 
 Mis logros más notables en el proyecto han sido:
 

@@ -10,9 +10,9 @@ end_date: --
 
 ### LabelPC
 
-Help develop and maintain code from the LabelPC application, which is a Point
-Cloud labeler on which we identify the different rooms of a storing facility to
-measure storage pallet capacity, area and volume.
+Helping in the development and maintaining the LabelPC application, which is a
+Point Cloud labeler on which we identify the different rooms of a storing
+facility to measure storage pallet capacity, area and volume.
 
 My most notable accomplishments on the project have been:
 
