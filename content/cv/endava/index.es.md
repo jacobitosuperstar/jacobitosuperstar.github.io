@@ -10,20 +10,32 @@ end_date: --
 
 ### LabelPC
 
-Actualmente colaborando en el desarrollo y mantenimiento del código de la
-aplicación LabelPC, que es un etiquetador de nubes de puntos. En esta
-aplicación, identificamos las diferentes salas de una instalación de
-almacenamiento para medir la capacidad de almacenamiento de pallets, el área y
-el volumen.
+Desarrollé la aplicación LabelPC, que es un etiquetador de Nube de Puntos en el
+que identificamos las diferentes habitaciones de un centro de almacenamiento
+para medir la capacidad, el área y el volumen de los pallets de almacenamiento.
 
 Mis logros más notables en el proyecto han sido:
 
-* Establecer la documentación del código con Sphinx y publicar el sitio web en
-Read the Docs.
-* Crear una herramienta personalizada de Box Cloud para integrar el SDK de Box
-de uso general a nuestras necesidades específicas.
-* Crear flujos de trabajo automatizados mediante el uso de un servidor para
-generar y actualizar automáticamente los archivos DXF que representan cada
-instalación etiquetada.
-* Implementar la utilización de múltiples núcleos para los cálculos y el
-filtrado de la nube de puntos.
+* Configurar la documentación del código con Sphinx y publicar el sitio web en
+  nuestra página personalizada de READ_THE_DOCS.
+
+* Crear flujos de trabajo de automatización mediante el uso de un servidor para
+  generar y actualizar automáticamente los archivos DXF correspondientes de las
+  instalaciones etiquetadas.
+
+* Crear una base de datos de archivos buscable mediante la creación de
+  funciones personalizadas de Box Cloud en el SDK.
+
+* Introducir la utilización de múltiples núcleos para los cálculos y el
+  filtrado de la nube de puntos.
+
+* Introducir una arquitectura basada en eventos dentro de la aplicación para
+  maximizar los recursos utilizados en el ordenador del usuario y aumentar las
+  velocidades de carga, añadir funciones automáticas como el autoguardado, las
+  actualizaciones de cálculos en segundo plano y otras.
+
+### Calculador de Préstamos
+
+Actualmente creando una herramienta web personalizada para automatizar el
+cálculo del tamaño del préstamo de diferentes productos en el financiamiento de
+bienes raíces multifamiliares.
