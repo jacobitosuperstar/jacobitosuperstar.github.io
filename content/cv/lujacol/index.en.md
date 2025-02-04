@@ -3,9 +3,9 @@ title: LUJACOL SAS
 date: 2020-03-01T12:00:00-05:00
 draft: false
 
-job_title: Owner (1 week every 6 months normally)
+job_title: Owner
 start_date: March 2020
-end_date: --
+end_date: Octubre 2022
 ---
 
 ### Company Internal Tools

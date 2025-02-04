@@ -3,7 +3,7 @@ title: LaunchMobility
 date: 2020-04-01T12:00:00-05:00
 draft: false
 
-job_title: Desarrollador Junior (Contratista)
+job_title: Desarrollador Junior
 start_date: Junio 2022
 end_date: Octubre 2022
 ---

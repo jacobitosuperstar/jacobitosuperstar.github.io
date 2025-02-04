@@ -3,33 +3,39 @@ title: Endava
 date: 2022-08-01T12:00:00-05:00
 draft: false
 
-job_title: Senior Developer (Full time)
+job_title: Senior Developer
 start_date: August 2022
-end_date: --
+end_date: December 2024
 ---
 
-### LabelPC
+### Math Engine
 
-Developed the LabelPC application, which is a Point Cloud labeler on which we
-identify the different rooms of a storing facility to measure storage pallet
-capacity, area and volume.
+Helped develop a math engine for Quote Sizing and Investment Analysis in Real
+State Loans. My main contributions for the project where:
 
-My most notable accomplishments on the project have been:
+- Creating automatic test generation through the use of test JSON files that
+contained the different testing scenarios.
 
-* Setting up the code documentation with Sphinx, and publishing the website in
-  our custom READ_THE_DOCS page.
-* Create automation workflows through the use of a server to automatically
-  generate and update the corresponding DXF files of the labeled facilities.
-* Create a searchable file database through the creation of custom Box Cloud
-  features in the SDK.
-* Introduce multi core utilization for the point cloud calculations and
-  filtering.
-* Introduce event driven architecture within the application to maximize the
-  resources being used within the users computer and increase loading speeds,
-  add automatic features like autosave, background calculations updates, and
-  others.
+- Multi-objective or optimization space binary search to find the maximum loan
+amount and the minimum net operating income for a desired loan amount.
 
-### Loan Sizing
+Open Source version of the package in [Go][1]
 
-Creating a custom web based tool to automate the loan sizing of different
-products in multifamily Real State financing.
+### Point Cloud
+
+Developed and maintained a desktop program for annotating point clouds through
+a graphical interface. My main contributions to the project where:
+
+- Creating and leading the implementation of an event driven architecture for
+calculation heavy functionalities, where I diverted the load of the functions
+to other cores from the computer through the use of multiprocessing, and other
+optimizations at the object creation to diminish the impact on RAM consumption.
+
+- Automating the creation of blueprints and other technical drawings from the
+point cloud, through the use of a local server, that handled the updates or
+changes of the annotated shapes within the Point Cloud.
+
+- Creating a facade for the BOX Cloud SDK, to handle safely multi-threading and
+simplifying functionality to our file updates and uploads.
+
+[1]: https://github.com/jacobitosuperstar/go-cre-loan-calculations

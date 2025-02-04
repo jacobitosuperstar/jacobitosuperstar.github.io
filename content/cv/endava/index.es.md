@@ -1,41 +1,46 @@
 ---
-title: Endava
+title: ENDAVA
 date: 2022-08-01T12:00:00-05:00
 draft: false
 
-job_title: Desarrollador Senior (Tiempo completo)
+job_title: Desarrollador Senior
 start_date: Agosto 2022
-end_date: --
+end_date: Diciembre 2024
 ---
 
-### LabelPC
+### Motor Matemático
 
-Desarrollé la aplicación LabelPC, que es un etiquetador de Nube de Puntos en el
-que identificamos las diferentes habitaciones de un centro de almacenamiento
-para medir la capacidad, el área y el volumen de los pallets de almacenamiento.
+Se desarrolló un motor matemático para el dimensionamiento de cotizaciones y
+análisis de inversiones en préstamos inmobiliarios. Mis principales
+contribuciones fueron:
 
-Mis logros más notables en el proyecto han sido:
+- Crear generation de casos de pruebas automáticas a través del uso del
+archivos JSON que contienen los diferentes escenarios de pruebas.
 
-* Configurar la documentación del código con Sphinx y publicar el sitio web en
-  nuestra página personalizada de READ_THE_DOCS.
+- Búsqueda binaria multi objetivo o de espacio de optimización para encontrar
+la máxima cantidad de dinero que se puede prestar y para encontrar los mínimos
+ingresos operativos netos para obtener la cantidad de dinero deseada.
 
-* Crear flujos de trabajo de automatización mediante el uso de un servidor para
-  generar y actualizar automáticamente los archivos DXF correspondientes de las
-  instalaciones etiquetadas.
+Versión Open Source del paquete cálculador de préstamos en [Go][1]
 
-* Crear una base de datos de archivos buscable mediante la creación de
-  funciones personalizadas de Box Cloud en el SDK.
+### Nubes de Puntos
 
-* Introducir la utilización de múltiples núcleos para los cálculos y el
-  filtrado de la nube de puntos.
+Se desarrolló y se hizo mantenimiento de un programa de escritorio para anotar
+nubes de puntos a través de una interfaz gráfica. Mis principales
+contribuciones al proyecto fueron:
 
-* Introducir una arquitectura basada en eventos dentro de la aplicación para
-  maximizar los recursos utilizados en el ordenador del usuario y aumentar las
-  velocidades de carga, añadir funciones automáticas como el autoguardado, las
-  actualizaciones de cálculos en segundo plano y otras.
+- Crear y liderar la implementación de una arquitectura orientada a eventos
+para funcionalidades pesadas de cálculo, donde desvié la carga de las funciones
+a otros núcleos de la computadora mediante el uso de procesamiento múltiple y
+otras optimizaciones en la creación de objetos para disminuir el impacto en el
+consumo de RAM.
 
-### Calculador de Préstamos
+- Automatizar la creación de planos y otros dibujos técnicos a partir de la
+nube de puntos, mediante el uso de un servidor local que manejaba las
+actualizaciones o cambios de las formas anotadas dentro de la nube de puntos.
 
-Actualmente creando una herramienta web personalizada para automatizar el
-cálculo del tamaño del préstamo de diferentes productos en el financiamiento de
-bienes raíces multifamiliares.
+- Crear una fachada para el SDK de BOX Cloud, para manejar de forma segura el
+multihilo y simplificar la funcionalidad de nuestras actualizaciones y cargas
+de archivos.
+
+[1]: https://github.com/jacobitosuperstar/go-cre-loan-calculations

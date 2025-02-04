@@ -3,7 +3,7 @@ title: Sophos Solutions
 date: 2022-04-01T12:00:00-05:00
 draft: false
 
-job_title: Desarrollador (Tiempo Completo)
+job_title: Desarrollador
 start_date: Abril 2022
 end_date: Julio 2022
 ---

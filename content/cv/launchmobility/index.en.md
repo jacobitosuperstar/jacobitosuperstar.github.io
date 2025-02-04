@@ -3,7 +3,7 @@ title: LaunchMobility
 date: 2022-06-01T12:00:00-05:00
 draft: false
 
-job_title: Junior Developer (Contractor)
+job_title: Junior Developer
 start_date: June 2022
 end_date: October 2022
 ---
