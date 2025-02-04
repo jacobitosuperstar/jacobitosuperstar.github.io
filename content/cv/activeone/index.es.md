@@ -8,7 +8,7 @@ start_date: Abril 2021
 end_date: Marzo 2022
 ---
 
-### Plataforma para Digitalización/Clasificación/Almacenimiento de Expedientes
+### Plataforma para Digitalización, Clasificación, Almacenimiento de Expedientes
 
 Se desarrolló una plataforma web que permitía subir documentos escaneados para
 clasificarlos utilizando diferentes servicios de inteligencia artificial de

@@ -8,7 +8,7 @@ start_date: April 2021
 end_date: March 2022
 ---
 
-### Proceedings Digitalization/Classification/Storage Platform
+### Proceedings Digitalization, Classification, Storage Platform
 
 Helped develop and maintain code from a web application, on which we could
 upload scanned proceedings to classify them using different AI services from
