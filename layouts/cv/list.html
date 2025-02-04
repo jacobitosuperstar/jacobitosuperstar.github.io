@@ -3,8 +3,8 @@
   <div class="container text-justify">
     {{ range where .Site.Pages "Type" "cv" }}
     <div class="row justify-content-md-center">
-      <div class="col">
-        <h2>{{ .Title }}</h2>
+      <div class="col-md-auto">
+        <h1>{{ .Title }}</h1>
       </div>
       <div class="col">
         <h3>{{ .Params.job_title }}</h3>
