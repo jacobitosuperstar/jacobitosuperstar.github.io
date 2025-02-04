@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Metaprogramming on jacobitosuperstar</title><link>//jacobobedoya.com/en/tags/metaprogramming/</link><description>Recent content in Metaprogramming on jacobitosuperstar</description><generator>Hugo</generator><language>en</language><lastBuildDate>Wed, 13 Sep 2023 12:00:00 -0500</lastBuildDate><atom:link href="//jacobobedoya.com/en/tags/metaprogramming/index.xml" rel="self" type="application/rss+xml"/><item><title>Metaprogram your problems away</title><link>//jacobobedoya.com/en/posts/metaprogram_your_problems_away/</link><pubDate>Wed, 13 Sep 2023 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/posts/metaprogram_your_problems_away/</guid><description>&lt;p>Metaprogramming is a useful tool when you want to incorporate general behavior
+into your program without having to add extensive boilerplate code throughout
+it. This practice is typically employed by individuals who create frameworks or
+development tools. The idea behind metaprogramming is to provide you with an
+initial insight into how such tasks are accomplished, hopefully inspiring ideas
+for future design projects.&lt;/p>
+&lt;p>To make sense of all the concepts discussed here, you should be using Python
+version 3.6 or later and have a basic understanding of decorators, functions,
+and classes. In the case we&amp;rsquo;re studying, we will log the names of functions
+called within an existing Python program.&lt;/p></description></item></channel></rss>

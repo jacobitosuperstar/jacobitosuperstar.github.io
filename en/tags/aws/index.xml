@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>AWS on jacobitosuperstar</title><link>//jacobobedoya.com/en/tags/aws/</link><description>Recent content in AWS on jacobitosuperstar</description><generator>Hugo</generator><language>en</language><lastBuildDate>Wed, 15 Feb 2023 12:00:00 -0500</lastBuildDate><atom:link href="//jacobobedoya.com/en/tags/aws/index.xml" rel="self" type="application/rss+xml"/><item><title>File Transfer Between Cloud Services (AWS to Azure)</title><link>//jacobobedoya.com/en/posts/multi_cloud_transfer/</link><pubDate>Wed, 15 Feb 2023 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/posts/multi_cloud_transfer/</guid><description>&lt;p>Sometimes is a requirement to transfer files from one cloud service to another.
+At least that was the challenge that I encountered while developing a file
+classification web service. Mid development cycle management changed cloud
+provider because of some juicy Azure discounts and the all so great office 365
+integration that everyone loves.&lt;/p>
+&lt;p>Because of this, the compromise reached to be able to continue at the same
+development speed and still lower the cloud services bill, was to continue to
+work on AWS in the web service, but the files, after finished the process, must
+be transferred to Azure.&lt;/p></description></item></channel></rss>

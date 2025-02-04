@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CV on jacobitosuperstar</title><link>//jacobobedoya.com/en/cv/</link><description>Recent content in CV on jacobitosuperstar</description><generator>Hugo</generator><language>en</language><lastBuildDate>Mon, 01 Aug 2022 12:00:00 -0500</lastBuildDate><atom:link href="//jacobobedoya.com/en/cv/index.xml" rel="self" type="application/rss+xml"/><item><title>Endava</title><link>//jacobobedoya.com/en/cv/endava/</link><pubDate>Mon, 01 Aug 2022 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/endava/</guid><description>&lt;h3 id="math-engine">Math Engine&lt;/h3>
+&lt;p>Helped develop a math engine for Quote Sizing and Investment Analysis in Real
+State Loans. My main contributions for the project where:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Creating automatic test generation through the use of test JSON files that
+contained the different testing scenarios.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Multi-objective or optimization space binary search to find the maximum loan
+amount and the minimum net operating income for a desired loan amount.&lt;/p>
+&lt;/li>
+&lt;/ul>
+&lt;p>Open Source version of the package in &lt;a href="https://github.com/jacobitosuperstar/go-cre-loan-calculations">Go&lt;/a>&lt;/p></description></item><item><title>LaunchMobility</title><link>//jacobobedoya.com/en/cv/launchmobility/</link><pubDate>Wed, 01 Jun 2022 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/launchmobility/</guid><description>&lt;h3 id="launchmobility-backend-platform">LaunchMobility Backend Platform&lt;/h3>
+&lt;p>Had no achievements and couldn&amp;rsquo;t do anything notable within the platform of the
+company. Culture shock with the company. My way of work wasn&amp;rsquo;t a match and I
+felt that changing my way of doing things to fulfill the company&amp;rsquo;s needs
+required a great effort that was only useful in that place and time, but not
+for my overall development as a programmer. Bummer, but that happens. Sometimes
+you don&amp;rsquo;t mesh with the team.&lt;/p></description></item><item><title>Sophos Solutions</title><link>//jacobobedoya.com/en/cv/sophos/</link><pubDate>Fri, 01 Apr 2022 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/sophos/</guid><description>&lt;h3 id="monitoring-platform-for-mines">Monitoring Platform for Mines&lt;/h3>
+&lt;p>Continue the development and scalling of a mine monitoring platform to mitigate
+geological risk.&lt;/p>
+&lt;p>Because there was a communication gap between the Spanish speaking team, that
+started the platform and the English speaking team that was going to continue
+developing it, my role at the beginning was to be a communication bridge
+between the Spanish talking team members and the English speaking team members
+on a technical level, and thanks to that, we were able to understand and
+document the base code, fix the infrastructure problems that we were having
+with Kubernetes and deliver the needed results to the client.&lt;/p></description></item><item><title>ActiveOne</title><link>//jacobobedoya.com/en/cv/activeone/</link><pubDate>Thu, 01 Apr 2021 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/activeone/</guid><description>&lt;h3 id="proceedings-digitalizationclassificationstorage-platform">Proceedings Digitalization/Classification/Storage Platform&lt;/h3>
+&lt;p>Helped develop and maintain code from a web application, on which we could
+upload scanned proceedings to classify them using different AI services from
+AWS.&lt;/p>
+&lt;p>Two of my notable developments were:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Creating a tool to transfer files between the AWS and Azure storage services
+through a stream of data from one service to another.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Creating a base Metaclass and a function decorator to log all the
+functionality of the application without having to add anything else than to
+add the Metaclass to the class and just a decorator to the different functions
+that were critical for the platform.&lt;/p></description></item><item><title>LUJACOL SAS</title><link>//jacobobedoya.com/en/cv/lujacol/</link><pubDate>Sun, 01 Mar 2020 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/lujacol/</guid><description>&lt;h3 id="company-internal-tools">Company Internal Tools&lt;/h3>
+&lt;p>Create a web portal for my clients to create orders, keep track of the shipping
+status and download required documents for merchandise nationalization. This a
+long with automatic emails for reminders and important notes about the
+merchandise helps me keep the head count short on the company, prepare the
+container in less than a week, and to work as lean as possible, minimizing
+expenses.&lt;/p></description></item><item><title>Institución Universitaria ITM</title><link>//jacobobedoya.com/en/cv/itm/</link><pubDate>Sat, 01 Oct 2016 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/en/cv/itm/</guid><description>&lt;h3 id="university-indicators-and-academic-monitoring-platform">University Indicators and Academic Monitoring Platform&lt;/h3>
+&lt;p>Miscellaneous work regarding student retention in the institution was done, on
+which two of my more notable developments where&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Create a web portal that monitors all the students who are beneficiaries of
+the scholarships awarded by the Medellín mayor&amp;rsquo;s office, in order to generate
+early alarms indicating low academic performance and possible desertion, for
+the intervention of the university welfare department.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Create an indicator that measures the impact of the university in a student,
+measuring if the university turned a bad student into a good one, a good
+student into an excellent one, and what happens with the already excellent
+students that the university has.&lt;/p></description></item></channel></rss>

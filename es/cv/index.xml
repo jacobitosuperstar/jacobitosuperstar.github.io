@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>CV on jacobitosuperstar</title><link>//jacobobedoya.com/es/cv/</link><description>Recent content in CV on jacobitosuperstar</description><generator>Hugo</generator><language>es</language><lastBuildDate>Mon, 01 Aug 2022 12:00:00 -0500</lastBuildDate><atom:link href="//jacobobedoya.com/es/cv/index.xml" rel="self" type="application/rss+xml"/><item><title>ENDAVA</title><link>//jacobobedoya.com/es/cv/endava/</link><pubDate>Mon, 01 Aug 2022 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/endava/</guid><description>&lt;h3 id="motor-matemático">Motor Matemático&lt;/h3>
+&lt;p>Se desarrolló un motor matemático para el dimensionamiento de cotizaciones y
+análisis de inversiones en préstamos inmobiliarios. Mis principales
+contribuciones fueron:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Crear generation de casos de pruebas automáticas a través del uso del
+archivos JSON que contienen los diferentes escenarios de pruebas.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Búsqueda binaria multi objetivo o de espacio de optimización para encontrar
+la máxima cantidad de dinero que se puede prestar y para encontrar los mínimos
+ingresos operativos netos para obtener la cantidad de dinero deseada.&lt;/p></description></item><item><title>Sophos Solutions</title><link>//jacobobedoya.com/es/cv/sophos/</link><pubDate>Fri, 01 Apr 2022 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/sophos/</guid><description>&lt;h3 id="plataforma-de-monitoreo-para-minas">Plataforma de Monitoreo para Minas&lt;/h3>
+&lt;p>Continué el desarrollo y la escalabilidad de una plataforma de monitoreo minero
+para mitigar el riesgo geológico.&lt;/p>
+&lt;p>Debido a que existía una brecha de comunicación entre el equipo de habla
+hispana que inició la plataforma y el equipo de habla inglesa que continuaría
+desarrollándola, mi rol al principio fue servir como un puente de comunicación
+a nivel técnico entre ambos equipos. Gracias a ello, pudimos comprender y
+documentar el código base, solucionar los problemas de infraestructura que
+teníamos con Kubernetes y entregar los resultados necesarios al cliente.&lt;/p></description></item><item><title>ActiveOne</title><link>//jacobobedoya.com/es/cv/activeone/</link><pubDate>Thu, 01 Apr 2021 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/activeone/</guid><description>&lt;h3 id="plataforma-para-digitalizaciónclasificaciónalmacenimiento-de-expedientes">Plataforma para Digitalización/Clasificación/Almacenimiento de Expedientes&lt;/h3>
+&lt;p>Se desarrolló una plataforma web que permitía subir documentos escaneados para
+clasificarlos utilizando diferentes servicios de inteligencia artificial de
+AWS.&lt;/p>
+&lt;p>Dos de mis desarrollos más notables fueron:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Creación de una herramienta para transferir archivos entre los servicios de
+almacenamiento de AWS y Azure a través de un flujo de datos de un servicio a
+otro.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Creación de una Metaclase base y un decorador de funciones para registrar
+toda la funcionalidad de la aplicación sin tener que añadir nada más que la
+Metaclase a la clase y un decorador a las diferentes funciones que eran
+críticas para la plataforma.&lt;/p></description></item><item><title>LaunchMobility</title><link>//jacobobedoya.com/es/cv/launchmobility/</link><pubDate>Wed, 01 Apr 2020 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/launchmobility/</guid><description>&lt;h3 id="plataforma-de-launchmobility">Plataforma de LaunchMobility&lt;/h3>
+&lt;p>No tuve logros ni pude colaborar de manera notable con la plataforma de la
+companía. Choque cultural con la empresa. Mí modo de trabajo no era compatible
+con el de la compañía y sentí que cambiar mi manera de hacer las cosas para
+cumplir mis tareas, requería un esfuerzo grande que sólo era útil para ese
+lugar y ese momento, pero no para mi desarrollo como programador. Es
+decepcionante pero a veces pasa. A veces uno no engrana con el equipo.&lt;/p></description></item><item><title>LUJACOL SAS</title><link>//jacobobedoya.com/es/cv/lujacol/</link><pubDate>Sun, 01 Mar 2020 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/lujacol/</guid><description>&lt;h3 id="herramientas-internas-de-la-compañía">Herramientas Internas de la Compañía&lt;/h3>
+&lt;p>Crear un portal web para que mis clientes puedan crear ordenes, tener registro
+del estado del envío de los productos y descargar los documentos requeridos
+para la nacionalización de estos. Esto, junto con envío automático de correos
+para recordatorios y notas importantes acerca de la mercancía, me ayudan a
+mantener el número de empleados bajo en la compañía, preparar el contenedor en
+menos de una semana y trabajar con los menos costos posibles, minizando gastos.&lt;/p></description></item><item><title>Institución Universitaria ITM</title><link>//jacobobedoya.com/es/cv/itm/</link><pubDate>Sat, 01 Oct 2016 12:00:00 -0500</pubDate><guid>//jacobobedoya.com/es/cv/itm/</guid><description>&lt;h3 id="indicadores-de-la-universidad-y-plataforma-de-monitoreo-académica">Indicadores de la Universidad y Plataforma de Monitoreo Académica&lt;/h3>
+&lt;p>Se realizaron diversas tareas relacionadas con la retención de estudiantes en
+la institución, entre las que destacan dos desarrollos particularmente
+notables:&lt;/p>
+&lt;ul>
+&lt;li>
+&lt;p>Crear un portal web que monitorea todos los estudiantes beneficiarios de las
+becas entregadas por la alcaldía de Medellín, con el fin de generar alarmas
+tempranas indicando bajo rendimiento académico y posible deserción, para la
+intervención del departamento de bienestar universitario.&lt;/p></description></item></channel></rss>
