@@ -10,16 +10,14 @@ categories: ["programming"]
 
 While I am not a big fan of the use of OOP in all programming problems and
 paradigms, there are places where I can see their usefulness. One of those
-places is when creating a simple REST API application.
-
-I have known about Django class-based views from a long time, but the thing is,
-that I have always seen them as an afterthough, because they never are what I
-want them to be, and before you think about Djando Rest-Framework, I want to
-tell you that it doesn't solve either some of the issues that you would
-normally encounter, like query optimizations. This guide is for people that do
-not enjoy infinite dependencies, have fun reinvinting things, or just enjoy the
-hability of being able to do your own custom solutions to your own custom
-problems.
+places is when creating a simple REST API application. I have known about
+Django class-based views from a long time, but the thing is, I have always seen
+them as an after though, because they never are what I want them to be, and
+before you think about Djando Rest-Framework, I want to tell you that it
+doesn't solve either some of the issues that you would normally encounter, like
+query optimizations. This guide is for people that do not enjoy infinite
+dependencies, have fun reinventing things, or just enjoy the ability of being
+able to do your own custom solutions to your own custom problems.
 
 As part of my Django project structure I like to have a base application called
 `base` where I will put much of my custom packages that will be used through
@@ -128,7 +126,7 @@ class BaseMixin:
 ```
 
 Going back to the usefulness of a class-based view, the main idea of using them
-is that instead of condional branches within your general function view given
+is that instead of conditional branches within your general function view given
 the HTTP request method, you could just have the required response with
 different class instance methods, giving you the opportunity of using something
 like this:
@@ -162,9 +160,9 @@ Because of this, when we create our own class-based view, we need to define all
 the http method that it will accept, otherwise we will only receive `405`
 responses.
 
-Knowin all of this, the way on which you create your custom base view, is
-through multiple inheritance, between the `BaseMixin` class and the `View`
-class, where we will define the http method that our view will receive and the
+Knowing all of this, the way on which you create your custom base view, is
+through multiple inheritance, between the `BaseMixin` and the `View` class,
+where we will define the http method that our view will receive and the
 processing needed to send back a response.
 
 Personally I like to create singular class-based views with singular HTTP
@@ -173,9 +171,9 @@ conflicts during multiple inheritance.
 
 As an example, we will create two generic views that each will handle something
 different. Taking into account good API practices, normally within the root of
-an url, we would do normally two things, a GET method to receive all of the
-instances of the objects that belong to that url and a POST method to create a
-new entry of said object.
+a route, we would do normally two things, a GET method to receive all of the
+instances of the objects that belong to that route and a POST method to create a
+new entry to the database.
 
 ```Python
 class BaseListView(BaseMixin, View):
@@ -222,14 +220,15 @@ class BaseCreateView(BaseMixin, View):
             return JsonResponse(error_data, status=status.internal_server_error)
 ```
 
-*NOTE: Remember that the `_meta` attribute allows us to access the things that
-we defined within the `class Meta` of the model, like `db_table`, `
-verbose_name`, `verbose_name_plural` and all the others that you may find
+*__note__: remember that the `_meta` attribute allows us to access the things
+that we defined within the `class Meta` of the model, like `db_table`,
+`verbose_name`, `verbose_name_plural` and all the others that you may find
 useful. In this case I use those attributes to create a consistent naming
 scheme within the JSONResponse.*
 
-And finally, when we are defining our API views, we can use again composition,
-to add all the functionality that we want from them, like this:
+And finally, when we are defining our API views, we can use again the powers of
+composition and inheritance to add all the functionality that we want from
+them, like this:
 
 ```Python
 class ClientView(
@@ -243,7 +242,7 @@ class ClientView(
 
 With this, we have a resulting view, that accepts the HTTP methods that we
 need, that behaves like we need, and in case we need to change the behaviour
-within a method, we can just re-write or over-write it, or create it, like
+within a HTTP method, we can just re-write or over-write, or create it, like
 this:
 
 ```Python
