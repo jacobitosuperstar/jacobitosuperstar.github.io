@@ -15,9 +15,9 @@ Django class-based views from a long time, but the thing is, I have always seen
 them as an after though, because they never are what I want them to be, and
 before you think about Djando Rest-Framework, I want to tell you that it
 doesn't solve either some of the issues that you would normally encounter, like
-query optimizations. This guide is for people that do not enjoy infinite
-dependencies, have fun reinventing things, or just enjoy the ability of being
-able to do your own custom solutions to your own custom problems.
+query optimizations. This guide is intended for people who want to avoid
+infinite dependencies and enjoy designing their own solutions, tailored to
+their needs.
 
 As part of my Django project structure I like to have a base application called
 `base` where I will put much of my custom packages that will be used through

@@ -1,30 +1,30 @@
 ---
-title: Metaprogram your problems away
+title: Metaprograma tus problemas hasta hacerlos desaparecer
 date: 2023-09-13T12:00:00-05:00
 draft: false
 
-read_more: Read more...
-tags: ["python", "metaprogramming"]
-categories: ["programming"]
+read_more: Leer más...
+tags: ["python", "metaprogramación"]
+categories: ["programación"]
 ---
 
-Metaprogramming is a useful tool when you want to incorporate general behavior
-into your program without having to add extensive boilerplate code throughout
-it. This practice is typically employed by individuals who create frameworks or
-development tools. The idea behind metaprogramming is to provide you with an
-initial insight into how such tasks are accomplished, hopefully inspiring ideas
-for future design projects.
+La metaprogramación es una herramienta útil cuando quieres incorporar
+comportamiento general en tu programa sin tener que agregar código repetitivo
+extenso a lo largo de él. Esta práctica típicamente es empleada por individuos
+que crean frameworks o herramientas de desarrollo. La idea detrás de la
+metaprogramación es proporcionarte una visión inicial de cómo se logran tales
+tareas, con la esperanza de inspirar ideas para futuros proyectos de diseño.
 
-To make sense of all the concepts discussed here, you should be using Python
-version 3.6 or later and have a basic understanding of decorators, functions,
-and classes. In the case we're studying, we will log the names of functions
-called within an existing Python program.
+Para darle sentido a todos los conceptos discutidos aquí, deberías estar usando
+Python versión 3.6 o posterior y tener un entendimiento básico de decoradores,
+funciones y clases. En el caso que estamos estudiando, registraremos los
+nombres de las funciones llamadas dentro de un programa Python existente.
 
-Logging is a way to record messages from our program, including errors,
-warnings, information, or debugging messages that can be placed at various
-points in the code. In Python, this is straightforward. We can create a logger
-class from the logging module to stream our messages to the console, like the
-one shown below.
+El logging es una forma de registrar mensajes de nuestro programa, incluyendo
+errores, advertencias, información o mensajes de depuración que pueden
+colocarse en varios puntos del código. En Python, esto es sencillo. Podemos
+crear una clase logger desde el módulo logging para transmitir nuestros
+mensajes a la consola, como el que se muestra a continuación.
 
 ```python
 
@@ -95,8 +95,8 @@ if __name__ == "__main__":
     logger.critical("This is a critical message.")
 ```
 
-and just to apply it to the parts of the code that we want to log, we write the
-logging statements.
+y solo para aplicarlo a las partes del código que queremos registrar,
+escribimos las declaraciones de logging.
 
 ```python
 
@@ -122,16 +122,16 @@ class Operations:
         return self.x / self.y
 ```
 
-The issue we aim to address is the need to insert a logging statement into each
-section of the code that requires logging. This type of code repetition is
-precisely where Metaprogramming shines.
+El problema que buscamos abordar es la necesidad de insertar una declaración
+de logging en cada sección del código que requiere registro. Este tipo de
+repetición de código es precisamente donde brilla la Metaprogramación.
 
-Our initial encounter with metaprogramming in Python comes through the
-utilization of decorators. Decorators are functions that take other functions
-as arguments and enable you to execute code between function calls. You'll
-often encounter them in popular frameworks like Django and Flask. In our case,
-we will leverage decorators to log the names of the functions we call within a
-DEBUG message.
+Nuestro encuentro inicial con metaprogramación en Python viene a través de la
+utilización de decoradores. Los decoradores son funciones que toman otras
+funciones como argumentos y te permiten ejecutar código entre llamadas de
+funciones. A menudo los encontrarás en frameworks populares como Django y
+Flask. En nuestro caso, aprovecharemos los decoradores para registrar los
+nombres de las funciones que llamamos dentro de un mensaje DEBUG.
 
 ```python
 
@@ -164,12 +164,12 @@ def name_logging_function(
         return wrapper
 ```
 
-This is how we apply the decorator we just wrote to the various methods of the
-class. However, as you will notice, we haven't completely achieved our goal
-yet. The logging code remains isolated to a single location (where the
-decorator is applied). Nonetheless, it simplifies the process for users because
-they don't need to concern themselves with how to use the decorator; they can
-simply place it in the function where it's needed.
+Así es como aplicamos el decorador que acabamos de escribir a los diversos
+métodos de la clase. Sin embargo, como notarás, aún no hemos logrado
+completamente nuestro objetivo. El código de logging permanece aislado en una
+sola ubicación (donde se aplica el decorador). No obstante, simplifica el
+proceso para los usuarios porque no necesitan preocuparse por cómo usar el
+decorador; simplemente pueden colocarlo en la función donde se necesita.
 
 ```python
 
@@ -195,10 +195,10 @@ class Operations:
         return self.x / self.y
 ```
 
-To further streamline the process of logging the names of called functions, we
-will employ Class Decorators. A class decorator involves applying a decorator
-to a class definition, enabling us to apply the function decorator to all
-methods within the class.
+Para agilizar aún más el proceso de registrar los nombres de las funciones
+llamadas, emplearemos Decoradores de Clase. Un decorador de clase implica
+aplicar un decorador a una definición de clase, permitiéndonos aplicar el
+decorador de función a todos los métodos dentro de la clase.
 
 ```python
 
@@ -209,10 +209,11 @@ def name_logging_class(cls):
     return cls
 ```
 
-With this code, our approach involves receiving a class definition (cls), from
-which we retrieve the class dictionary. We then iterate through it, checking
-whether the value is a function. If it is, we apply the function decorator to
-it and subsequently reset the decorated method back into the class.
+Con este código, nuestro enfoque implica recibir una definición de clase (cls),
+de la cual recuperamos el diccionario de la clase. Luego iteramos a través de
+él, verificando si el valor es una función. Si lo es, aplicamos el decorador
+de función a ella y posteriormente restablecemos el método decorado de vuelta
+en la clase.
 
 ```python
 
@@ -235,11 +236,12 @@ class Operations:
         return self.x / self.y
 ```
 
-The limitations of this decorator application are evident when it comes to
-class methods and static methods. These methods won't be affected because they
-are not callables; they are descriptor objects. The only way a decorator would
-function with these methods is if we apply it as demonstrated below, which
-differs from how the decorator is currently being applied.
+Las limitaciones de esta aplicación de decorador son evidentes cuando se trata
+de métodos de clase y métodos estáticos. Estos métodos no se verán afectados
+porque no son invocables; son objetos descriptores. La única forma en que un
+decorador funcionaría con estos métodos es si lo aplicamos como se muestra a
+continuación, lo cual difiere de cómo se está aplicando actualmente el
+decorador.
 
 ```python
 
@@ -259,23 +261,23 @@ class Operations:
         return self.x + self.y
 ```
 
-Although things are looking cleaner now, code repetition can still become an
-issue when our program contains numerous classes. Additionally, class
-decorators suffer from the same limitations we sought to overcome earlier: they
-remain isolated to the location where they are applied. If our program has many
-classes, we'd need to go through each one and decorate them individually to
-give them this behavior.
+Aunque las cosas se ven más limpias ahora, la repetición de código aún puede
+convertirse en un problema cuando nuestro programa contiene numerosas clases.
+Además, los decoradores de clase sufren de las mismas limitaciones que
+buscábamos superar anteriormente: permanecen aislados en la ubicación donde se
+aplican. Si nuestro programa tiene muchas clases, necesitaríamos pasar por cada
+una y decorarlas individualmente para darles este comportamiento.
 
-So, what's the solution to make these decorators more broadly applicable? The
-answer is straightforward: we need to create a metaclass. By creating a
-metaclass from which our classes will be derived, we can change the way classes
-are constructed.
+Entonces, ¿cuál es la solución para hacer que estos decoradores sean más
+ampliamente aplicables? La respuesta es directa: necesitamos crear una
+metaclase. Al crear una metaclase de la cual nuestras clases se derivarán,
+podemos cambiar la forma en que se construyen las clases.
 
-To understand this concept, it's important to know that all classes and objects
-in Python are instances of `type`. Python has a type system, and everything
-inherits from `type`. This implies that, since all classes are instances of
-`type`, there must be a base class of `type` responsible for creating instances
-of `type` somewhere in the Python system.
+Para entender este concepto, es importante saber que todas las clases y objetos
+en Python son instancias de `type`. Python tiene un sistema de tipos, y todo
+hereda de `type`. Esto implica que, dado que todas las clases son instancias de
+`type`, debe haber una clase base de `type` responsable de crear instancias de
+`type` en algún lugar del sistema Python.
 
 ```log
 
@@ -304,10 +306,10 @@ True>>> x = 1
 True
 ```
 
-The way a class is constructed in Python, is by having the name of the class,
-the bases of the class (classes from which our class inherits), and the
-dictionary that composes the class (dictionary with all methods and
-attributes), and throw all that into `type`.
+La forma en que se construye una clase en Python, es teniendo el nombre de la
+clase, las bases de la clase (clases de las cuales nuestra clase hereda), y el
+diccionario que compone la clase (diccionario con todos los métodos y
+atributos), y lanzar todo eso en `type`.
 
 ```log
 
@@ -317,9 +319,9 @@ Operations = type("Operations", (), clsdict)
 >>> A = type("A", (), {})
 ```
 
-So, what happens if we don’t want to use `type` as our constructor, what
-happens when we want to create something with a different kind of `type`. We
-can use the metaclass keyword argument in our class definition.
+Entonces, ¿qué pasa si no queremos usar `type` como nuestro constructor, qué
+pasa cuando queremos crear algo con un tipo diferente de `type`? Podemos usar
+el argumento de palabra clave metaclass en nuestra definición de clase.
 
 ```python
 
@@ -327,10 +329,10 @@ class Operations(metaclass=type):
     ...
 ```
 
-To define a Metaclass we typically create a class that inherits directly from
-`type` and redefine the `__new__` method. The `__new__` method is the first
-method run in the creation of an object of a class, and is responsible for
-creating the and returning the new class instance.
+Para definir una Metaclase típicamente creamos una clase que hereda
+directamente de `type` y redefinimos el método `__new__`. El método `__new__`
+es el primer método ejecutado en la creación de un objeto de una clase, y es
+responsable de crear y devolver la nueva instancia de clase.
 
 ```python
 
@@ -341,11 +343,12 @@ class name_logging_metaclass(type):
         return clsobj
 ```
 
-Here we are redefining the `__new__` method of the metaclass, by creating a new
-class object from `type`, and returning that class object with the class
-decorator applied to it, finally propagating that decorator functionality down
-hierarchies. And with this, we just changed the basic behavior of our program,
-without having to go into every definition and add the logging statement.
+Aquí estamos redefiniendo el método `__new__` de la metaclase, creando un nuevo
+objeto de clase de `type`, y devolviendo ese objeto de clase con el decorador
+de clase aplicado a él, finalmente propagando esa funcionalidad de decorador
+hacia abajo en las jerarquías. Y con esto, acabamos de cambiar el
+comportamiento básico de nuestro programa, sin tener que ir a cada definición y
+agregar la declaración de logging.
 
 ```python
 
@@ -370,19 +373,19 @@ class Operations(Base):
         return self.x / self.y
 ```
 
-There are a lot of problems that you may encounter by trying to do this, for
-one, the complexity of the program rises dramatically, which is not something
-that the project manager or other members of the team want to deal with, also,
-debugging this type of code can also become really complicated in the case we
-are adding something more significant than just printing function names into
-the console, like working with the `__prepare__` method or the use of non local
-variables across the project without any imports.
+Hay muchos problemas que puedes encontrar al intentar hacer esto, por un lado,
+la complejidad del programa aumenta dramáticamente, lo cual no es algo que el
+gerente de proyecto u otros miembros del equipo quieran manejar, además,
+depurar este tipo de código también puede volverse realmente complicado en el
+caso de que estemos agregando algo más significativo que solo imprimir nombres
+de funciones en la consola, como trabajar con el método `__prepare__` o el uso
+de variables no locales a través del proyecto sin ninguna importación.
 
-At the end of the day, there's nothing inherently wrong with keeping code
-simple. However, I firmly believe that there's immense value in individuals
-understanding and being able to apply these techniques when the need arises.
-Take the example we've discussed – it's one that can be easily presented.
-Instead of going around instructing every programmer to manually add console
-logging to each function they write, consider incorporating these decorators or
-base classes into the core of the program. This way, the desired functionality
-can effortlessly propagate throughout the project.
+Al final del día, no hay nada inherentemente malo en mantener el código simple.
+Sin embargo, creo firmemente que hay un valor inmenso en que las personas
+entiendan y sean capaces de aplicar estas técnicas cuando surja la necesidad.
+Toma el ejemplo que hemos discutido: es uno que se puede presentar fácilmente.
+En lugar de ir instruyendo a cada programador para que agregue manualmente
+logging de consola a cada función que escriben, considera incorporar estos
+decoradores o clases base en el núcleo del programa. De esta manera, la
+funcionalidad deseada puede propagarse sin esfuerzo a través del proyecto.

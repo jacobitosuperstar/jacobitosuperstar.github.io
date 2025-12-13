@@ -1,27 +1,27 @@
 ---
-title: The only useful Nepo babies, Django class-based views
+title: Los únicos Nepo babies útiles, vistas basadas en clases de Django
 date: 2025-03-05T12:00:00-05:00
 draft: false
 
-read_more: Read more...
+read_more: Leer más...
 tags: ["python", "Django"]
-categories: ["programming"]
+categories: ["programación"]
 ---
 
-While I am not a big fan of the use of OOP in all programming problems and
-paradigms, there are places where I can see their usefulness. One of those
-places is when creating a simple REST API application. I have known about
-Django class-based views from a long time, but the thing is, I have always seen
-them as an after though, because they never are what I want them to be, and
-before you think about Djando Rest-Framework, I want to tell you that it
-doesn't solve either some of the issues that you would normally encounter, like
-query optimizations. This guide is for people that do not enjoy infinite
-dependencies, have fun reinventing things, or just enjoy the ability of being
-able to do your own custom solutions to your own custom problems.
+Aunque no soy un gran fanático del uso de POO en todos los problemas y
+paradigmas de programación, hay lugares donde puedo ver su utilidad. Uno de
+esos lugares es cuando se crea una aplicación de API REST simple. He conocido
+las vistas basadas en clases de Django desde hace mucho tiempo, pero la cosa
+es que siempre las he visto como una idea tardía, porque nunca son lo que
+quiero que sean, y antes de que pienses en Django Rest-Framework, quiero
+decirte que tampoco resuelve algunos de los problemas que normalmente
+encontrarías, como las optimizaciones de consultas. Esta guía está pensada para
+personas que quieren evitar las dependencias infinitas y disfrutan diseñando
+soluciones propias, adaptadas a sus necesidades.
 
-As part of my Django project structure I like to have a base application called
-`base` where I will put much of my custom packages that will be used through
-the project.
+Como parte de mi estructura de proyecto Django, me gusta tener una aplicación
+base llamada `base` donde pondré muchos de mis paquetes personalizados que se
+usarán en todo el proyecto.
 
 ```log
     base
@@ -33,7 +33,7 @@ the project.
     ├── logger.py
     ├── middleware.py
     ├── migrations
-    │   └── __init__.py
+    │   └── __init__.py
     ├── mixins.py
     ├── models.py
     ├── response.py
@@ -43,14 +43,14 @@ the project.
     └── views.py
 ```
 
-Within the scope of this article I will only talk about `mixins.py` and
-`generic_views.py` where I put some of the base code that will compose my
-generic views structure.
+Dentro del alcance de este artículo solo hablaré sobre `mixins.py` y
+`generic_views.py` donde pongo parte del código base que compondrá mi
+estructura de vistas genéricas.
 
-In case you don't know what mixins are, they are a way to add functionality to
-a class by using multiple inheritance. I personally like to create a BaseMixin
-that will contain all the base functionality that I think that almost all of my
-custom views will use. For example:
+En caso de que no sepas qué son los mixins, son una forma de agregar
+funcionalidad a una clase utilizando herencia múltiple. Personalmente me gusta
+crear un BaseMixin que contendrá toda la funcionalidad base que creo que casi
+todas mis vistas personalizadas usarán. Por ejemplo:
 
 ```Python
 class BaseMixin:
@@ -125,11 +125,11 @@ class BaseMixin:
         ...
 ```
 
-Going back to the usefulness of a class-based view, the main idea of using them
-is that instead of conditional branches within your general function view given
-the HTTP request method, you could just have the required response with
-different class instance methods, giving you the opportunity of using something
-like this:
+Volviendo a la utilidad de una vista basada en clases, la idea principal de
+usarlas es que en lugar de ramas condicionales dentro de tu vista de función
+general dado el método de solicitud HTTP, podrías simplemente tener la
+respuesta requerida con diferentes métodos de instancia de clase, dándote la
+oportunidad de usar algo como esto:
 
 ```Python
 from django.views import View
@@ -147,33 +147,34 @@ class GenericView(View):
         ...
 ```
 
-Where if an http method is not defined within the view class that we are using,
-we would return a HTTP `405` code as a response. In the documentation there is
-a more detailed explanation of how a class based view work [look here][1], but
-the main idea is that when the url resolver sends the request, an instance of
-the class-based view is created and the request is dispatched to the matching
-HTTP method function if it exists.
+Donde si un método http no está definido dentro de la clase de vista que
+estamos usando, devolveríamos un código HTTP `405` como respuesta. En la
+documentación hay una explicación más detallada de cómo funciona una vista
+basada en clases [mira aquí][1], pero la idea principal es que cuando el
+resolvedor de URL envía la solicitud, se crea una instancia de la vista basada
+en clases y la solicitud se despacha a la función del método HTTP
+correspondiente si existe.
 
-The `View` class from which we are inheriting that functionality, doesn't have
-any http methods defined, only the dispatcher that routes the request to them.
-Because of this, when we create our own class-based view, we need to define all
-the http method that it will accept, otherwise we will only receive `405`
-responses.
+La clase `View` de la que estamos heredando esa funcionalidad, no tiene ningún
+método http definido, solo el despachador que enruta la solicitud a ellos.
+Debido a esto, cuando creamos nuestra propia vista basada en clases, necesitamos
+definir todos los métodos http que aceptará, de lo contrario solo recibiremos
+respuestas `405`.
 
-Knowing all of this, the way on which you create your custom base view, is
-through multiple inheritance, between the `BaseMixin` and the `View` class,
-where we will define the http method that our view will receive and the
-processing needed to send back a response.
+Sabiendo todo esto, la forma en que creas tu vista base personalizada es a
+través de herencia múltiple, entre el `BaseMixin` y la clase `View`, donde
+definiremos el método http que nuestra vista recibirá y el procesamiento
+necesario para enviar una respuesta.
 
-Personally I like to create singular class-based views with singular HTTP
-methods. That way we simplify view composition and prevent HTTP method
-conflicts during multiple inheritance.
+Personalmente me gusta crear vistas basadas en clases singulares con métodos
+HTTP singulares. De esa manera simplificamos la composición de vistas y
+prevenimos conflictos de métodos HTTP durante la herencia múltiple.
 
-As an example, we will create two generic views that each will handle something
-different. Taking into account good API practices, normally within the root of
-a route, we would do normally two things, a GET method to receive all of the
-instances of the objects that belong to that route and a POST method to create a
-new entry to the database.
+Como ejemplo, crearemos dos vistas genéricas que cada una manejará algo
+diferente. Teniendo en cuenta las buenas prácticas de API, normalmente dentro
+de la raíz de una ruta, haríamos normalmente dos cosas, un método GET para
+recibir todas las instancias de los objetos que pertenecen a esa ruta y un
+método POST para crear una nueva entrada en la base de datos.
 
 ```Python
 class BaseListView(BaseMixin, View):
@@ -220,15 +221,15 @@ class BaseCreateView(BaseMixin, View):
             return JsonResponse(error_data, status=status.internal_server_error)
 ```
 
-*__note__: remember that the `_meta` attribute allows us to access the things
-that we defined within the `class Meta` of the model, like `db_table`,
-`verbose_name`, `verbose_name_plural` and all the others that you may find
-useful. In this case I use those attributes to create a consistent naming
-scheme within the JSONResponse.*
+*__nota__: recuerda que el atributo `_meta` nos permite acceder a las cosas que
+definimos dentro del `class Meta` del modelo, como `db_table`, `verbose_name`,
+`verbose_name_plural` y todos los demás que puedas encontrar útiles. En este
+caso uso esos atributos para crear un esquema de nomenclatura consistente
+dentro de la JSONResponse.*
 
-And finally, when we are defining our API views, we can use again the powers of
-composition and inheritance to add all the functionality that we want from
-them, like this:
+Y finalmente, cuando estamos definiendo nuestras vistas de API, podemos usar
+nuevamente los poderes de composición y herencia para agregar toda la
+funcionalidad que queramos de ellas, así:
 
 ```Python
 class ClientView(
@@ -240,10 +241,10 @@ class ClientView(
     serializer_depth = 0
 ```
 
-With this, we have a resulting view, that accepts the HTTP methods that we
-need, that behaves like we need, and in case we need to change the behaviour
-within a HTTP method, we can just re-write or over-write, or create it, like
-this:
+Con esto, tenemos una vista resultante, que acepta los métodos HTTP que
+necesitamos, que se comporta como necesitamos, y en caso de que necesitemos
+cambiar el comportamiento dentro de un método HTTP, podemos simplemente
+reescribir o sobrescribir, o crearlo, así:
 
 ```Python
 class ClientView(
@@ -264,7 +265,7 @@ class ClientView(
         ...
 ```
 
-Hopefully this article was useful, and helps you understand how to create the
-tools that you may need for your custom necessities.
+Espero que este artículo haya sido útil y te ayude a entender cómo crear las
+herramientas que puedas necesitar para tus necesidades personalizadas.
 
 [1]: https://docs.djangoproject.com/en/dev/topics/class-based-views/intro/

@@ -1,43 +1,44 @@
 ---
-title: File Transfer Between Cloud Services (AWS to Azure)
+title: Transferencia de archivos entre servicios en la nube (AWS a Azure)
 date: 2023-02-15T12:00:00-05:00
 draft: false
 
-read_more: Read more...
+read_more: Leer más...
 tags: ["python", "AWS", "Azure"]
-categories: ["programming"]
+categories: ["programación"]
 ---
 
-Sometimes is a requirement to transfer files from one cloud service to another.
-At least that was the challenge that I encountered while developing a file
-classification web service. Mid development cycle management changed cloud
-provider because of some juicy Azure discounts and the all so great office 365
-integration that everyone loves.
+A veces es un requisito transferir archivos de un servicio en la nube a otro.
+Al menos ese fue el desafío que encontré mientras desarrollaba un servicio web
+de clasificación de archivos. A mitad del ciclo de desarrollo, la gerencia
+cambió de proveedor de nube debido a algunos jugosos descuentos de Azure y la
+tan grandiosa integración de office 365 que todos aman.
 
-Because of this, the compromise reached to be able to continue at the same
-development speed and still lower the cloud services bill, was to continue to
-work on AWS in the web service, but the files, after finished the process, must
-be transferred to Azure.
+Debido a esto, el compromiso alcanzado para poder continuar a la misma
+velocidad de desarrollo y aún así reducir la factura de servicios en la nube,
+fue continuar trabajando en AWS en el servicio web, pero los archivos, después
+de finalizado el proceso, deben ser transferidos a Azure.
 
-With all the restrictions regarding failure upon transfer and other things,
-there are two that are the most relevant for this particular case, which are:
+Con todas las restricciones respecto a fallas en la transferencia y otras
+cosas, hay dos que son las más relevantes para este caso particular, las cuales
+son:
 
-* The server can’t download the full files from S3. Some of the files are in
-  the realm of hundreds of gigabytes and the server instance that we are
-  currently using, cannot scale up the harddrive to that capacity without
-  leaving us broke.
+* El servidor no puede descargar los archivos completos de S3. Algunos de los
+  archivos están en el rango de cientos de gigabytes y la instancia del
+  servidor que estamos usando actualmente, no puede escalar el disco duro a esa
+  capacidad sin dejarnos en bancarrota.
 
-* We should be able to send several files at the same time.
+* Deberíamos poder enviar varios archivos al mismo tiempo.
 
-After much thinking and going back and forward with the team, got the idea to
-request the file through a stream of data, and then upload it chunk by chunk
-into the cloud. In that way the only part of the file that we will have in our
-harddrive is the current chunk of the file that we are transferring but nothing
-more.
+Después de mucho pensar e ir y venir con el equipo, surgió la idea de solicitar
+el archivo a través de un flujo de datos, y luego subirlo fragmento por
+fragmento a la nube. De esa manera la única parte del archivo que tendremos en
+nuestro disco duro es el fragmento actual del archivo que estamos transfiriendo
+pero nada más.
 
-The requirements to implement this code, are the packages and the Python
-version which I was working with at the time. Also is expected a basic
-knowledge of AWS S3 and Azure APIs.
+Los requisitos para implementar este código, son los paquetes y la versión de
+Python con la que estaba trabajando en ese momento. También se espera un
+conocimiento básico de las APIs de AWS S3 y Azure.
 
 ```toml
 [packages]
@@ -49,14 +50,14 @@ knowledge of AWS S3 and Azure APIs.
   python_version = "3.9"
 ```
 
-For azure, there is a CLI tool called [azcopy][1], from Microsoft that allows
-for multithreaded parallel download and upload of files, and given the
-restrictions of your own problem is worth checking out. In our case, the tool
-still needs to have the file in the hard-drive, which as we said before is
-something we cannot have.
+Para Azure, hay una herramienta CLI llamada [azcopy][1], de Microsoft que
+permite la descarga y carga de archivos multihilo en paralelo, y dadas las
+restricciones de tu propio problema, vale la pena revisarla. En nuestro caso,
+la herramienta todavía necesita tener el archivo en el disco duro, lo cual como
+dijimos antes es algo que no podemos tener.
 
-As a start we need the azure blob client for the container and the destination
-file that we are going to create.
+Para empezar necesitamos el cliente de blob de Azure para el contenedor y el
+archivo de destino que vamos a crear.
 
 ```python
 account_url = (
@@ -74,7 +75,7 @@ blob_client = BlobServiceClient(
 )
 ```
 
-Now for the AWS S3 client we have:
+Ahora para el cliente de AWS S3 tenemos:
 
 ```python
 aws_session = boto3.session(
@@ -85,12 +86,12 @@ aws_session = boto3.session(
 s3_client = aws_session.client('s3')
 ```
 
-In case the files are private, you need to take into account that we have to
-generate a public URL. In AWS the maximum amount of time that a pre signed url
-of the object has is 7 days, which are 604800 seconds. If the file can’t be
-downloaded and transferred in the 7 days, the file will remain as a partial
-transfer. In our case the biggest file needed a 4 day continuous stream to
-fully transfer.
+En caso de que los archivos sean privados, necesitas tener en cuenta que
+tenemos que generar una URL pública. En AWS la cantidad máxima de tiempo que
+una URL pre-firmada del objeto tiene es de 7 días, que son 604800 segundos. Si
+el archivo no puede ser descargado y transferido en los 7 días, el archivo
+permanecerá como una transferencia parcial. En nuestro caso el archivo más
+grande necesitó un flujo continuo de 4 días para transferirse completamente.
 
 ```python
 object_url = s3_client.generate_presigned_url(
@@ -103,19 +104,20 @@ object_url = s3_client.generate_presigned_url(
 )
 ```
 
-Then we have to create the stream from the file that we are requesting, and
-upload it to the Azure blob client.
+Luego tenemos que crear el flujo del archivo que estamos solicitando, y subirlo
+al cliente de blob de Azure.
 
-When we request a file as a stream, what is returned is an iterable object that
-the blob uploader takes and upload one chunk at a time in an ordered manner.
+Cuando solicitamos un archivo como un flujo, lo que se devuelve es un objeto
+iterable que el cargador de blob toma y sube un fragmento a la vez de manera
+ordenada.
 
 ```python
 object_stream = requests.get(object_url, stream=True)
 blob_client.upload_blob(object_stream)
 ```
 
-And with this solution we were able to seamlessly transfer all the files from
-one provider to another, without slowing down our work, and still benefiting
-with the lower bill for storage.
+Y con esta solución pudimos transferir sin problemas todos los archivos de un
+proveedor a otro, sin desacelerar nuestro trabajo, y aún así beneficiándonos
+con la factura más baja para el almacenamiento.
 
 [1]: https://docs.microsoft.com/en-us/azure/storage/common/storage-ref-azcopy
