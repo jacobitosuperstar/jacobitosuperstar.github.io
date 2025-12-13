@@ -368,14 +368,14 @@ def list(self, request, *args, **kwargs):
 Esto podría ser aceptable para tu caso de uso, o podrías necesitar manejarlo:
 
 ```python
-# Option 1: Filter in queryset (before serialization)
-# Only possible if you can express the filter in SQL
+# Opción 1: Filtrar en queryset (antes de la serialización)
+# Solo posible si puedes expresar el filtro en SQL
 
-# Option 2: Custom pagination that accounts for filtering
-# Complex, usually not worth it
+# Opción 2: Paginación personalizada que tiene en cuenta el filtrado
+# Complejo, usualmente no vale la pena
 
-# Option 3: Accept the inaccuracy
-# Often the pragmatic choice if filtered items are rare
+# Opción 3: Aceptar la inexactitud
+# A menudo la elección pragmática si los elementos filtrados son raros
 ```
 
 ## Cuándo usar este patrón
