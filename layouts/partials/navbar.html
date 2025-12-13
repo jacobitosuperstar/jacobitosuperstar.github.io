@@ -3,7 +3,7 @@
 	style="background-color: black;"
 >
   <div class="container">
-    {{ range (where .Site.Pages "Type" "brand").ByWeight }}
+    {{ range (where site.AllPages "Type" "brand").ByWeight }}
     <a
       href="{{ .Permalink }}"
       class="navbar-brand nav-link text-wrap"
@@ -30,7 +30,7 @@
         class="navbar-nav nav-justified w-100 text-center"
         style="vertical-align: middle; text-transform: uppercase;"
       >
-        {{ range (where .Site.Pages "Type" "page").ByWeight }}
+        {{ range (where site.AllPages "Params.in_navbar" true).ByWeight }}
         <li class="nav-item">
             <div class="container">
                 <a

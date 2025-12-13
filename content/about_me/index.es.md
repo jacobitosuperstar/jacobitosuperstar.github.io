@@ -1,6 +1,6 @@
 ---
 title: ACERCA DE MÍ
-type: page
+in_navbar: true
 weight: 999
 draft: false
 ---

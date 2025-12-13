@@ -1,7 +1,7 @@
 ---
 title: HISTORIAS
 slug: story
-type: page
+in_navbar: true
 weight: 2
 draft: false
 ---

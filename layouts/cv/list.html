@@ -1,7 +1,7 @@
 {{ define "content" }}
 
   <div class="container text-justify">
-    {{ range where .Site.Pages "Type" "cv" }}
+    {{ range where .Site.RegularPages "Section" "cv" }}
     <div class="row justify-content-md-center">
       <div class="col-md-auto">
         <h1>{{ .Title }}</h1>

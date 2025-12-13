@@ -1,7 +1,7 @@
 ---
 title: ABOUT ME
 slug: about_me
-type: page
+in_navbar: true
 weight: 999
 draft: false
 ---
