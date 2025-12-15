@@ -2,21 +2,18 @@
 
 <div class="container">
 
-  <div
-    class="container"
-    style="text-align: center; text-transform: uppercase;"
-  >
-    <h2>{{ .Title }}</h2>
+  <div style="text-align: center; text-transform: uppercase; margin-bottom: 2rem;">
+    <h2 style="color: salmon; border-bottom: 3px solid salmon; display: inline-block; padding-bottom: 0.5rem;">{{ .Title }}</h2>
   </div>
 
-  <p style="text-align: justify;">
+  <div style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
     {{ .Content }}
-  </p>
+  </div>
 
-  <p style="text-align: justify; text-transform: capitalize">
-    <b>Category:</b>
-    {{ with .Params.categories }}{{ delimit . ", " }}{{ end }}
-  </p>
+  <div style="margin-top: 2rem; padding-top: 1rem; text-align: justify; text-transform: capitalize">
+    <b style="color: salmon;">Category:</b>
+    <span style="color: pink;">{{ with .Params.categories }}{{ delimit . ", " }}{{ end }}</span>
+  </div>
 
 </div>
 

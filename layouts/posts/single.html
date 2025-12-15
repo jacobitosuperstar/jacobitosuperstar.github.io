@@ -1,14 +1,16 @@
 {{ define "content" }}
 
 <div class="container">
-  <h1 style="text-align: left; text-transform: uppercase;">
+  <h1 style="text-align: left; text-transform: uppercase; color: salmon; border-bottom: 3px solid salmon; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
     {{ .Title }}
   </h1>
-  <p style="text-align: justify;">
+  <div style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
     {{ .Content }}
-  </p>
-  <b>Tags:</b>
-  {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+  </div>
+  <div style="margin-top: 2rem; padding-top: 1rem;">
+    <b style="color: salmon;">Tags:</b>
+    <span style="color: pink;">{{ with .Params.tags }}{{ delimit . ", " }}{{ end }}</span>
+  </div>
 </div>
 
 {{ end }}

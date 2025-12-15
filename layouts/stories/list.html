@@ -1,21 +1,69 @@
 {{ define "content" }}
 
 <div class="container">
-  <div class="row mt-6">
+  <div class="row g-4 mt-2">
   {{ range where .Site.RegularPages "Section" "stories" }}
-    <div class="col-6 col-lg-3" style="vertical-align:center; text-align: center">
-      <a href="{{ .Permalink }}">
-        {{ $image := .Resources.GetMatch .Params.image }}
-        {{ if $image }}
-          <img class="img-fluid img-thumbnail" src="{{ (  $image.Crop "900x500 webp Center" ).RelPermalink }}">
-        {{ else }}
-        <h2>
-          {{ .Title }}
-        </h2>
-        {{ end }} <!-- end if -->
-      </a>
+    <!-- Responsive grid: 1 col on mobile, 2 on tablet, 3 on desktop, 4 on large screens -->
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+      <div class="story-card" style="height: 100%;">
+        <a href="{{ .Permalink }}" style="text-decoration: none; display: block; height: 100%;">
+          <div style="
+            border: 2px solid transparent;
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+          "
+          onmouseover="this.style.borderColor='palegoldenrod'; this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 16px rgba(238, 232, 170, 0.3)';"
+          onmouseout="this.style.borderColor='transparent'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+
+            {{ $image := .Resources.GetMatch .Params.image }}
+            {{ if $image }}
+              <div style="
+                aspect-ratio: 16/9;
+                overflow: hidden;
+                background: black;
+              ">
+                <img
+                  style="
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.3s ease;
+                  "
+                  onmouseover="this.style.transform='scale(1.05)';"
+                  onmouseout="this.style.transform='scale(1)';"
+                  src="{{ ( $image.Crop "900x500 webp Center" ).RelPermalink }}"
+                  alt="{{ .Title }}"
+                >
+              </div>
+              <div style="padding: 1.25rem; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+                <h3 style="color: palegoldenrod; margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem); text-transform: uppercase;">
+                  {{ .Title }}
+                </h3>
+              </div>
+            {{ else }}
+              <div style="
+                padding: 2rem 1.25rem;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                min-height: 200px;
+                flex-grow: 1;
+              ">
+                <h2 style="color: palegoldenrod; margin: 0; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem); text-transform: uppercase;">
+                  {{ .Title }}
+                </h2>
+              </div>
+            {{ end }}
+          </div>
+        </a>
+      </div>
     </div>
-  {{ end }} <!-- end for -->
+  {{ end }}
   </div>
 </div>
 

@@ -1,32 +1,37 @@
 {{ define "content" }}
 
 <div class="container" style="color: whitesmoke">
-  {{ range where .Site.RegularPages "Type" "posts" }}
-<h2 style="text-align: left; text-transform: uppercase;">
-  <a
-		href="{{ .Permalink }}"
-		style="color: palegoldenrod; text-decoration: none"
-		onmouseover="this.style.color='orange'"
-		onmouseout="this.style.color='palegoldenrod'"
-	>
-    {{ .Title }}
-    </a>
-  </h2>
-  <p style="text-align: justify">
-    {{ .Summary }}
-    <a
-			href="{{ .Permalink }}"
-			style="color: palegoldenrod; text-decoration: none"
-			onmouseover="this.style.color='orange'"
-			onmouseout="this.style.color='palegoldenrod'"
-		>
-      {{ .Params.read_more }}
-    </a>
-  </p>
-  <p class="text-muted" style="font-size: 1rem">
-    <b>Tags:</b>
-    {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
-  </p>
+  {{ range $index, $element := where .Site.RegularPages "Type" "posts" }}
+
+  <!-- Post entry with transparent background, yellowish accents -->
+  <div style="padding: 1.5rem 0; margin-bottom: 2rem;">
+    <h2 style="text-align: left; text-transform: uppercase; margin-bottom: 1rem;">
+      <a
+        href="{{ .Permalink }}"
+        style="color: palegoldenrod; text-decoration: none"
+        onmouseover="this.style.color='orange'"
+        onmouseout="this.style.color='palegoldenrod'"
+      >
+        {{ .Title }}
+      </a>
+    </h2>
+    <p style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
+      {{ .Summary }}
+      <a
+        href="{{ .Permalink }}"
+        style="color: palegoldenrod; text-decoration: none; font-weight: bold;"
+        onmouseover="this.style.color='orange'"
+        onmouseout="this.style.color='palegoldenrod'"
+      >
+        {{ .Params.read_more }}
+      </a>
+    </p>
+    <p style="font-size: 1rem; color: #ccc; margin-top: 1rem;">
+      <b style="color: palegoldenrod;">Tags:</b>
+      {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+    </p>
+  </div>
+
   {{ end }}
 </div>
 
