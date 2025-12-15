@@ -3,9 +3,9 @@ title: EarthFuneral
 date: 2025-12-12T12:00:00-05:00
 draft: false
 
-job_title: Senior Developer
-start_date: March 2025
-end_date: December 2025
+job_title: Desarrollador Senior
+start_date: Marzo 2025
+end_date: Diciembre 2025
 ---
 
 - Desarrollé y mantuve el backend de la plataforma usando Django, agregando

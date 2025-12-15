@@ -1,26 +1,37 @@
 {{ define "content" }}
 
   <div class="container text-justify">
-    {{ range where .Site.RegularPages "Section" "cv" }}
-    <div class="row justify-content-md-center">
-      <div class="col-md-auto">
-        <h1>{{ .Title }}</h1>
+    {{ range $index, $element := (where .Site.RegularPages "Section" "cv").ByDate.Reverse }}
+
+    <!-- Add separator between jobs (but not before first one) -->
+    {{ if ne $index 0 }}
+    <hr style="border: 0; height: 2px; background: linear-gradient(to right, salmon, palegoldenrod, salmon); margin: 3rem 0;">
+    {{ end }}
+
+    <!-- Job entry with alternating dark backgrounds (reddish/yellowish) -->
+    <div class="job-entry" style="padding: 2rem 1rem; {{ if modBool $index 2 }}background-color: rgba(139, 0, 0, 0.3);{{ else }}background-color: rgba(184, 134, 11, 0.3);{{ end }} border-radius: 8px;">
+      <div class="row justify-content-md-center align-items-center">
+        <div class="col-md-auto">
+          <h1 style="color: salmon; margin-bottom: 0;">{{ .Title }}</h1>
+        </div>
+        <div class="col">
+          <h3 style="color: palegoldenrod; margin-bottom: 0.5rem;">{{ .Params.job_title }}</h3>
+          <p style="color: whitesmoke; font-size: 0.95rem; margin-bottom: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="whitesmoke" style="margin-bottom: 2px;" viewBox="0 0 16 16">
+              <path d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1z"/>
+              <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+            </svg>
+            <strong>{{ .Params.start_date }}</strong> - <strong>{{ .Params.end_date }}</strong>
+          </p>
+        </div>
       </div>
-      <div class="col">
-        <h3>{{ .Params.job_title }}</h3>
-        <p>{{ .Params.start_date }}, {{ .Params.end_date }}</p>
+
+      <!-- Job content with better spacing -->
+      <div style="margin-top: 1.5rem; line-height: 1.7; color: whitesmoke;">
+        {{ .Content }}
       </div>
     </div>
-    <p>
-      {{ .Content }}
-    </p>
-    <!--
-        <div class="container"
-					style="text-align:justify; vertical-align:middle; color: whitesmoke; background: black;"
-				>
-           <p>{{ .Content }}</p>
-        </div>
-    -->
+
     {{ end }}
   </div>
 
