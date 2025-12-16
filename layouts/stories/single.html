@@ -1,18 +1,74 @@
 {{ define "content" }}
 
-<div class="container">
+<div class="container" style="max-width: 800px; margin: 0 auto;">
 
-  <div style="text-align: center; text-transform: uppercase; margin-bottom: 2rem;">
-    <h2 style="color: salmon; border-bottom: 3px solid salmon; display: inline-block; padding-bottom: 0.5rem;">{{ .Title }}</h2>
+  <!-- Title section with book-like spacing -->
+  <div style="text-align: center; margin-bottom: 3rem; padding: 0 2rem;">
+    <h1 style="
+      color: salmon;
+      text-transform: uppercase;
+      font-size: clamp(1.8rem, 2rem + 1vw, 3rem);
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      margin: 0;
+      line-height: 1.2;
+    ">
+      {{ .Title }}
+    </h1>
   </div>
 
-  <div style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
+  <!-- Optional featured image - only shows if exists -->
+  {{ $image := .Resources.GetMatch .Params.image }}
+  {{ if $image }}
+  <div style="
+    margin-bottom: 3rem;
+    padding: 0 2rem;
+  ">
+    <div style="
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(250, 128, 114, 0.2);
+      border: 1px solid rgba(250, 128, 114, 0.15);
+    ">
+      <img
+        style="
+          width: 100%;
+          height: auto;
+          display: block;
+        "
+        src="{{ ( $image.Fit "1200x675 webp" ).RelPermalink }}"
+        alt="{{ .Title }}"
+      >
+    </div>
+  </div>
+  {{ end }}
+
+  <!-- Content with generous margins and book-like typography -->
+  <div style="
+    padding: 0 2rem;
+    text-align: justify;
+    font-size: clamp(1rem, 0.9rem + 0.5vw, 1.4rem);
+    line-height: 2;
+    color: whitesmoke;
+    margin-bottom: 4rem;
+  ">
     {{ .Content }}
   </div>
 
-  <div style="margin-top: 2rem; padding-top: 1rem; text-align: justify; text-transform: capitalize">
-    <b style="color: salmon;">Category:</b>
-    <span style="color: pink;">{{ with .Params.categories }}{{ delimit . ", " }}{{ end }}</span>
+  <!-- Category as subtle tag at bottom -->
+  <div style="
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid rgba(250, 128, 114, 0.2);
+  ">
+    <span style="
+      color: salmon;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    ">
+      {{ with .Params.categories }}{{ delimit . " • " }}{{ end }}
+    </span>
   </div>
 
 </div>

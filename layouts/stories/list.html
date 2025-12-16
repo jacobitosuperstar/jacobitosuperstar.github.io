@@ -35,7 +35,7 @@
                   "
                   onmouseover="this.style.transform='scale(1.05)';"
                   onmouseout="this.style.transform='scale(1)';"
-                  src="{{ ( $image.Crop "900x500 webp Center" ).RelPermalink }}"
+                  src="{{ ( $image.Fit "1200x675 webp" ).RelPermalink }}"
                   alt="{{ .Title }}"
                 >
               </div>

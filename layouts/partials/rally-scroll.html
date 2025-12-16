@@ -1,0 +1,210 @@
+<!-- Rally Car Scroll Indicator - Show on home and list pages (not single posts/stories) -->
+{{ if or .IsHome (and (or (eq .Section "posts") (eq .Section "cv")) (ne .Kind "page")) }}
+<style>
+  /* Car size control - change this value to resize */
+  #rally-scroll {
+    --car-size: 100px;
+  }
+
+  /* Apply car size to the image */
+  #rally-car image {
+    width: var(--car-size);
+    height: var(--car-size);
+  }
+
+  /* Headlight glow/pulse animation */
+  @keyframes headlight-pulse {
+    0%, 100% { opacity: 0.5; filter: blur(2px); }
+    50% { opacity: 0.7; filter: blur(3px); }
+  }
+
+  /* Subtle flicker animation */
+  @keyframes headlight-flicker {
+    0%, 100% { opacity: 1; }
+    10% { opacity: 0.85; }
+    20% { opacity: 1; }
+    30% { opacity: 0.9; }
+    40% { opacity: 1; }
+    50% { opacity: 0.95; }
+    60% { opacity: 1; }
+    70% { opacity: 0.88; }
+    80% { opacity: 1; }
+    90% { opacity: 0.92; }
+  }
+
+  #headlight-beam {
+    animation: headlight-pulse 3s ease-in-out infinite, headlight-flicker 5s linear infinite;
+  }
+
+  /* Dust particles animation */
+  @keyframes dust-float {
+    0% { opacity: 0; transform: translateY(0) translateX(0); }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.1; }
+    100% { opacity: 0; transform: translateY(30px) translateX(5px); }
+  }
+
+  .dust-particle {
+    animation: dust-float 2s ease-out infinite;
+  }
+
+  /* Brake lights (will be toggled by JS) */
+  .brake-lights {
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+  }
+
+  .brake-lights.active {
+    opacity: 0.9;
+  }
+</style>
+
+<div id="rally-scroll" style="
+  position: fixed;
+  right: 40px;
+  top: 0;
+  width: 60px;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1000;
+">
+  <svg width="60" height="100%" style="overflow: visible;">
+    <!-- Definitions for gradients and patterns -->
+    <defs>
+      <!-- Headlight beam gradient with glow -->
+      <linearGradient id="headlight-beam-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" style="stop-color:palegoldenrod;stop-opacity:0.6" />
+        <stop offset="100%" style="stop-color:palegoldenrod;stop-opacity:0" />
+      </linearGradient>
+
+      <!-- Tire track pattern (dashed lines) -->
+      <pattern id="tire-tracks" x="2" y="0" width="12" height="1" patternUnits="userSpaceOnUse">
+        <line x1="2" y1="0" x2="2" y2="8" stroke="salmon" stroke-width="3" opacity="0.4" />
+        <line x1="6" y1="0" x2="6" y2="8" stroke="salmon" stroke-width="3" opacity="0.4" />
+      </pattern>
+
+      <!-- Dust particle gradient (brighter and more visible) -->
+      <radialGradient id="dust-gradient">
+        <stop offset="0%" style="stop-color:palegoldenrod;stop-opacity:0.9" />
+        <stop offset="100%" style="stop-color:palegoldenrod;stop-opacity:0" />
+      </radialGradient>
+
+      <!-- Brake light gradient (red, fading) -->
+      <linearGradient id="brake-light-gradient" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" style="stop-color:red;stop-opacity:0.7" />
+        <stop offset="100%" style="stop-color:red;stop-opacity:0" />
+      </linearGradient>
+    </defs>
+
+    <!-- Tire tracks trail (behind the car) -->
+    <rect
+      id="rally-trail"
+      x="50"
+      y="60"
+      width="20"
+      height="0"
+      fill="url(#tire-tracks)"
+      style="transition: height 0.1s ease-out;"
+    />
+
+    <!-- Car group (will be positioned by JS) -->
+    <g id="rally-car" style="transition: transform 0.1s ease-out;">
+      <!-- Headlight beam with glow -->
+      <rect
+        id="headlight-beam"
+        x="50"
+        y="60"
+        width="20"
+        height="40"
+        fill="url(#headlight-beam-gradient)"
+      />
+
+      <!-- Dust particles in the light beam (bigger and more visible) -->
+      <circle class="dust-particle" cx="50" cy="95" r="2.5" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 0s;" />
+      <circle class="dust-particle" cx="70" cy="85" r="2" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 0.5s;" />
+      <circle class="dust-particle" cx="60" cy="75" r="3" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 1s;" />
+      <circle class="dust-particle" cx="65" cy="90" r="2.2" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 1.5s;" />
+
+      <!-- Civic car image -->
+      <image
+        href="/images/civic.png"
+        x="10"
+        y="-5"
+        width="40"
+        height="40"
+        style="image-rendering: pixelated;"
+      />
+
+      <!-- Brake lights (red rectangle, same width as headlights, behind the car) -->
+      <rect
+        class="brake-lights"
+        id="brake-lights"
+        x="50"
+        y="3"
+        width="20"
+        height="20"
+        fill="url(#brake-light-gradient)"
+        filter="blur(1px)"
+      />
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  const rallyCar = document.getElementById('rally-car');
+  const rallyTrail = document.getElementById('rally-trail');
+  const brakeLights = document.getElementById('brake-lights');
+  const rallyScroll = document.getElementById('rally-scroll');
+
+  let ticking = false;
+  let lastScrollTop = 0;
+  let scrollDirection = 'down';
+
+  function updateRallyPosition() {
+    // Calculate scroll percentage
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+
+    // Detect scroll direction
+    if (scrollTop < lastScrollTop) {
+      scrollDirection = 'up';
+      brakeLights.classList.add('active');
+    } else {
+      scrollDirection = 'down';
+      brakeLights.classList.remove('active');
+    }
+    lastScrollTop = scrollTop;
+
+    // Position the car (0 to viewport height)
+    const viewportHeight = window.innerHeight;
+    const carPosition = scrollPercent * viewportHeight;
+
+    // Update car position (no scaling, keeps everything in sync)
+    rallyCar.setAttribute('transform', `translate(0, ${carPosition})`);
+
+    // Update trail height (tire tracks from top to car position)
+    rallyTrail.setAttribute('height', carPosition);
+
+    ticking = false;
+  }
+
+  function requestTick() {
+    if (!ticking) {
+      window.requestAnimationFrame(updateRallyPosition);
+      ticking = true;
+    }
+  }
+
+  // Listen to scroll events
+  window.addEventListener('scroll', requestTick, { passive: true });
+
+  // Listen to resize for responsive sizing
+  window.addEventListener('resize', requestTick, { passive: true });
+
+  // Initial position
+  updateRallyPosition();
+})();
+</script>
+{{ end }}

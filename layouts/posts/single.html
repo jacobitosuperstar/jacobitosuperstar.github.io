@@ -1,16 +1,45 @@
 {{ define "content" }}
 
 <div class="container">
-  <h1 style="text-align: left; text-transform: uppercase; color: salmon; border-bottom: 3px solid salmon; padding-bottom: 0.5rem; margin-bottom: 1.5rem;">
+
+  <!-- Title - left aligned, clean -->
+  <h1 style="
+    text-align: left;
+    text-transform: uppercase;
+    color: salmon;
+    margin-bottom: 0.5rem;
+  ">
     {{ .Title }}
   </h1>
-  <div style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
+
+  <!-- Date display -->
+  <div style="margin-bottom: 2rem;">
+    <span style="
+      color: rgba(250, 128, 114, 0.7);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    ">
+      {{ .Date.Format "January 2, 2006" }}
+    </span>
+  </div>
+
+  <!-- Content - full width for code blocks -->
+  <div style="
+    text-align: justify;
+    font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem);
+    line-height: 1.7;
+    color: whitesmoke;
+  ">
     {{ .Content }}
   </div>
+
+  <!-- Tags at bottom -->
   <div style="margin-top: 2rem; padding-top: 1rem;">
     <b style="color: salmon;">Tags:</b>
     <span style="color: pink;">{{ with .Params.tags }}{{ delimit . ", " }}{{ end }}</span>
   </div>
+
 </div>
 
 {{ end }}
