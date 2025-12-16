@@ -1,6 +1,6 @@
 {{ define "content" }}
 
-<div class="container">
+<div class="container{{ if in .RelPermalink "about_me" }} about-me{{ end }}">
   <p style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7;">
     {{ .Content }}
   </p>

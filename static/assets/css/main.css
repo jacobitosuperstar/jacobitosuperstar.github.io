@@ -72,3 +72,55 @@ main{
     width: 100%;
     margin: auto;
 }
+
+/* about_me page styling */
+.about-me hr {
+    border: none;
+    border-top: 2px solid salmon;
+    margin: 2rem 0;
+    opacity: 0.6;
+}
+
+.about-me h2 {
+    color: palegoldenrod;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.about-me h3 {
+    color: salmon;
+    margin-top: 1.5rem;
+}
+
+/* Language dropdown styling to match navbar theme */
+.navbar .dropdown-toggle {
+    background-color: black !important;
+    border: 2px solid pink !important;
+    color: pink !important;
+    font-weight: bold;
+}
+
+.navbar .dropdown-toggle:hover {
+    background-color: black !important;
+    border-color: salmon !important;
+    color: salmon !important;
+}
+
+.navbar .dropdown-menu {
+    background-color: black !important;
+    border: 2px solid pink;
+    min-width: 100% !important;
+    width: fit-content !important;
+}
+
+.navbar .dropdown-item {
+    color: palegoldenrod !important;
+    font-weight: bold;
+    background-color: rgba(184, 134, 11, 0.2) !important;
+    transition: background-color 0.3s ease;
+}
+
+.navbar .dropdown-item:hover {
+    color: orange !important;
+    background-color: rgba(184, 134, 11, 0.4) !important;
+}

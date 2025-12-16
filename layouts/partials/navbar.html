@@ -8,10 +8,28 @@
     <a
       href="{{ .Permalink }}"
       class="navbar-brand nav-link text-wrap"
-      style="color: salmon;"
+      style="
+        color: salmon;
+        position: relative;
+        padding-top: 2.2rem;
+        padding-bottom: 0.5rem;
+        display: inline-block;
+      "
       onmouseover="this.style.color='red'"
       onmouseout="this.style.color='salmon'"
     >
+      <img
+        src="/images/jimny.png"
+        alt="Jimny"
+        style="
+          position: absolute;
+          top: 0;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 60px;
+          height: auto;
+        "
+      >
       <b>{{ .Title }}</b>
     </a>
     {{ end }}
@@ -59,7 +77,7 @@
 							</button>
 							<ul class="dropdown-menu">
 							{{ if hugo.IsMultilingual }}
-								{{ range site.Home.AllTranslations }}
+								{{ range .AllTranslations }}
 									{{ if ne .Lang $currentLang }}
 								<li>
 									<a

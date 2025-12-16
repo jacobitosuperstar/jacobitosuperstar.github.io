@@ -1,5 +1,5 @@
-<!-- Rally Car Scroll Indicator - Show on home and list pages (not single posts/stories) -->
-{{ if or .IsHome (and (or (eq .Section "posts") (eq .Section "cv")) (ne .Kind "page")) }}
+<!-- Rally Car Scroll Indicator - Show everywhere except individual posts and stories -->
+{{ if not (and (eq .Kind "page") (or (eq .Section "posts") (eq .Section "stories"))) }}
 <style>
   /* Car size control - change this value to resize */
   #rally-scroll {
