@@ -50,8 +50,6 @@ class Customer(models.Model):
 Ahora necesitas construir una API que muestre eventos recientes de pedidos con
 nombres de clientes.
 
-## El enfoque ingenuo
-
 Así que aceptas que necesitas hacer la búsqueda en el código de aplicación.
 Aquí está el enfoque directo:
 
@@ -114,13 +112,10 @@ funcionan dentro de una sola base de datos
 sola base de datos**. Cuando rompes esa suposición, estás por tu cuenta.
 Arreglemos esto.
 
-## Expandiendo el contexto del serializador
-
 La información requerida para construir los datos serializados está en el
 **Contexto del Serializador**, y podemos cambiar ese método para agregar la
-información necesaria para los campos que son de la otra base de datos.
-
-### Paso 1: Sobrescribir `get_serializer_context()` en tu Viewset
+información necesaria para los campos que son de la otra base de datos. Podemos
+sobrescribir `get_serializer_context()` en tu Viewset:
 
 ```python
 class OrderEventViewSet(ReadOnlyModelViewSet):
@@ -151,7 +146,7 @@ class OrderEventViewSet(ReadOnlyModelViewSet):
         return context
 ```
 
-### Paso 2: Usar el contexto agregado en tu Serializador
+Luego podemos usar el contexto agregado en tu Serializador:
 
 ```python
 class OrderEventSerializer(serializers.ModelSerializer):
@@ -174,7 +169,7 @@ class OrderEventSerializer(serializers.ModelSerializer):
         return customer_data['tier'] if customer_data else None
 ```
 
-### El resultado
+Esto resulta en una simplificación de consultas como sigue:
 
 **Conteo de consultas**:
 - 1 consulta para obtener 100 eventos de la Base de datos A
@@ -188,103 +183,87 @@ La búsqueda ahora es acceso de diccionario O(1) en lugar de consultas de base
 de datos O(n). Cada serialización toca el contexto de la vista en lugar de
 golpear la base de datos.
 
-## Decisiones de diseño clave
-
 Al implementar este patrón, necesitas tomar varias decisiones de diseño:
 
-### 1. Estructura de clave del contexto
+* **Estructura de clave del contexto**, el enfoque más simple es usar el valor de
+  la clave foránea directamente, pero a veces necesitas claves compuestas.
+  Elige una estructura de clave que coincida con cómo tus eventos hacen
+  referencia a los datos.
 
-El enfoque más simple es usar el valor de la clave foránea directamente:
+  ```python
+  customer_context = {customer.id: customer_data for customer in customers}
+  ```
+* **Pre-filtrado de los datos de referencia**, no almacenes todo si no lo necesitas:
 
-```python
-customer_context = {customer.id: customer_data for customer in customers}
-```
+  ```python
+  # Malo: Cache TODOS los clientes (podrían ser millones)
+  customers = Customer.objects.using('app_db').all()
 
-Pero a veces necesitas claves compuestas. Elige una estructura de clave que
-coincida con cómo tus eventos hacen referencia a los datos.
+  # Mejor: Cache solo clientes activos
+  customers = Customer.objects.using('app_db').filter(is_active=True)
 
-### 2. Pre-filtrado de los datos de referencia
+  # Aún mejor: Cache solo clientes en los eventos actuales
+  event_customer_ids = queryset.values_list('customer_id', flat=True).distinct()
+  customers = Customer.objects.using('app_db').filter(id__in=event_customer_ids)
+  ```
+* **Qué datos agregar al contexto**, algunos pueden decir que la memoria es
+  barata, pero es mejor ser explícito sobre lo que se necesita, y actualizar
+  el serializador si se necesitan nuevos campos.
 
-No almacenes todo si no lo necesitas:
+  ```python
+  customer_context = {
+      customer.id: {
+          'name': customer.name,
+          'tier': customer.tier,
+      }
+      for customer in customers
+  }
+  ```
+* **Degradación elegante**, porque no podemos forzar el emparejamiento de datos en
+  diferentes bases de datos, siempre maneja claves faltantes, no dejes que una
+  referencia faltante rompa toda tu respuesta.
 
-```python
-# Malo: Cache TODOS los clientes (podrían ser millones)
-customers = Customer.objects.using('app_db').all()
+  ```python
+  def get_customer_name(self, obj):
+      customer_context = self.context.get('customer_context', {})
+      customer_data = customer_context.get(obj.customer_id)
 
-# Mejor: Cache solo clientes activos
-customers = Customer.objects.using('app_db').filter(is_active=True)
+      if customer_data:
+          return customer_data['name']
 
-# Aún mejor: Cache solo clientes en los eventos actuales
-event_customer_ids = queryset.values_list('customer_id', flat=True).distinct()
-customers = Customer.objects.using('app_db').filter(id__in=event_customer_ids)
-```
+      # Fallback elegante
+      return f'Unknown Customer (ID: {obj.customer_id})'
+  ```
+* Puedes agregar una **capa de caché** si es necesario. Para agregar información
+  al contexto, también podríamos usar caché de redis o cualquier otra solución
+  para almacenar esa información extra necesaria para las respuestas. Esta
+  solución es extremadamente útil y nos permite implementarla de cualquier
+  manera que sea necesaria.
 
-### 3. Qué datos agregar al contexto
+  Aunque estás intercambiando frescura por rendimiento, elige basándote en:
+  - Qué tan a menudo cambian los datos de referencia (usuarios raramente, precios frecuentemente)
+  - Qué tan obsoleto puedes tolerar (¿5 minutos? ¿1 hora?)
+  - Volumen de solicitudes (100 req/seg hace que el caché sea atractivo)
 
-**Agregar solo campos necesarios**
-```python
-customer_context = {
-    customer.id: {
-        'name': customer.name,
-        'tier': customer.tier,
-    }
-    for customer in customers
-}
-```
+  ```python
+  def get_serializer_context(self):
+      context = super().get_serializer_context()
 
-Algunos pueden decir que la memoria es barata, pero es mejor ser explícito
-sobre lo que se necesita, y actualizar el serializador si se necesitan nuevos
-campos.
+      customer_cache = cache.get('customer_cache_v1')
+      if not customer_cache:
+          customers = Customer.objects.using('app_db').all()
+          customer_cache = {c.id: {...} for c in customers}
+          cache.set('customer_cache_v1', customer_cache, timeout=300)
 
-### 4. Degradación elegante
-
-Siempre maneja claves faltantes:
-
-```python
-def get_customer_name(self, obj):
-    customer_context = self.context.get('customer_context', {})
-    customer_data = customer_context.get(obj.customer_id)
-
-    if customer_data:
-        return customer_data['name']
-
-    # Fallback elegante
-    return f'Unknown Customer (ID: {obj.customer_id})'
-```
-
-No dejes que una referencia faltante rompa toda tu respuesta de API.
-
-### 5. Agregar una capa de caché si es necesario
-
-Para agregar información al contexto, también podríamos usar caché de redis o
-cualquier otra solución para almacenar esa información extra necesaria para las
-respuestas. Esta solución es extremadamente útil y nos permite implementarla de
-cualquier manera que sea necesaria.
-
-```python
-def get_serializer_context(self):
-    context = super().get_serializer_context()
-
-    customer_cache = cache.get('customer_cache_v1')
-    if not customer_cache:
-        customers = Customer.objects.using('app_db').all()
-        customer_cache = {c.id: {...} for c in customers}
-        cache.set('customer_cache_v1', customer_cache, timeout=300)
-
-    context['customer_context'] = customer_cache
-    return context
-```
-
-Ahora estás intercambiando frescura por rendimiento. Elige basándote en:
-- Qué tan a menudo cambian los datos de referencia (usuarios raramente, precios frecuentemente)
-- Qué tan obsoleto puedes tolerar (¿5 minutos? ¿1 hora?)
-- Volumen de solicitudes (100 req/seg hace que el caché sea atractivo)
+      context['customer_context'] = customer_cache
+      return context
+  ```
 
 ## Nada es gratis
 
 Examinemos los compromisos cuidadosamente.
 
-### Memoria vs. I/O de red
+**Memoria vs. I/O de red**
 
 **El intercambio**: Estás cargando todos los datos de referencia en memoria
 para cada solicitud.
@@ -302,7 +281,7 @@ para cada solicitud.
 **Regla general**: Si tus datos de referencia en forma JSON son < 10MB,
 probablemente estés bien. Más allá de eso, considera alternativas.
 
-### Complejidad vs. Explicitud
+**Complejidad vs. Explicitud**
 
 **El intercambio**: Este patrón agrega carga cognitiva. Los desarrolladores
 futuros necesitan entender:
@@ -345,7 +324,7 @@ def get_customer_name(self, obj):
     # ... continuar con la búsqueda
 ```
 
-### Precisión de paginación
+**Precisión de paginación**
 
 Si filtras datos en la capa de aplicación, los conteos de paginación podrían
 estar incorrectos:
@@ -385,11 +364,9 @@ nivel de aplicación y enfrentas problemas N+1, este patrón es tu solución. La
 restricción principal: tus datos de referencia necesitan caber en memoria (<
 10MB es una buena regla general).
 
-## Otras soluciones dignas de mención
-
-**Desnormalización**: Copia los datos del cliente directamente en la tabla de
-eventos. La opción más rápida, pero requiere mantener los datos sincronizados y
-aceptar cierta obsolescencia.
+**Otras soluciones dignas de consideración**: **Desnormalización** - Copia los
+datos del cliente directamente en la tabla de eventos. La opción más rápida,
+pero requiere mantener los datos sincronizados y aceptar cierta obsolescencia.
 
 **Vistas materializadas**: Usa foreign data wrappers de PostgreSQL para crear
 una vista que une a través de bases de datos. Requiere acceso DBA y
