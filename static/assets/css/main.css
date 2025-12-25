@@ -34,11 +34,13 @@ h1 {
 h2 {
   font-family: 'Merriweather', serif;
   font-weight: 700;
+  color: palegoldenrod;
 }
 
 h3 {
   font-family: 'Merriweather', serif;
   font-weight: 400;
+  color: salmon;
 }
 
 /* main tag */
@@ -79,17 +81,6 @@ main{
     border-top: 2px solid salmon;
     margin: 2rem 0;
     opacity: 0.6;
-}
-
-.about-me h2 {
-    color: palegoldenrod;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-}
-
-.about-me h3 {
-    color: salmon;
-    margin-top: 1.5rem;
 }
 
 /* Language dropdown styling to match navbar theme */
