@@ -1,7 +1,7 @@
 ---
 title: STORIES
-slug: story
-in_navbar: true
+slug: stories
+in_navbar: false
 weight: 2
 draft: false
 ---
