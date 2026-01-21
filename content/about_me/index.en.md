@@ -20,8 +20,8 @@ programming topics, I'd love to hear from you.
 
 ## WHAT I DO
 
-I'm a Backend Developer specializing in building high-performance, real-time
-systems with Python. Most of my success has come through the solution of complex
+I've been a Backend Developer since 2016, specializing in building
+high-performance, real-time systems with Python. Most of my success has come through the solution of complex
 architectural challenges and process optimizations.
 
 ### Core Technologies

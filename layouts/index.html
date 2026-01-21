@@ -1,52 +1,101 @@
 {{ define "content" }}
 
 <div class="container" style="color: whitesmoke">
-  {{ range $index, $element := where .Site.RegularPages "Type" "posts" }}
 
-  <!-- Post entry with alternating hover highlights (yellow/salmon) -->
-  <div style="
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
-  "
-  {{ if modBool $index 2 }}
-    onmouseover="this.style.backgroundColor='rgba(184, 134, 11, 0.2)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-  {{ else }}
-    onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.2)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-  {{ end }}
-  onclick="window.location='{{ .Permalink }}';">
-    <h2 style="text-align: left; text-transform: uppercase; margin-bottom: 1rem;">
-      <a
-        href="{{ .Permalink }}"
-        style="color: palegoldenrod; text-decoration: none"
-        onmouseover="this.style.color='orange'"
-        onmouseout="this.style.color='palegoldenrod'"
-      >
-        {{ .Title }}
-      </a>
+  <!-- Projects Section -->
+  {{ $projects := where (where .Site.RegularPages "Params.is_project" true) "Lang" .Language.Lang }}
+  {{ if $projects }}
+  <section style="margin-bottom: 3rem;">
+    <h2 style="color: salmon; text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid salmon; padding-bottom: 0.5rem;">
+      {{ if eq .Language.Lang "es" }}Proyectos{{ else }}Projects{{ end }}
     </h2>
-    <p style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
-      {{ .Summary }}
-      <a
-        href="{{ .Permalink }}"
-        style="color: palegoldenrod; text-decoration: none; font-weight: bold;"
-        onmouseover="this.style.color='orange'"
-        onmouseout="this.style.color='palegoldenrod'"
-      >
-        {{ .Params.read_more }}
-      </a>
-    </p>
-    <p style="font-size: 1rem; color: #ccc; margin-top: 1rem;">
-      <b style="color: palegoldenrod;">Tags:</b>
-      {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
-    </p>
-  </div>
-
+    {{ range $projects }}
+    <div style="
+      padding: 1rem 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 3px solid salmon;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    "
+    onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.15)'; this.style.transform='translateX(8px)';"
+    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
+    onclick="window.location='{{ .Permalink }}';">
+      <h3 style="margin: 0 0 0.3rem 0;">
+        <a
+          href="{{ .Permalink }}"
+          style="color: palegoldenrod; text-decoration: none;"
+          onmouseover="this.style.color='orange'"
+          onmouseout="this.style.color='palegoldenrod'"
+        >
+          {{ .Title }}
+        </a>
+      </h3>
+      {{ with .Params.project_dates }}
+      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">{{ . }}</p>
+      {{ end }}
+      <p style="margin: 0; color: whitesmoke; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem); line-height: 1.6;">
+        {{ .Params.project_description }}
+      </p>
+      {{ with .Params.project_link }}
+      <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+        <a
+          href="{{ . }}"
+          target="_blank"
+          style="color: pink; text-decoration: none;"
+          onmouseover="this.style.color='salmon'"
+          onmouseout="this.style.color='pink'"
+          onclick="event.stopPropagation();"
+        >
+          {{ if eq $.Language.Lang "es" }}Ver código{{ else }}View code{{ end }} →
+        </a>
+      </p>
+      {{ end }}
+    </div>
+    {{ end }}
+  </section>
   {{ end }}
+
+  <!-- Articles Section -->
+  {{ $posts := where .Site.RegularPages "Type" "posts" }}
+  {{ if $posts }}
+  <section>
+    <h2 style="color: salmon; text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid salmon; padding-bottom: 0.5rem;">
+      {{ if eq .Language.Lang "es" }}Artículos{{ else }}Articles{{ end }}
+    </h2>
+    {{ range $posts }}
+    <div style="
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      border-left: 3px solid palegoldenrod;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      cursor: pointer;
+    "
+    onmouseover="this.style.backgroundColor='rgba(238, 232, 170, 0.15)'; this.style.transform='translateX(8px)';"
+    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
+    onclick="window.location='{{ .Permalink }}';">
+      <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
+        <a
+          href="{{ .Permalink }}"
+          style="color: palegoldenrod; text-decoration: none"
+          onmouseover="this.style.color='orange'"
+          onmouseout="this.style.color='palegoldenrod'"
+        >
+          {{ .Title }}
+        </a>
+      </h3>
+      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+        {{ .Date.Format "02/01/2006" }}
+      </p>
+      <p style="color: #888; font-size: 0.9rem; margin: 0;">
+        <b style="color: palegoldenrod;">Tags:</b>
+        {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+      </p>
+    </div>
+    {{ end }}
+  </section>
+  {{ end }}
+
 </div>
 
 {{ end }}

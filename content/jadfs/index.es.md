@@ -3,6 +3,10 @@ title: JaDFS
 in_navbar: true
 weight: 100
 draft: false
+is_project: true
+project_description: "Un sistema de almacenamiento distribuido de archivos en Go, progresando desde un servidor simple hasta un sistema completamente distribuido y tolerante a fallos."
+project_dates: "23/11/2025 – presente"
+project_link: "https://codeberg.org/jacobitosuperstar/JaDFS"
 ---
 
 ## **JaDFS - Sistema de Almacenamiento Distribuido de Archivos de Jacobo**
@@ -66,4 +70,3 @@ JaDFS es una exploración práctica de conceptos de sistemas distribuidos:
 - Aprender sobre algoritmos de consenso y tolerancia a fallos
 - Practicar primitivas de concurrencia de Go (goroutines y canales)
 - Construir sistemas de nivel de producción desde primeros principios
-

@@ -21,8 +21,8 @@ puedes contactar.
 
 ## QUÉ HAGO
 
-Soy un Desarrollador Backend especializado en construir sistemas de alto
-rendimiento y tiempo real con Python. La mayor parte de mi éxito ha venido a
+He sido Desarrollador Backend desde 2016, especializado en construir sistemas
+de alto rendimiento y tiempo real con Python. La mayor parte de mi éxito ha venido a
 través de la solución de desafíos arquitecturales complejos y optimizaciones de
 procesos.
 
