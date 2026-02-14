@@ -1,6 +1,24 @@
 {{ define "content" }}
 
   <div class="container text-justify">
+    <div style="margin-bottom: 2rem;">
+      <a
+        href="/CVjacoboNF.pdf"
+        download
+        style="
+          display: inline-block;
+          color: salmon;
+          text-decoration: none;
+          border: 1px solid salmon;
+          padding: 0.5rem 1.5rem;
+          transition: background-color 0.3s ease, color 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='salmon'; this.style.color='#1a1a1a';"
+        onmouseout="this.style.backgroundColor='transparent'; this.style.color='salmon';"
+      >
+        {{ if eq .Language.Lang "es" }}Descargar CV{{ else }}Download CV{{ end }} →
+      </a>
+    </div>
     {{ range $index, $element := (where .Site.RegularPages "Section" "cv").ByDate.Reverse }}
 
     <!-- Add separator between jobs (but not before first one) -->
