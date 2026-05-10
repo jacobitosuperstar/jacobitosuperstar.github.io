@@ -3,7 +3,7 @@
 <style>
   /* Car size control - change this value to resize */
   #rally-scroll {
-    --car-size: 100px;
+    --car-size: 40px;
   }
 
   /* Apply car size to the image */
@@ -120,10 +120,10 @@
       />
 
       <!-- Dust particles in the light beam (bigger and more visible) -->
-      <circle class="dust-particle" cx="50" cy="95" r="2.5" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 0s;" />
-      <circle class="dust-particle" cx="70" cy="85" r="2" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 0.5s;" />
-      <circle class="dust-particle" cx="60" cy="75" r="3" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 1s;" />
-      <circle class="dust-particle" cx="65" cy="90" r="2.2" fill="url(#dust-gradient)" filter="blur(0.5px)" style="animation-delay: 1.5s;" />
+      <circle class="dust-particle" cx="50" cy="95" r="2.5" fill="url(#dust-gradient)" style="filter: blur(0.5px); animation-delay: 0s;" />
+      <circle class="dust-particle" cx="70" cy="85" r="2" fill="url(#dust-gradient)" style="filter: blur(0.5px); animation-delay: 0.5s;" />
+      <circle class="dust-particle" cx="60" cy="75" r="3" fill="url(#dust-gradient)" style="filter: blur(0.5px); animation-delay: 1s;" />
+      <circle class="dust-particle" cx="65" cy="90" r="2.2" fill="url(#dust-gradient)" style="filter: blur(0.5px); animation-delay: 1.5s;" />
 
       <!-- Civic car image -->
       <image
@@ -144,7 +144,7 @@
         width="20"
         height="20"
         fill="url(#brake-light-gradient)"
-        filter="blur(1px)"
+        style="filter: blur(1px);"
       />
     </g>
   </svg>
