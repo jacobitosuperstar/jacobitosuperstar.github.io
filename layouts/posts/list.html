@@ -2,12 +2,11 @@
 
 <div class="container" style="color: whitesmoke">
   {{ range $index, $element := where .Site.RegularPages "Type" "posts" }}
-
-  <!-- Post entry with alternating hover highlights (yellow/salmon) -->
   <div style="
     padding: 1.5rem;
     margin-bottom: 2rem;
     border-radius: 8px;
+    {{ if modBool $index 2 }}border-left: 3px solid palegoldenrod;{{ else }}border-left: 3px solid salmon;{{ end }}
     transition: background-color 0.3s ease, transform 0.2s ease;
     cursor: pointer;
   "
@@ -19,7 +18,7 @@
     onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
   {{ end }}
   onclick="window.location='{{ .Permalink }}';">
-    <h2 style="text-align: left; text-transform: uppercase; margin-bottom: 1rem;">
+    <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
       <a
         href="{{ .Permalink }}"
         style="color: palegoldenrod; text-decoration: none"
@@ -28,24 +27,15 @@
       >
         {{ .Title }}
       </a>
-    </h2>
-    <p style="text-align: justify; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem); line-height: 1.7; color: whitesmoke;">
-      {{ .Summary }}
-      <a
-        href="{{ .Permalink }}"
-        style="color: palegoldenrod; text-decoration: none; font-weight: bold;"
-        onmouseover="this.style.color='orange'"
-        onmouseout="this.style.color='palegoldenrod'"
-      >
-        {{ .Params.read_more }}
-      </a>
+    </h3>
+    <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+      {{ .Date.Format "02/01/2006" }}
     </p>
-    <p style="font-size: 1rem; color: #ccc; margin-top: 1rem;">
+    <p style="color: #888; font-size: 0.9rem; margin: 0;">
       <b style="color: palegoldenrod;">Tags:</b>
       {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
     </p>
   </div>
-
   {{ end }}
 </div>
 
