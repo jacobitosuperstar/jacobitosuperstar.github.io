@@ -30,13 +30,17 @@
       box-shadow: 0 4px 12px rgba(250, 128, 114, 0.2);
       border: 1px solid rgba(250, 128, 114, 0.15);
     ">
+      {{ $processed := $image.Fit "1200x675 webp" }}
       <img
         style="
           width: 100%;
           height: auto;
           display: block;
         "
-        src="{{ ( $image.Fit "1200x675 webp" ).RelPermalink }}"
+        src="{{ $processed.RelPermalink }}"
+        width="{{ $processed.Width }}"
+        height="{{ $processed.Height }}"
+        fetchpriority="high"
         alt="{{ .Title }}"
       >
     </div>

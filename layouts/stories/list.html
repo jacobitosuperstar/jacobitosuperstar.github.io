@@ -26,6 +26,7 @@
                 overflow: hidden;
                 background: black;
               ">
+                {{ $processed := $image.Fit "1200x675 webp" }}
                 <img
                   style="
                     width: 100%;
@@ -35,7 +36,10 @@
                   "
                   onmouseover="this.style.transform='scale(1.05)';"
                   onmouseout="this.style.transform='scale(1)';"
-                  src="{{ ( $image.Fit "1200x675 webp" ).RelPermalink }}"
+                  src="{{ $processed.RelPermalink }}"
+                  width="{{ $processed.Width }}"
+                  height="{{ $processed.Height }}"
+                  loading="lazy"
                   alt="{{ .Title }}"
                 >
               </div>
