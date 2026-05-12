@@ -158,59 +158,34 @@
 
 <script>
 (function() {
-  const rallyCar = document.getElementById('rally-car');
+  const rallyCar   = document.getElementById('rally-car');
   const rallyTrail = document.getElementById('rally-trail');
   const brakeLights = document.getElementById('brake-lights');
-  const rallyScroll = document.getElementById('rally-scroll');
 
   let ticking = false;
   let lastScrollTop = 0;
-  let scrollDirection = 'down';
 
-  function updateRallyPosition() {
-    // Calculate scroll percentage
+  function update() {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrollPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+    const pos = (docHeight > 0 ? scrollTop / docHeight : 0) * window.innerHeight;
 
-    // Detect scroll direction
-    if (scrollTop < lastScrollTop) {
-      scrollDirection = 'up';
-      brakeLights.classList.add('active');
-    } else {
-      scrollDirection = 'down';
-      brakeLights.classList.remove('active');
-    }
+    brakeLights.classList.toggle('active', scrollTop < lastScrollTop);
     lastScrollTop = scrollTop;
 
-    // Position the car (0 to viewport height)
-    const viewportHeight = window.innerHeight;
-    const carPosition = scrollPercent * viewportHeight;
-
-    // Update car position (no scaling, keeps everything in sync)
-    rallyCar.setAttribute('transform', `translate(0, ${carPosition})`);
-
-    // Update trail height (tire tracks from top to car position)
-    rallyTrail.setAttribute('height', carPosition);
+    rallyCar.setAttribute('transform', `translate(0, ${pos})`);
+    rallyTrail.setAttribute('height', pos);
 
     ticking = false;
   }
 
-  function requestTick() {
-    if (!ticking) {
-      window.requestAnimationFrame(updateRallyPosition);
-      ticking = true;
-    }
+  function tick() {
+    if (!ticking) { requestAnimationFrame(update); ticking = true; }
   }
 
-  // Listen to scroll events
-  window.addEventListener('scroll', requestTick, { passive: true });
-
-  // Listen to resize for responsive sizing
-  window.addEventListener('resize', requestTick, { passive: true });
-
-  // Initial position
-  updateRallyPosition();
+  window.addEventListener('scroll', tick, { passive: true });
+  window.addEventListener('resize', tick, { passive: true });
+  update();
 })();
 </script>
 {{ end }}
