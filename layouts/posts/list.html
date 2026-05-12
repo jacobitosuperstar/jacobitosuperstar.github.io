@@ -1,7 +1,7 @@
 {{ define "content" }}
 
-<div class="container" style="color: whitesmoke">
-  {{ range $index, $element := where .Site.RegularPages "Type" "posts" }}
+<div class="content-wrap" style="color: whitesmoke">
+  {{ range $index, $element := where (where .Site.RegularPages "Type" "posts") "Lang" .Language.Lang }}
   <div style="
     padding: 1.5rem;
     margin-bottom: 2rem;

@@ -1,10 +1,9 @@
 {{ define "content" }}
 
-<div class="container">
-  <div class="row g-4 mt-2">
-  {{ range where .Site.RegularPages "Section" "stories" }}
-    <!-- Responsive grid: 1 col on mobile, 2 on tablet, 3 on desktop, 4 on large screens -->
-    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+<div class="content-wrap">
+  <div class="stories-grid">
+  {{ range where (where .Site.RegularPages "Section" "stories") "Lang" .Language.Lang }}
+    <div>
       <div class="story-card" style="height: 100%;">
         <a href="{{ .Permalink }}" style="text-decoration: none; display: block; height: 100%;">
           <div style="
@@ -32,10 +31,7 @@
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    transition: transform 0.3s ease;
                   "
-                  onmouseover="this.style.transform='scale(1.05)';"
-                  onmouseout="this.style.transform='scale(1)';"
                   src="{{ $processed.RelPermalink }}"
                   width="{{ $processed.Width }}"
                   height="{{ $processed.Height }}"

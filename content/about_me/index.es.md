@@ -4,6 +4,7 @@ slug: about_me
 in_navbar: true
 weight: 999
 draft: false
+body_class: about-me
 ---
 
 ## HOLA, SOY MATEO

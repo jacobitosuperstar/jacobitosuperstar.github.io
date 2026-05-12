@@ -1,3 +1,9 @@
-.DS_Store
-resources/
+# Hugo build output
+public/
 .hugo_build.lock
+
+# Hugo resource cache
+resources/
+
+# macOS
+.DS_Store

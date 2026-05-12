@@ -15,13 +15,12 @@ html::-webkit-scrollbar {
 body {
     font-family: 'Merriweather', serif;
     color: whitesmoke;
-		background: black;
+    background: black;
     margin: 0;
     min-height: 100%;
     display: flex;
     flex-direction: column;
     font-size: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
-    align-content:center;
     font-weight: 300;
     max-width:100%;
 }
@@ -58,28 +57,78 @@ main{
     width:100%;
 }
 
-/* contenedor, se usa para sentrar el texto y tener márgenes  */
-.container {
+/* contenedor, se usa para centrar el texto y tener márgenes  */
+.content-wrap {
     margin:auto;
     padding:0.5rem;
 }
 
-/* sección de contenido  */
-.content-section {
-    background: black;
-    padding: 0.626rem 1.25rem;
-    border: 1rem solid #dddddd;
-    border-radius: 0.2rem;
-    margin-bottom: 1.2rem;
+.text-justify {
+    text-align: justify;
 }
 
 /* pie de página  */
-.footer{
+.footer {
     color: whitesmoke;
     background-color: black;
-    padding: 1rem;
+    padding: 0.75rem 1rem;
     width: 100%;
-    margin: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1030;
+}
+
+.footer-icons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+/* responsive image */
+.img-fluid {
+    max-width: 100%;
+    height: auto;
+}
+
+/* stories grid */
+.stories-grid {
+    display: grid;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    .stories-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 768px) {
+    .stories-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (min-width: 992px) {
+    .stories-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* CV job header row */
+.cv-job-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1.5rem;
+    justify-content: center;
+}
+
+.cv-job-company {
+    flex: 0 0 auto;
+}
+
+.cv-job-details {
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 /* about_me page styling */

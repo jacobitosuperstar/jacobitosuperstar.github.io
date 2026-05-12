@@ -1,6 +1,6 @@
 {{ define "content" }}
 
-<div class="container" style="color: whitesmoke">
+<div class="content-wrap" style="color: whitesmoke">
 
   <!-- Projects Section -->
   {{ $projects := where (where .Site.RegularPages "Params.is_project" true) "Lang" .Language.Lang }}
@@ -41,6 +41,7 @@
         <a
           href="{{ . }}"
           target="_blank"
+          rel="noopener noreferrer"
           style="color: pink; text-decoration: none;"
           onmouseover="this.style.color='salmon'"
           onmouseout="this.style.color='pink'"
@@ -56,30 +57,35 @@
   {{ end }}
 
   <!-- Articles Section -->
-  {{ $posts := where .Site.RegularPages "Type" "posts" }}
+  {{ $posts := where (where .Site.RegularPages "Type" "posts") "Lang" .Language.Lang }}
   {{ if $posts }}
   <section>
     <h2 style="color: salmon; text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid salmon; padding-bottom: 0.5rem;">
       {{ if eq .Language.Lang "es" }}Artículos{{ else }}Articles{{ end }}
     </h2>
-    {{ range $posts }}
+    {{ range $index, $element := $posts }}
     <div style="
       padding: 1.5rem;
       margin-bottom: 2rem;
       border-radius: 8px;
-      border-left: 3px solid palegoldenrod;
+      {{ if modBool $index 2 }}border-left: 3px solid palegoldenrod;{{ else }}border-left: 3px solid salmon;{{ end }}
       transition: background-color 0.3s ease, transform 0.2s ease;
       cursor: pointer;
     "
-    onmouseover="this.style.backgroundColor='rgba(238, 232, 170, 0.15)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
+    {{ if modBool $index 2 }}
+      onmouseover="this.style.backgroundColor='rgba(238, 232, 170, 0.15)'; this.style.transform='translateX(8px)';"
+      onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
+    {{ else }}
+      onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.15)'; this.style.transform='translateX(8px)';"
+      onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
+    {{ end }}
     onclick="window.location='{{ .Permalink }}';">
       <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
         <a
           href="{{ .Permalink }}"
-          style="color: palegoldenrod; text-decoration: none"
+          style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
           onmouseover="this.style.color='orange'"
-          onmouseout="this.style.color='palegoldenrod'"
+          onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
         >
           {{ .Title }}
         </a>
@@ -88,7 +94,7 @@
         {{ .Date.Format "02/01/2006" }}
       </p>
       <p style="color: #888; font-size: 0.9rem; margin: 0;">
-        <b style="color: palegoldenrod;">Tags:</b>
+        <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
         {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
       </p>
     </div>
