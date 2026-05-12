@@ -5,7 +5,7 @@
 >
   <div class="container">
     {{ $currentLang := .Language.Lang }}
-    {{ range (where (where site.AllPages "Type" "brand") "Lang" $currentLang).ByWeight }}
+    {{ range (where (where site.Pages "Type" "brand") "Lang" $currentLang).ByWeight }}
     <a
       href="{{ .Permalink }}"
       class="navbar-brand nav-link text-wrap"
@@ -50,7 +50,7 @@
         class="navbar-nav nav-justified w-100 text-center"
         style="vertical-align: middle; text-transform: uppercase;"
       >
-        {{ range (where (where site.AllPages "Params.in_navbar" true) "Lang" $currentLang).ByWeight }}
+        {{ range (where (where site.Pages "Params.in_navbar" true) "Lang" $currentLang).ByWeight }}
         <li class="nav-item">
             <div class="container">
                 <a
@@ -74,7 +74,7 @@
 								data-bs-toggle="dropdown"
 								aria-expanded="false"
 							>
-								{{ .Language.LanguageName }}
+								{{ .Language.Label }}
 							</button>
 							<ul class="dropdown-menu">
 							{{ if hugo.IsMultilingual }}
@@ -86,7 +86,7 @@
 										class="dropdown-item"
 										hreflang="{{ .Lang }}"
 									>
-										{{ .Language.LanguageName }}
+										{{ .Language.Label }}
 									</a>
 								</li>
 									{{ end }}

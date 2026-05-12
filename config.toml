@@ -1,5 +1,4 @@
 baseURL = "//jacobobedoya.com/"
-languageCode = "en-us"
 title = "jacobitosuperstar"
 assetDir = "static/assets/"
 DefaultContentLanguage = "es"
@@ -9,10 +8,12 @@ staticDir = "static"
 
 [languages]
   [languages.es]
-    languageName = "Español"
+    label = "Español"
+    locale = "es"
     weight = 1
   [languages.en]
-    languageName = "English"
+    label = "English"
+    locale = "en-us"
     weight = 2
 
 [markup]
