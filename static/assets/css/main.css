@@ -13,7 +13,7 @@ html::-webkit-scrollbar {
 
 /* body tag */
 body {
-    font-family: 'Merriweather', serif;
+    font-family: 'Fira Code', monospace;
     color: whitesmoke;
     background: black;
     margin: 0;
@@ -22,6 +22,7 @@ body {
     flex-direction: column;
     font-size: clamp(1rem, 0.9rem + 0.5vw, 1.3rem);
     font-weight: 300;
+    line-height: 1.2;
     max-width:100%;
 }
 
@@ -131,12 +132,30 @@ main{
     min-width: 0;
 }
 
+pre, code {
+  font-family: 'Fira Code', monospace;
+}
+
+pre {
+  font-size: clamp(0.55rem, 0.3rem + 1.2vw, 0.75rem);
+  overflow-x: auto;
+}
+
+:not(pre) > code {
+  font-size: 1em;
+}
+
 /* about_me page styling */
 .about-me hr {
     border: none;
     border-top: 2px solid salmon;
     margin: 2rem 0;
     opacity: 0.6;
+}
+
+/* Navbar font */
+.navbar {
+  font-family: 'Merriweather', serif;
 }
 
 /* Language dropdown styling to match navbar theme */
