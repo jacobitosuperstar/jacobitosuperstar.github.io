@@ -1,102 +1,44 @@
-<nav
-	class="navbar navbar-expand-md justify-content-center fixed-top"
-	data-bs-theme="dark"
-	style="background-color: black;"
->
-  <div class="container">
+<nav style="width:100%;">
+  <div class="nav-inner">
     {{ $currentLang := .Language.Lang }}
+    {{ $currentPage := . }}
     {{ range (where (where site.Pages "Type" "brand") "Lang" $currentLang).ByWeight }}
-    <a
-      href="{{ .Permalink }}"
-      class="navbar-brand nav-link text-wrap"
-      style="
-        color: salmon;
-        position: relative;
-        padding-top: 2.2rem;
-        padding-bottom: 0.5rem;
-        display: inline-block;
-      "
-      onmouseover="this.style.color='red'"
-      onmouseout="this.style.color='salmon'"
-    >
+    <a href="{{ .Permalink }}" class="nav-brand">
       <img
         src="/images/jimny.png"
         alt="Jimny"
-        style="
-          position: absolute;
-          top: 0;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 60px;
-          height: auto;
-        "
+        style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:auto;"
       >
       <b>{{ .Title }}</b>
     </a>
     {{ end }}
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-			data-bs-target="#navbarToggler"
-      aria-controls="navbarToggler"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarToggler">
-      <ul
-        class="navbar-nav nav-justified w-100 text-center"
-        style="vertical-align: middle; text-transform: uppercase;"
-      >
-        {{ range (where (where site.Pages "Params.in_navbar" true) "Lang" $currentLang).ByWeight }}
-        <li class="nav-item">
-            <div class="container">
-                <a
-                  href="{{ .Permalink }}"
-                  class="navbar-brand nav-link text-wrap"
-                  style="color: pink;"
-                  onmouseover="this.style.color='salmon'"
-                  onmouseout="this.style.color='pink'"
-                >
-                    <b>{{ .Title }}</b>
-                </a>
-            </div>
-        </li>
-        {{ end }}
-				<li class="nav-item">
-					<div class="container">
-						<div class="dropdown">
-							<button
-								class="btn btn-secondary dropdown-toggle"
-								type="button"
-								data-bs-toggle="dropdown"
-								aria-expanded="false"
-							>
-								{{ .Language.Label }}
-							</button>
-							<ul class="dropdown-menu">
-							{{ if hugo.IsMultilingual }}
-								{{ range .AllTranslations }}
-									{{ if ne .Lang $currentLang }}
-								<li>
-									<a
-										href="{{ .Permalink }}"
-										class="dropdown-item"
-										hreflang="{{ .Lang }}"
-									>
-										{{ .Language.Label }}
-									</a>
-								</li>
-									{{ end }}
-								{{ end }}
-							{{ end }}
-							</ul>
-						</div>
-					</div>
-				</li>
-			</ul>
-		</div>
+
+    <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+
+    <ul id="nav-menu" class="nav-menu">
+      {{ range (where (where site.Pages "Params.in_navbar" true) "Lang" $currentLang).ByWeight }}
+      {{ $active := or (eq .Permalink $currentPage.Permalink) ($currentPage.IsDescendant .) }}
+      <li>
+        <a href="{{ .Permalink }}" {{ if $active }}class="nav-active"{{ end }}><b>{{ .Title }}</b></a>
+      </li>
+      {{ end }}
+
+      {{ if hugo.IsMultilingual }}
+      <li id="nav-dropdown" class="nav-dropdown">
+        <button id="nav-dropdown-btn" class="nav-dropdown-btn">
+          {{ .Language.Label }}
+        </button>
+        <ul class="nav-dropdown-menu">
+          {{ range .AllTranslations }}
+          {{ if ne .Lang $currentLang }}
+          <li>
+            <a href="{{ .Permalink }}" hreflang="{{ .Lang }}">{{ .Language.Label }}</a>
+          </li>
+          {{ end }}
+          {{ end }}
+        </ul>
+      </li>
+      {{ end }}
+    </ul>
   </div>
 </nav>

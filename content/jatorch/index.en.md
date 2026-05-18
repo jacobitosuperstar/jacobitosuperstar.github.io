@@ -2,7 +2,7 @@
 title: JaTorchC
 in_navbar: false
 weight: 200
-draft: false
+draft: true
 is_project: true
 project_description: "A project aimed at understanding machine learning by recreating PyTorch in C with a subsequent Python interface."
 project_dates: "05/01/2026 – present"

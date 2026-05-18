@@ -3,64 +3,36 @@
 <div class="content-wrap">
   <div class="stories-grid">
   {{ range where (where .Site.RegularPages "Section" "stories") "Lang" .Language.Lang }}
-    <div>
-      <div class="story-card" style="height: 100%;">
-        <a href="{{ .Permalink }}" style="text-decoration: none; display: block; height: 100%;">
-          <div style="
-            border: 2px solid transparent;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-          "
-          onmouseover="this.style.borderColor='palegoldenrod'; this.style.transform='translateY(-8px)'; this.style.boxShadow='0 8px 16px rgba(238, 232, 170, 0.3)';"
-          onmouseout="this.style.borderColor='transparent'; this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+    <div class="pop-card-outer pop-gold" style="height: 100%;"
+      onclick="window.location='{{ .Permalink }}';">
+      <div class="pop-card pop-gold pop-card--flush" style="height: 100%; display: flex; flex-direction: column;">
 
-            {{ $image := .Resources.GetMatch .Params.image }}
-            {{ if $image }}
-              <div style="
-                aspect-ratio: 16/9;
-                overflow: hidden;
-                background: black;
-              ">
-                {{ $processed := $image.Fit "1200x675 webp" }}
-                <img
-                  style="
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                  "
-                  src="{{ $processed.RelPermalink }}"
-                  width="{{ $processed.Width }}"
-                  height="{{ $processed.Height }}"
-                  loading="lazy"
-                  alt="{{ .Title }}"
-                >
-              </div>
-              <div style="padding: 1.25rem; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
-                <h3 style="color: palegoldenrod; margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem); text-transform: uppercase;">
-                  {{ .Title }}
-                </h3>
-              </div>
-            {{ else }}
-              <div style="
-                padding: 2rem 1.25rem;
-                text-align: center;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                min-height: 200px;
-                flex-grow: 1;
-              ">
-                <h2 style="color: palegoldenrod; margin: 0; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem); text-transform: uppercase;">
-                  {{ .Title }}
-                </h2>
-              </div>
-            {{ end }}
+        {{ $image := .Resources.GetMatch .Params.image }}
+        {{ if $image }}
+          <div style="aspect-ratio: 16/9; overflow: hidden; background: black;">
+            {{ $processed := $image.Fit "1200x675 webp" }}
+            <img
+              style="width: 100%; height: 100%; object-fit: cover;"
+              src="{{ $processed.RelPermalink }}"
+              width="{{ $processed.Width }}"
+              height="{{ $processed.Height }}"
+              loading="lazy"
+              alt="{{ .Title }}"
+            >
           </div>
-        </a>
+          <div style="padding: 1.25rem; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
+            <h3 style="color: palegoldenrod; margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem); text-transform: uppercase;">
+              {{ .Title }}
+            </h3>
+          </div>
+        {{ else }}
+          <div style="padding: 2rem 1.25rem; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px; flex-grow: 1;">
+            <h2 style="color: palegoldenrod; margin: 0; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem); text-transform: uppercase;">
+              {{ .Title }}
+            </h2>
+          </div>
+        {{ end }}
+
       </div>
     </div>
   {{ end }}

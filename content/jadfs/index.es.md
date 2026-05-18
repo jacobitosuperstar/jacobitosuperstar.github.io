@@ -1,6 +1,6 @@
 ---
 title: JaDFS
-in_navbar: true
+in_navbar: false
 weight: 100
 draft: false
 is_project: true

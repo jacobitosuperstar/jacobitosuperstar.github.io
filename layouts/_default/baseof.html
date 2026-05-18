@@ -2,7 +2,6 @@
 <html lang="{{ .Language.Lang }}">
     {{ partial "head" . }}
     <body>
-        <!-- Custom styles for this template -->
         <header id="header" class="site-header" role="banner">
             {{ partial "navbar" . }}
         </header>
@@ -10,8 +9,43 @@
           {{ block "content" . }}
           {{ end }}
         </main>
-			{{ partial "footer" . }}
-			{{ partial "rally-scroll" . }}
-			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        {{ partial "footer" . }}
+        {{ partial "rally-scroll" . }}
+        <script>
+        (function () {
+          var toggle = document.getElementById('nav-toggle');
+          var menu   = document.getElementById('nav-menu');
+          var dropdown = document.getElementById('nav-dropdown');
+          var dropBtn  = document.getElementById('nav-dropdown-btn');
+
+          if (toggle && menu) {
+            toggle.addEventListener('click', function () {
+              menu.classList.toggle('open');
+            });
+          }
+
+          if (dropBtn && dropdown) {
+            dropBtn.addEventListener('click', function (e) {
+              e.stopPropagation();
+              dropdown.classList.toggle('open');
+            });
+            document.addEventListener('click', function () {
+              dropdown.classList.remove('open');
+            });
+          }
+
+          var grid = 8;
+          function snap() {
+            document.querySelectorAll('.pop-card-outer').forEach(function (el) {
+              var w = Math.round(el.offsetWidth  / grid) * grid;
+              var h = Math.round(el.offsetHeight / grid) * grid;
+              el.style.setProperty('--shadow-w', w + 'px');
+              el.style.setProperty('--shadow-h', h + 'px');
+            });
+          }
+          document.addEventListener('DOMContentLoaded', snap);
+          window.addEventListener('resize', snap);
+        }());
+        </script>
     </body>
 </html>

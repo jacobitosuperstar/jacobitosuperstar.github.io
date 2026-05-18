@@ -2,39 +2,28 @@
 
 <div class="content-wrap" style="color: whitesmoke">
   {{ range $index, $element := where (where .Site.RegularPages "Type" "posts") "Lang" .Language.Lang }}
-  <div style="
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    border-radius: 8px;
-    {{ if modBool $index 2 }}border-left: 3px solid palegoldenrod;{{ else }}border-left: 3px solid salmon;{{ end }}
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    cursor: pointer;
-  "
-  {{ if modBool $index 2 }}
-    onmouseover="this.style.backgroundColor='rgba(184, 134, 11, 0.2)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-  {{ else }}
-    onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.2)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-  {{ end }}
-  onclick="window.location='{{ .Permalink }}';">
-    <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
-      <a
-        href="{{ .Permalink }}"
-        style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
-        onmouseover="this.style.color='orange'"
-        onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
-      >
-        {{ .Title }}
-      </a>
-    </h3>
-    <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
-      {{ .Date.Format "02/01/2006" }}
-    </p>
-    <p style="color: #888; font-size: 0.9rem; margin: 0;">
-      <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
-      {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
-    </p>
+  <div class="pop-card-outer {{ if modBool $index 2 }}pop-gold{{ end }}"
+    style="margin-bottom: 2rem;"
+    onclick="window.location='{{ .Permalink }}';">
+    <div class="pop-card {{ if modBool $index 2 }}pop-gold{{ end }}">
+      <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
+        <a
+          href="{{ .Permalink }}"
+          style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
+          onmouseover="this.style.color='orange'"
+          onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
+        >
+          {{ .Title }}
+        </a>
+      </h3>
+      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+        {{ .Date.Format "02/01/2006" }}
+      </p>
+      <p style="color: #888; font-size: 0.9rem; margin: 0;">
+        <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
+        {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+      </p>
+    </div>
   </div>
   {{ end }}
 </div>

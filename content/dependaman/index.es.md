@@ -1,7 +1,7 @@
 ---
 title: DependaMan
-in_navbar: false
-weight: 300
+in_navbar: true
+weight: 50
 draft: false
 is_project: true
 project_description: "Una herramienta de análisis y visualización de dependencias para Python. Analiza la estructura interna de módulos de tu proyecto y genera un grafo HTML interactivo — mostrando ciclos, módulos muertos, hotspots y problemas de acoplamiento sin dependencias externas."
@@ -15,6 +15,46 @@ project_link: "https://codeberg.org/jacobitosuperstar/DependaMan"
 
 Una herramienta de línea de comandos y librería Python que analiza la estructura interna de módulos de un proyecto y produce un grafo HTML interactivo. Detecta problemas arquitectónicos — importaciones circulares, código muerto, hotspots de acoplamiento — usando únicamente la biblioteca estándar de Python.
 
+### **¿Por Qué Este Proyecto?**
+
+A medida que los proyectos Python crecen, sus grafos de importación se vuelven imposibles de razonar mentalmente. Los linters detectan errores de sintaxis; los verificadores de tipos detectan errores de tipos — pero nada te dice que tu `utils.py` es importado por 40 módulos y cambió 200 veces en el último año. DependaMan hace eso visible.
+
+### **Demo en Vivo**
+
+<div style="border: 2px solid salmon; margin: 1.5rem 0;">
+  <iframe
+    src="/dependaman/ExampleOutPut.html"
+    width="100%"
+    height="500px"
+    style="display: block; border: none;"
+    loading="lazy"
+    title="Ejemplo de salida DependaMan"
+  ></iframe>
+</div>
+
+*Haz clic en los nodos para ver detalles del módulo. Arrastra para reposicionar. Scroll para hacer zoom. **Solo escritorio** — el grafo requiere ratón para navegar.*
+
+### **Uso**
+
+**Instalación:**
+```bash
+pip install dependaman
+```
+
+**CLI:**
+```bash
+dependaman                  # analiza el directorio actual
+dependaman /ruta/al/proyecto # analiza un proyecto específico
+```
+
+**API Python:**
+```python
+from dependaman import dependaman
+
+html = dependaman(".", in_memory=True)  # retorna string HTML (ej. para FastAPI)
+dependaman(".")                         # escribe output.html y abre en el navegador
+```
+
 ### **Visión del Proyecto**
 
 DependaMan busca responder las preguntas que se vuelven más difíciles de responder a medida que crece una base de código:
@@ -26,7 +66,7 @@ DependaMan busca responder las preguntas que se vuelven más difíciles de respo
 ### **Principios Básicos de Diseño**
 
 #### Sin Dependencias Externas
-La herramienta completa funciona con la biblioteca estándar de Python (`ast`, `pathlib`, `json`, `subprocess`, `concurrent.futures`). No se requiere ningún `pip install` adicional — funciona en cualquier entorno.
+La herramienta completa funciona con la biblioteca estándar de Python (`ast`, `pathlib`, `json`, `subprocess`, `concurrent.futures`). Sin dependencias de terceros — una vez instalada, funciona en cualquier entorno.
 
 #### Arquitectura de Pipeline
 El análisis está dividido en seis fases discretas, cada una con una única responsabilidad:
@@ -41,7 +81,7 @@ El análisis está dividido en seis fases discretas, cada una con una única res
 DependaMan aplica dos estrategias de concurrencia distintas según la naturaleza del trabajo:
 
 - **Estadísticas de Git (I/O-bound)** — obtener métricas por archivo implica esperar llamadas a subprocesos, no trabajo de CPU. Se usa `ThreadPoolExecutor` para que múltiples llamadas a `git log` corran de forma concurrente sin el costo de crear procesos separados.
-- **Parseo (CPU-bound)** — el parseo con `ast` es cómputo puro. Cuando la cantidad de módulos es suficientemente alta, DependaMan cambia a `ProcessPoolExecutor` para eludir el GIL y usar múltiples núcleos en paralelo.
+- **Parseo (CPU-bound)** — el parseo con `ast` es cómputo puro. Cuando la cantidad de módulos es suficientemente alta, DependaMan cambia a `ProcessPoolExecutor` para eludir el GIL y usar múltiples núcleos en paralelo. En una versión de Python sin GIL (3.13+ free-threaded), se usa `ThreadPoolExecutor` en su lugar — los hilos ya corren verdaderamente en paralelo sin el overhead de crear procesos.
 
 Ambos caminos incluyen un umbral mínimo de módulos antes de activar la ejecución concurrente. Crear un pool de procesos tiene costos reales de memoria e inicialización — en proyectos pequeños, el overhead supera el beneficio, por lo que el trabajo se ejecuta secuencialmente en su lugar.
 
@@ -75,23 +115,3 @@ El renderizador produce un único archivo HTML autocontenido:
 - Tooltips al pasar el cursor mostrando el conteo de importaciones y puntuación de churn
 - Modales al hacer clic con detalle completo por módulo: dependientes, dependencias, git log, tamaño de archivo
 - Sin llamadas a CDN, sin librerías externas — funciona completamente sin conexión
-
-### **Uso**
-
-**CLI:**
-```bash
-dependaman                  # analiza el directorio actual
-dependaman /ruta/al/proyecto # analiza un proyecto específico
-```
-
-**API Python:**
-```python
-from dependaman import dependaman
-
-html = dependaman(".", in_memory=True)  # retorna string HTML (ej. para FastAPI)
-dependaman(".")                         # escribe output.html y abre en el navegador
-```
-
-### **¿Por Qué Este Proyecto?**
-
-A medida que los proyectos Python crecen, sus grafos de importación se vuelven imposibles de razonar mentalmente. Los linters detectan errores de sintaxis; los verificadores de tipos detectan errores de tipos — pero nada te dice que tu `utils.py` es importado por 40 módulos y cambió 200 veces en el último año. DependaMan hace eso visible.

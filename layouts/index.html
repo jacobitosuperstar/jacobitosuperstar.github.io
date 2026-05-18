@@ -10,47 +10,40 @@
       {{ if eq .Language.Lang "es" }}Proyectos{{ else }}Projects{{ end }}
     </h2>
     {{ range $projects }}
-    <div style="
-      padding: 1rem 1.5rem;
-      margin-bottom: 1rem;
-      border-left: 3px solid salmon;
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      cursor: pointer;
-    "
-    onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.15)'; this.style.transform='translateX(8px)';"
-    onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-    onclick="window.location='{{ .Permalink }}';">
-      <h3 style="margin: 0 0 0.3rem 0;">
-        <a
-          href="{{ .Permalink }}"
-          style="color: palegoldenrod; text-decoration: none;"
-          onmouseover="this.style.color='orange'"
-          onmouseout="this.style.color='palegoldenrod'"
-        >
-          {{ .Title }}
-        </a>
-      </h3>
-      {{ with .Params.project_dates }}
-      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">{{ . }}</p>
-      {{ end }}
-      <p style="margin: 0; color: whitesmoke; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem); line-height: 1.6;">
-        {{ .Params.project_description }}
-      </p>
-      {{ with .Params.project_link }}
-      <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-        <a
-          href="{{ . }}"
-          target="_blank"
-          rel="noopener noreferrer"
-          style="color: pink; text-decoration: none;"
-          onmouseover="this.style.color='salmon'"
-          onmouseout="this.style.color='pink'"
-          onclick="event.stopPropagation();"
-        >
-          {{ if eq $.Language.Lang "es" }}Ver código{{ else }}View code{{ end }} →
-        </a>
-      </p>
-      {{ end }}
+    <div class="pop-card-outer" onclick="window.location='{{ .Permalink }}';">
+      <div class="pop-card">
+        <h3 style="margin: 0 0 0.3rem 0;">
+          <a
+            href="{{ .Permalink }}"
+            style="color: palegoldenrod; text-decoration: none;"
+            onmouseover="this.style.color='orange'"
+            onmouseout="this.style.color='palegoldenrod'"
+          >
+            {{ .Title }}
+          </a>
+        </h3>
+        {{ with .Params.project_dates }}
+        <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">{{ . }}</p>
+        {{ end }}
+        <p style="margin: 0; color: whitesmoke; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem); line-height: 1.6;">
+          {{ .Params.project_description }}
+        </p>
+        {{ with .Params.project_link }}
+        <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+          <a
+            href="{{ . }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: pink; text-decoration: none;"
+            onmouseover="this.style.color='salmon'"
+            onmouseout="this.style.color='pink'"
+            onclick="event.stopPropagation();"
+          >
+            {{ if eq $.Language.Lang "es" }}Ver código{{ else }}View code{{ end }} →
+          </a>
+        </p>
+        {{ end }}
+      </div>
     </div>
     {{ end }}
   </section>
@@ -64,39 +57,28 @@
       {{ if eq .Language.Lang "es" }}Artículos{{ else }}Articles{{ end }}
     </h2>
     {{ range $index, $element := $posts }}
-    <div style="
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      border-radius: 8px;
-      {{ if modBool $index 2 }}border-left: 3px solid palegoldenrod;{{ else }}border-left: 3px solid salmon;{{ end }}
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      cursor: pointer;
-    "
-    {{ if modBool $index 2 }}
-      onmouseover="this.style.backgroundColor='rgba(238, 232, 170, 0.15)'; this.style.transform='translateX(8px)';"
-      onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-    {{ else }}
-      onmouseover="this.style.backgroundColor='rgba(250, 128, 114, 0.15)'; this.style.transform='translateX(8px)';"
-      onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';"
-    {{ end }}
-    onclick="window.location='{{ .Permalink }}';">
-      <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
-        <a
-          href="{{ .Permalink }}"
-          style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
-          onmouseover="this.style.color='orange'"
-          onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
-        >
-          {{ .Title }}
-        </a>
-      </h3>
-      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
-        {{ .Date.Format "02/01/2006" }}
-      </p>
-      <p style="color: #888; font-size: 0.9rem; margin: 0;">
-        <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
-        {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
-      </p>
+    <div class="pop-card-outer {{ if modBool $index 2 }}pop-gold{{ end }}"
+      style="margin-bottom: 2rem;"
+      onclick="window.location='{{ .Permalink }}';">
+      <div class="pop-card {{ if modBool $index 2 }}pop-gold{{ end }}">
+        <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
+          <a
+            href="{{ .Permalink }}"
+            style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
+            onmouseover="this.style.color='orange'"
+            onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
+          >
+            {{ .Title }}
+          </a>
+        </h3>
+        <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+          {{ .Date.Format "02/01/2006" }}
+        </p>
+        <p style="color: #888; font-size: 0.9rem; margin: 0;">
+          <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
+          {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
+        </p>
+      </div>
     </div>
     {{ end }}
   </section>

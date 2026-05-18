@@ -1,7 +1,7 @@
 ---
 title: DependaMan
-in_navbar: false
-weight: 300
+in_navbar: true
+weight: 50
 draft: false
 is_project: true
 project_description: "A Python dependency analysis and visualization tool. Analyzes your project's internal module structure and produces an interactive HTML graph — surfacing cycles, dead modules, hotspots, and coupling issues with zero external dependencies."
@@ -15,6 +15,46 @@ project_link: "https://codeberg.org/jacobitosuperstar/DependaMan"
 
 A command-line tool and Python library that analyzes a project's internal module structure and produces an interactive HTML graph. It surfaces architectural problems — circular imports, dead code, coupling hotspots — using nothing but the Python standard library.
 
+### **Why This Project?**
+
+As Python projects grow, their import graphs become impossible to reason about mentally. Linters catch syntax errors; type checkers catch type errors — but nothing tells you that your `utils.py` is imported by 40 modules and changed 200 times in the last year. DependaMan makes that visible.
+
+### **Live Demo**
+
+<div style="border: 2px solid salmon; margin: 1.5rem 0;">
+  <iframe
+    src="/dependaman/ExampleOutPut.html"
+    width="100%"
+    height="500px"
+    style="display: block; border: none;"
+    loading="lazy"
+    title="DependaMan output example"
+  ></iframe>
+</div>
+
+*Click nodes to inspect module details. Drag to reposition. Scroll to zoom. **Desktop only** — the graph requires a mouse to navigate.*
+
+### **Usage**
+
+**Installation:**
+```bash
+pip install dependaman
+```
+
+**CLI:**
+```bash
+dependaman                  # analyze current directory
+dependaman /path/to/project # analyze a specific project
+```
+
+**Python API:**
+```python
+from dependaman import dependaman
+
+html = dependaman(".", in_memory=True)  # returns HTML string (e.g. for FastAPI)
+dependaman(".")                         # writes output.html and opens in browser
+```
+
 ### **Project Vision**
 
 DependaMan aims to answer the questions that get harder to answer as a codebase grows:
@@ -26,7 +66,7 @@ DependaMan aims to answer the questions that get harder to answer as a codebase 
 ### **Core Design Principles**
 
 #### Zero External Dependencies
-The entire tool runs on Python's standard library (`ast`, `pathlib`, `json`, `subprocess`, `concurrent.futures`). No pip install required beyond the package itself — works in any environment.
+The entire tool runs on Python's standard library (`ast`, `pathlib`, `json`, `subprocess`, `concurrent.futures`). No third-party dependencies — once installed, it works in any environment.
 
 #### Pipeline Architecture
 The analysis is split into six discrete phases, each with a single responsibility:
@@ -41,7 +81,7 @@ The analysis is split into six discrete phases, each with a single responsibilit
 DependaMan applies two different concurrency strategies depending on the nature of the work:
 
 - **Git stats (I/O-bound)** — fetching per-file git metrics involves waiting on subprocess calls, not CPU work. `ThreadPoolExecutor` is used here so multiple `git log` calls run concurrently without the overhead of spawning separate processes.
-- **Parsing (CPU-bound)** — `ast` parsing is pure computation. When the module count is high enough, DependaMan switches to `ProcessPoolExecutor` to bypass the GIL and use multiple cores in parallel.
+- **Parsing (CPU-bound)** — `ast` parsing is pure computation. When the module count is high enough, DependaMan switches to `ProcessPoolExecutor` to bypass the GIL and use multiple cores in parallel. On a GIL-less Python build (3.13+ free-threaded), `ThreadPoolExecutor` is used instead — threads already run truly in parallel without the process spawning overhead.
 
 Both paths include a minimum module threshold before engaging concurrent execution. Spawning a process pool has real memory and startup costs — for small projects, the overhead exceeds the benefit, so the work runs sequentially instead.
 
@@ -75,23 +115,3 @@ The renderer produces a single, self-contained HTML file:
 - Hover tooltips showing import count and churn score at a glance
 - Click modals with full per-module detail: dependents, dependencies, git log, file size
 - No CDN calls, no external libraries — works fully offline
-
-### **Usage**
-
-**CLI:**
-```bash
-dependaman                  # analyze current directory
-dependaman /path/to/project # analyze a specific project
-```
-
-**Python API:**
-```python
-from dependaman import dependaman
-
-html = dependaman(".", in_memory=True)  # returns HTML string (e.g. for FastAPI)
-dependaman(".")                         # writes output.html and opens in browser
-```
-
-### **Why This Project?**
-
-As Python projects grow, their import graphs become impossible to reason about mentally. Linters catch syntax errors; type checkers catch type errors — but nothing tells you that your `utils.py` is imported by 40 modules and changed 200 times in the last year. DependaMan makes that visible.

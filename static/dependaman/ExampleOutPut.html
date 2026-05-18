@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DependaMan — Dependency Graph</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0d1117; color: #e6edf3; font-family: 'Fira Code', ui-monospace, 'Cascadia Code', 'Consolas', monospace; overflow: hidden; }
+canvas { display: block; }
+
+#tooltip {
+  position: fixed;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  pointer-events: none;
+  display: none;
+  z-index: 10;
+  max-width: 220px;
+}
+
+#modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 8px;
+  padding: 32px;
+  width: min(720px, calc(100vw - 32px));
+  min-width: 0;
+  display: none;
+  z-index: 20;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+#modal h2 { font-size: 18px; color: #58a6ff; margin-bottom: 20px; word-break: break-all; }
+#modal-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-bottom: 20px; }
+#modal .row { display: flex; flex-direction: column; gap: 2px; font-size: 15px; }
+#modal .row.full { grid-column: 1 / -1; }
+#modal .label { color: #8b949e; font-size: 13px; }
+#modal .value { color: #e6edf3; font-weight: 500; }
+#modal .edges { margin-top: 4px; }
+#modal .edges h3 { font-size: 14px; color: #8b949e; margin-bottom: 8px; }
+#modal .edge-item { font-size: 14px; color: #58a6ff; margin-bottom: 6px; }
+#modal .edge-nav { cursor: pointer; }
+#modal .edge-nav:hover { text-decoration: underline; }
+#modal-close {
+  position: absolute; top: 14px; right: 14px;
+  background: none; border: none; color: #8b949e;
+  cursor: pointer; font-size: 20px;
+}
+#modal-close:hover { color: #e6edf3; }
+
+#overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  z-index: 15;
+}
+
+#legend {
+  position: fixed; bottom: 16px; left: 16px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 11px;
+  color: #8b949e;
+}
+#legend h4 { margin-bottom: 8px; color: #e6edf3; }
+.legend-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+.legend-line { width: 18px; height: 3px; border-radius: 1px; }
+
+#bottom-bar {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 8px; z-index: 5;
+}
+#btn-fit {
+  background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+  color: #8b949e; font-family: inherit; font-size: 12px;
+  padding: 6px 14px; cursor: pointer; white-space: nowrap;
+}
+#btn-fit:hover { border-color: #58a6ff; color: #e6edf3; }
+#search-wrap { position: relative; width: 220px; }
+#search-input {
+  width: 100%; background: #161b22; border: 1px solid #30363d;
+  border-radius: 6px; color: #e6edf3; font-family: inherit;
+  font-size: 12px; padding: 6px 12px; outline: none; box-sizing: border-box;
+}
+#search-input::placeholder { color: #8b949e; }
+#search-input:focus { border-color: #58a6ff; }
+#search-results {
+  display: none; position: absolute; bottom: calc(100% + 4px); left: 0; right: 0;
+  background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+  max-height: 240px; overflow-y: auto; z-index: 6;
+}
+.search-item { padding: 6px 12px; font-size: 12px; cursor: pointer; color: #e6edf3; }
+.search-item:hover, .search-item.active { background: #21262d; }
+.search-match { color: #58a6ff; }
+
+#controls {
+  position: fixed; top: 16px; left: 16px;
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: #8b949e;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#controls label { cursor: pointer; color: #e6edf3; }
+
+</style>
+</head>
+<body>
+
+<canvas id="graph"></canvas>
+<div id="tooltip"></div>
+<div id="overlay"></div>
+
+<div id="modal">
+  <button id="modal-close">&#x2715;</button>
+  <h2 id="modal-title"></h2>
+  <div id="modal-body"></div>
+</div>
+
+<div id="controls">
+  <input type="checkbox" id="toggle-tests">
+  <label for="toggle-tests">Show tests</label>
+</div>
+
+<div id="bottom-bar">
+  <button id="btn-fit">⊡ Fit</button>
+  <div id="search-wrap">
+    <input id="search-input" type="text" placeholder="Search module... (/)">
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<div id="legend">
+  <h4>Node color — Commit frequency</h4>
+  <div class="legend-row"><div class="legend-dot" style="background:hsl(220,60%,72%)"></div> None / low</div>
+  <div class="legend-row"><div class="legend-dot" style="background:hsl(110,60%,72%)"></div> Medium</div>
+  <div class="legend-row"><div class="legend-dot" style="background:hsl(0,60%,72%)"></div> High</div>
+  <h4 style="margin-top:10px">Package border — Nesting depth</h4>
+  <div class="legend-row"><div class="legend-line" style="background:hsl(210,18%,65%)"></div> Top-level</div>
+  <div class="legend-row"><div class="legend-line" style="background:hsl(210,18%,44%)"></div> Mid</div>
+  <div class="legend-row"><div class="legend-line" style="background:hsl(210,18%,23%)"></div> Deep</div>
+  <h4 style="margin-top:10px">Edges</h4>
+  <div class="legend-row"><div class="legend-line" style="background:rgba(139,148,158,0.8)"></div> Import</div>
+  <div class="legend-row"><div class="legend-line" style="background:rgba(218,54,51,0.9)"></div> Cycle</div>
+  <h4 style="margin-top:10px">Shortcuts</h4>
+  <div class="legend-row"><code style="color:#e6edf3;font-size:10px">F</code>&nbsp; Zoom to fit</div>
+  <div class="legend-row"><code style="color:#e6edf3;font-size:10px">/</code>&nbsp; Focus search</div>
+  <div class="legend-row"><code style="color:#e6edf3;font-size:10px">Esc</code>&nbsp; Deselect / close</div>
+  <div class="legend-row"><code style="color:#e6edf3;font-size:10px">Middle</code>&nbsp; Pan</div>
+</div>
+
+<script>const DATA = {"packages": [{"id": ".", "modules": [{"id": "manage", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 25, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["manage.main"]}]}, {"id": "clients", "modules": [{"id": "clients.models", "edges": ["base.models"], "fan_in": 6, "fan_out": 1, "n_commits": 8, "added_lines": 78, "removed_lines": 54, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "clients.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 8, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["clients.apps.ClientsConfig"]}, {"id": "clients.forms", "edges": ["base.mixins", "clients.models"], "fan_in": 1, "fan_out": 2, "n_commits": 6, "added_lines": 148, "removed_lines": 102, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "clients.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 70, "removed_lines": 70, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "clients.urls", "edges": ["clients.views", "clients"], "fan_in": 0, "fan_out": 2, "n_commits": 4, "added_lines": 42, "removed_lines": 25, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "clients.views", "edges": ["clients.models", "employees.models", "clients.forms", "base.views"], "fan_in": 1, "fan_out": 4, "n_commits": 3, "added_lines": 67, "removed_lines": 4, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["clients.views.ClientListView", "clients.views.ClientCreateView", "clients.views.ClientDetailView", "clients.views.ClientDeleteView", "clients.views.ClientUpdateView"]}]}, {"id": "products", "modules": [{"id": "products.models", "edges": ["base.models"], "fan_in": 10, "fan_out": 1, "n_commits": 3, "added_lines": 39, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "products.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 8, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["products.apps.ProductsConfig"]}, {"id": "products.forms", "edges": ["base.mixins", "products.models"], "fan_in": 1, "fan_out": 2, "n_commits": 7, "added_lines": 167, "removed_lines": 77, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["products.forms.MaterialsMixin"]}, {"id": "products.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 249, "removed_lines": 249, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "products.urls", "edges": ["products", "products.views"], "fan_in": 0, "fan_out": 2, "n_commits": 4, "added_lines": 34, "removed_lines": 24, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "products.views", "edges": ["products.models", "employees.models", "products.forms", "base.views"], "fan_in": 1, "fan_out": 4, "n_commits": 3, "added_lines": 69, "removed_lines": 4, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["products.views.ProductDeleteView", "products.views.ProductListView", "products.views.ProductCreateView", "products.views.ProductUpdateView"]}]}, {"id": "jwt_authentication", "modules": [{"id": "jwt_authentication.jwt_authentication", "edges": [], "fan_in": 3, "fan_out": 0, "n_commits": 4, "added_lines": 69, "removed_lines": 46, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "jwt_authentication.decorators", "edges": ["jwt_authentication.jwt_authentication"], "fan_in": 3, "fan_out": 1, "n_commits": 6, "added_lines": 139, "removed_lines": 85, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["jwt_authentication.decorators._login_redirect"]}]}, {"id": "shift", "modules": [{"id": "shift.signals", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 1, "added_lines": 2, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.models", "edges": ["employees.models", "production.models", "machines.models", "products.models", "base.models"], "fan_in": 9, "fan_out": 5, "n_commits": 5, "added_lines": 111, "removed_lines": 24, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 11, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["shift.apps.ShiftConfig"]}, {"id": "shift.forms", "edges": ["products.models", "shift.models", "production.models"], "fan_in": 1, "fan_out": 3, "n_commits": 5, "added_lines": 214, "removed_lines": 134, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.admin", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.urls", "edges": ["shift", "shift.views"], "fan_in": 0, "fan_out": 2, "n_commits": 5, "added_lines": 43, "removed_lines": 14, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "shift.views", "edges": ["employees.models", "production.models", "machines.models", "products.models", "shift.forms", "base.views", "shift.models"], "fan_in": 2, "fan_out": 7, "n_commits": 5, "added_lines": 774, "removed_lines": 98, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["shift.views.DayPlanView", "shift.views.AcEmployeesView", "shift.views.ShiftUpdateView", "shift.views.ShiftCalendarView", "shift.views.TodayShiftsPartialView", "shift.views.AcProductsView", "shift.views.ShiftDetailView", "shift.views.ShiftDeleteView", "shift.views.AcProductionOrdersView", "shift.views.EmployeeShiftStatusView", "shift.views._AcBase", "shift.views.DayPlanRowView", "shift.views.AcMachinesView"]}]}, {"id": "server", "modules": [{"id": "server.asgi", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 17, "removed_lines": 1, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "server.settings", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 6, "added_lines": 289, "removed_lines": 63, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "server.urls", "edges": ["shift.views", "employees.views"], "fan_in": 0, "fan_out": 2, "n_commits": 6, "added_lines": 51, "removed_lines": 30, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "server.wsgi", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 17, "removed_lines": 1, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}]}, {"id": "machines", "modules": [{"id": "machines.models", "edges": ["base.models"], "fan_in": 9, "fan_out": 1, "n_commits": 4, "added_lines": 213, "removed_lines": 80, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "machines.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 8, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["machines.apps.MachinesConfig"]}, {"id": "machines.forms", "edges": ["machines.models", "base.mixins"], "fan_in": 1, "fan_out": 2, "n_commits": 5, "added_lines": 346, "removed_lines": 238, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "machines.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 156, "removed_lines": 156, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "machines.urls", "edges": ["machines", "machines.views"], "fan_in": 0, "fan_out": 2, "n_commits": 4, "added_lines": 114, "removed_lines": 83, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "machines.views", "edges": ["employees.models", "machines.forms", "machines.models", "base.views", "shift.models"], "fan_in": 1, "fan_out": 5, "n_commits": 3, "added_lines": 374, "removed_lines": 63, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["machines.views.MachineUpdateView", "machines.views.MachineListView", "machines.views.MachineDeleteView", "machines.views.MachineMaintenanceCreateView", "machines.views.MachineMaintenanceListView", "machines.views.MachineDetailView", "machines.views.MachineCategoryCreateView", "machines.views.MachineMaintenanceUpdateView", "machines.views.MachineCreateView"]}]}, {"id": "inventory", "modules": [{"id": "inventory.services", "edges": ["production.models", "inventory.models"], "fan_in": 1, "fan_out": 2, "n_commits": 2, "added_lines": 64, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "inventory.models", "edges": ["products.models", "base.models"], "fan_in": 4, "fan_out": 2, "n_commits": 1, "added_lines": 61, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "inventory.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 8, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["inventory.apps.InventoryConfig"]}, {"id": "inventory.admin", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "inventory.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "inventory.urls", "edges": ["inventory.views", "inventory"], "fan_in": 0, "fan_out": 2, "n_commits": 2, "added_lines": 20, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "inventory.views", "edges": ["inventory.services", "employees.models", "base.views", "inventory.models"], "fan_in": 1, "fan_out": 4, "n_commits": 5, "added_lines": 121, "removed_lines": 10, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["inventory.views.InventoryAdjustmentView", "inventory.views.InventorySetLimitsView", "inventory.views.InventoryListView", "inventory.views.InventoryDetailView"]}]}, {"id": "production", "modules": [{"id": "production.signals", "edges": ["inventory.models"], "fan_in": 1, "fan_out": 1, "n_commits": 3, "added_lines": 276, "removed_lines": 53, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.signals._ncp_pre_save", "production.signals.debit_inventory_on_ncp", "production.signals._old_is_deleted", "production.signals._returned_item_pre_save", "production.signals._apply_shift_inventory", "production.signals._shift_effective_credit", "production.signals._shift_pre_save", "production.signals.debit_inventory_on_return", "production.signals.credit_inventory_on_shift"]}, {"id": "production.services", "edges": ["production.models", "inventory.models"], "fan_in": 1, "fan_out": 2, "n_commits": 2, "added_lines": 44, "removed_lines": 4, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.models", "edges": ["employees.models", "machines.models", "products.models", "clients.models", "base.models"], "fan_in": 12, "fan_out": 5, "n_commits": 4, "added_lines": 292, "removed_lines": 63, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.validators", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 36, "removed_lines": 8, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.validators.SaleOrderItem", "production.validators.SaleOrder", "production.validators.ProductionOrder"]}, {"id": "production.apps", "edges": ["production.signals"], "fan_in": 0, "fan_out": 1, "n_commits": 3, "added_lines": 11, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.apps.ProductionConfig"]}, {"id": "production.forms", "edges": ["employees.models", "production.models", "machines.models", "products.models", "clients.models", "shift.models"], "fan_in": 1, "fan_out": 6, "n_commits": 7, "added_lines": 404, "removed_lines": 248, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.admin", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.urls", "edges": ["production", "production.views"], "fan_in": 0, "fan_out": 2, "n_commits": 5, "added_lines": 226, "removed_lines": 70, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "production.views", "edges": ["production.forms", "employees.models", "base.logger", "production.models", "machines.models", "production.services", "products.models", "clients.models", "base.views", "shift.models"], "fan_in": 1, "fan_out": 10, "n_commits": 3, "added_lines": 1075, "removed_lines": 109, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.views.SaleOrderUpdateView", "production.views.ProductionOrderAssignmentRemoveView", "production.views.PostSaleQualityEvaluationDetailView", "production.views._ncp_context", "production.views.QualityEvaluationListView", "production.views.QualityEvaluationUpdateView", "production.views.QualityEvaluationDeleteView", "production.views.AcClientsView", "production.views.QualityEvaluationCreateView", "production.views.QualityEvaluationDetailView", "production.views.ProductionOrderDeleteView", "production.views._planning_context", "production.views.SaleOrderListView", "production.views.SaleOrderCreateView", "production.views.ProductionOrderDetailView", "production.views.ReturnedItemRemoveView", "production.views._QualityPanelBase", "production.views.PostSaleQualityEvaluationListView", "production.views.ReturnedItemPanelView", "production.views.ProductionOrderListView", "production.views._ReturnPanelBase", "production.views.ProductionOrderUpdateView", "production.views.ClientSaleOrdersPanelView", "production.views.ProductionOrderQuantityHintView", "production.views._PlanningPanelBase", "production.views.SaleOrderDeleteView", "production.views._returned_items_context", "production.views.ProductionOrderCreateView", "production.views.PostSaleQualityEvaluationUpdateView", "production.views.SaleOrderDetailView", "production.views.SaleOrderItemRowView", "production.views.QualityEvaluationNcpPanelView", "production.views.ProductionOrderAssignmentsPanelView", "production.views.PostSaleQualityEvaluationDeleteView", "production.views.PostSaleQualityEvaluationCreateView", "production.views.QualityEvaluationNcpRemoveView"]}]}, {"id": "kpi", "modules": [{"id": "kpi.signals", "edges": ["employees.models", "shift.models", "kpi.services", "production.models"], "fan_in": 1, "fan_out": 4, "n_commits": 4, "added_lines": 257, "removed_lines": 65, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.signals._sale_order_post_save", "kpi.signals._shift_pre_save", "kpi.signals._sale_order_pre_save", "kpi.signals._old", "kpi.signals._production_order_post_save", "kpi.signals._sale_order_item_pre_save", "kpi.signals._ooo_post_save", "kpi.signals._nc_post_save", "kpi.signals._ooo_pre_save", "kpi.signals._shift_post_save", "kpi.signals._sale_order_item_post_save", "kpi.signals._production_order_pre_save", "kpi.signals._nc_pre_save"]}, {"id": "kpi.services", "edges": ["kpi.models", "shift.models", "production.models"], "fan_in": 2, "fan_out": 3, "n_commits": 4, "added_lines": 374, "removed_lines": 112, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "kpi.models", "edges": ["employees.models", "machines.models", "products.models", "clients.models", "base.models"], "fan_in": 4, "fan_out": 5, "n_commits": 2, "added_lines": 110, "removed_lines": 1, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "kpi.kalman", "edges": [], "fan_in": 1, "fan_out": 0, "n_commits": 2, "added_lines": 130, "removed_lines": 17, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "kpi.apps", "edges": ["kpi.signals"], "fan_in": 0, "fan_out": 1, "n_commits": 1, "added_lines": 9, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.apps.KpiConfig"]}, {"id": "kpi.trends", "edges": ["kpi.models", "kpi.kalman"], "fan_in": 1, "fan_out": 2, "n_commits": 2, "added_lines": 149, "removed_lines": 19, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.trends._month_range", "kpi.trends._add_months", "kpi.trends._iso_label"]}, {"id": "kpi.urls", "edges": ["kpi", "kpi.views"], "fan_in": 0, "fan_out": 2, "n_commits": 4, "added_lines": 48, "removed_lines": 19, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "kpi.views", "edges": ["employees.models", "production.models", "machines.models", "kpi.models", "kpi.trends", "base.views"], "fan_in": 1, "fan_out": 6, "n_commits": 3, "added_lines": 546, "removed_lines": 61, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.views._ooo_impact", "kpi.views._client_statistics", "kpi.views._production_efficiency", "kpi.views.ClientsSection", "kpi.views.WorkforceSection", "kpi.views._machine_utilization", "kpi.views.TrendsSection", "kpi.views.MachinesSection", "kpi.views._summary", "kpi.views.ProductionSection", "kpi.views._period_window", "kpi.views._SectionView", "kpi.views._quality_indicators", "kpi.views.DashboardView", "kpi.views.SummarySection", "kpi.views._employee_productivity"]}]}, {"id": "base", "modules": [{"id": "base.mixins", "edges": ["base.models"], "fan_in": 5, "fan_out": 1, "n_commits": 10, "added_lines": 437, "removed_lines": 330, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "base.models", "edges": [], "fan_in": 9, "fan_out": 0, "n_commits": 4, "added_lines": 81, "removed_lines": 52, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "base.generic_views", "edges": ["base.mixins", "base.logger"], "fan_in": 1, "fan_out": 2, "n_commits": 7, "added_lines": 290, "removed_lines": 126, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["base.generic_views._handle_unexpected"]}, {"id": "base.logger", "edges": [], "fan_in": 2, "fan_out": 0, "n_commits": 2, "added_lines": 76, "removed_lines": 73, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "base.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 29, "removed_lines": 7, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["base.apps.BaseConfig"]}, {"id": "base.context_processors", "edges": ["jwt_authentication.jwt_authentication", "jwt_authentication.decorators", "employees.models"], "fan_in": 0, "fan_out": 3, "n_commits": 3, "added_lines": 42, "removed_lines": 6, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["base.context_processors.auth_context"]}, {"id": "base.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 50, "removed_lines": 50, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "base.middleware", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 72, "removed_lines": 7, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["base.middleware.QueryCounterMiddleware"]}, {"id": "base.views", "edges": ["jwt_authentication.decorators", "base.generic_views"], "fan_in": 8, "fan_out": 2, "n_commits": 3, "added_lines": 177, "removed_lines": 20, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["base.views.HtmxMixin"]}]}, {"id": "employees", "modules": [{"id": "employees.models", "edges": ["base.models"], "fan_in": 16, "fan_out": 1, "n_commits": 6, "added_lines": 288, "removed_lines": 61, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.models.EmployeesManager"]}, {"id": "employees.apps", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 8, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.apps.EmployeesConfig"]}, {"id": "employees.forms", "edges": ["base.mixins", "employees.models"], "fan_in": 1, "fan_out": 2, "n_commits": 8, "added_lines": 391, "removed_lines": 262, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.forms._OOOFormBase"]}, {"id": "employees.admin", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 3, "removed_lines": 2, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "employees.tests", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 316, "removed_lines": 316, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "employees.urls", "edges": ["employees", "employees.views"], "fan_in": 0, "fan_out": 2, "n_commits": 5, "added_lines": 110, "removed_lines": 60, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": []}, {"id": "employees.views", "edges": ["jwt_authentication.jwt_authentication", "employees.models", "jwt_authentication.decorators", "production.models", "employees.forms", "base.views", "shift.models"], "fan_in": 2, "fan_out": 7, "n_commits": 5, "added_lines": 663, "removed_lines": 126, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.views.OOOCreateView", "employees.views.EmployeeDeleteView", "employees.views.OperatorBulkCreateView", "employees.views.OOOUpdateView", "employees.views.OOODetailView", "employees.views.LogoutView", "employees.views.OfficeWorkerCreateView", "employees.views.EmployeeUpdateView", "employees.views.OOOListView", "employees.views.OperatorFormRowView", "employees.views.EmployeeListView", "employees.views.LoginView", "employees.views.EmployeeOOOStatusView", "employees.views.OOORangePartialView", "employees.views.OOODeleteView", "employees.views.EmployeeTypeSelectionView", "employees.views.EmployeeDetailView"]}]}, {"id": "employees.migrations", "modules": [{"id": "employees.migrations.0002_add_contact_number_to_employee", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 21, "removed_lines": 4, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.migrations.0002_add_contact_number_to_employee.Migration"]}, {"id": "employees.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 5, "added_lines": 169, "removed_lines": 48, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["employees.migrations.0001_initial.Migration"]}]}, {"id": "base.migrations", "modules": []}, {"id": "kpi.migrations", "modules": [{"id": "kpi.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 353, "removed_lines": 83, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.migrations.0001_initial.Migration"]}]}, {"id": "kpi.management", "modules": []}, {"id": "kpi.management.commands", "modules": [{"id": "kpi.management.commands.calculate_kpis", "edges": ["employees.models", "production.models", "kpi.models", "kpi.services", "shift.models"], "fan_in": 0, "fan_out": 5, "n_commits": 3, "added_lines": 280, "removed_lines": 64, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["kpi.management.commands.calculate_kpis.Command"]}]}, {"id": "production.migrations", "modules": [{"id": "production.migrations.0002_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 146, "removed_lines": 42, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.migrations.0002_initial.Migration"]}, {"id": "production.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 597, "removed_lines": 293, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["production.migrations.0001_initial.Migration"]}]}, {"id": "inventory.migrations", "modules": [{"id": "inventory.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 3, "added_lines": 126, "removed_lines": 32, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["inventory.migrations.0001_initial.Migration"]}]}, {"id": "machines.migrations", "modules": [{"id": "machines.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 303, "removed_lines": 122, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["machines.migrations.0001_initial.Migration"]}]}, {"id": "shift.migrations", "modules": [{"id": "shift.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 284, "removed_lines": 124, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["shift.migrations.0001_initial.Migration"]}]}, {"id": "products.templatetags", "modules": [{"id": "products.templatetags.product_filters", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 2, "added_lines": 11, "removed_lines": 0, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["products.templatetags.product_filters.material_label"]}]}, {"id": "products.migrations", "modules": [{"id": "products.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 4, "added_lines": 54, "removed_lines": 17, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["products.migrations.0001_initial.Migration"]}]}, {"id": "clients.migrations", "modules": [{"id": "clients.migrations.0001_initial", "edges": [], "fan_in": 0, "fan_out": 0, "n_commits": 6, "added_lines": 87, "removed_lines": 52, "last_author": "jacobomateobedoya@icloud.com", "symbols_to_review": ["clients.migrations.0001_initial.Migration"]}]}], "cycles": []};</script>
+<script>const canvas = document.getElementById('graph');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+const modal = document.getElementById('modal');
+const overlay = document.getElementById('overlay');
+const modalTitle = document.getElementById('modal-title');
+const modalBody = document.getElementById('modal-body');
+
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', () => { resize(); draw(); });
+
+// Build node map and edge list from DATA
+const nodeMap = {};
+const allNodes = [];
+const allEdges = [];
+
+for (const pkg of DATA.packages) {
+  for (const mod of pkg.modules) {
+    const node = { ...mod, package: pkg.id, x: 0, y: 0, r: 18 };
+    nodeMap[mod.id] = node;
+    allNodes.push(node);
+  }
+}
+
+for (const node of allNodes) {
+  for (const edgeId of node.edges) {
+    if (nodeMap[edgeId]) allEdges.push({ source: node, target: nodeMap[edgeId] });
+  }
+}
+
+// Mark cycle edges for red highlighting
+const cycleEdgeSet = new Set();
+for (const cycle of DATA.cycles) {
+  for (let i = 0; i < cycle.length - 1; i++) {
+    cycleEdgeSet.add(cycle[i] + '->' + cycle[i + 1]);
+  }
+}
+
+
+// Reverse edge map for highlight
+const inEdges = {};
+for (const node of allNodes) inEdges[node.id] = [];
+for (const edge of allEdges) {
+  if (inEdges[edge.target.id]) inEdges[edge.target.id].push(edge.source.id);
+}
+
+
+// Hierarchical layout — bottom-up circle packing
+const NODE_R = 18;
+
+// Build package hierarchy tree
+const pkgTree = {};
+DATA.packages.forEach(p => {
+  pkgTree[p.id] = {
+    id: p.id, modules: p.modules, children: [],
+    parent: p.id.includes('.') ? p.id.split('.').slice(0, -1).join('.') : null
+  };
+});
+Object.values(pkgTree).forEach(p => {
+  if (p.parent && pkgTree[p.parent]) pkgTree[p.parent].children.push(p.id);
+});
+
+// Minimum ring radius to fit N nodes without overlap
+function minRingR(n) {
+  if (n <= 1) return NODE_R + 10;
+  return (NODE_R + 20) / Math.sin(Math.PI / n);
+}
+
+// Greedily pack child circles, biggest first
+// er() returns the actual drawn radius (pkgR stores pack radius; draw adds NODE_R+10)
+function packChildren(childIds) {
+  const er = id => pkgR[id] + NODE_R + 10;
+  const sorted = [...childIds].sort((a, b) => pkgR[b] - pkgR[a]);
+  const pos = {};
+  if (sorted.length === 1) { pos[sorted[0]] = { x: 0, y: 0 }; return pos; }
+  pos[sorted[0]] = { x: -(er(sorted[0]) + 10), y: 0 };
+  pos[sorted[1]] = { x: pos[sorted[0]].x + er(sorted[0]) + er(sorted[1]) + 10, y: 0 };
+  for (let i = 2; i < sorted.length; i++) {
+    const r = er(sorted[i]);
+    let bx = 0, by = -(er(sorted[0]) + r + 20), bd = Infinity;
+    for (let a = 0; a < Math.PI * 2; a += 0.1) {
+      for (const [id, p] of Object.entries(pos)) {
+        const x = p.x + Math.cos(a) * (er(id) + r + 10);
+        const y = p.y + Math.sin(a) * (er(id) + r + 10);
+        let overlap = false;
+        for (const [id2, p2] of Object.entries(pos)) {
+          const dx = x - p2.x, dy = y - p2.y;
+          if (Math.sqrt(dx*dx + dy*dy) < er(id2) + r + 5) { overlap = true; break; }
+        }
+        if (!overlap) {
+          const d = Math.sqrt(x*x + y*y);
+          if (d < bd) { bd = d; bx = x; by = y; }
+        }
+      }
+    }
+    pos[sorted[i]] = { x: bx, y: by };
+  }
+  return pos;
+}
+
+// Bottom-up: compute radius for each package
+const pkgR = {};
+const childOffsets = {};
+const sortedByDepth = Object.values(pkgTree).sort((a, b) =>
+  b.id.split('.').length - a.id.split('.').length
+);
+sortedByDepth.forEach(p => {
+  if (p.children.length === 0) {
+    pkgR[p.id] = minRingR(p.modules.length);
+    return;
+  }
+  const positions = packChildren(p.children);
+  childOffsets[p.id] = positions;
+  const maxExtent = Math.max(...p.children.map(c => {
+    const cp = positions[c];
+    return Math.sqrt(cp.x*cp.x + cp.y*cp.y) + pkgR[c];
+  }));
+  pkgR[p.id] = maxExtent + NODE_R + 30;
+});
+
+// Position top-level packages using packChildren — keeps them adjacent regardless of size differences
+// zoomToFit() (package-extent-based) handles bringing everything into view
+const pkgCenters = {};
+const topLevel = DATA.packages.filter(p => !pkgTree[p.id].parent);
+if (topLevel.length === 1) {
+  pkgCenters[topLevel[0].id] = { x: W / 2, y: H / 2 };
+} else {
+  const topOffsets = packChildren(topLevel.map(p => p.id));
+  // Center the packed layout on the canvas (bounding box of drawn extents)
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const pkg of topLevel) {
+    const o = topOffsets[pkg.id];
+    const r = pkgR[pkg.id] + NODE_R + 10;
+    minX = Math.min(minX, o.x - r); maxX = Math.max(maxX, o.x + r);
+    minY = Math.min(minY, o.y - r); maxY = Math.max(maxY, o.y + r);
+  }
+  const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2;
+  topLevel.forEach(pkg => {
+    const o = topOffsets[pkg.id];
+    pkgCenters[pkg.id] = { x: W / 2 + o.x - cx, y: H / 2 + o.y - cy };
+  });
+}
+
+// Top-down: position children from packed offsets
+const sortedTopDown = Object.values(pkgTree).sort((a, b) =>
+  a.id.split('.').length - b.id.split('.').length
+);
+sortedTopDown.forEach(pkg => {
+  if (!pkgTree[pkg.id].parent) return;
+  const parent = pkgTree[pkg.id].parent;
+  if (!pkgCenters[parent] || !childOffsets[parent]) return;
+  const offset = childOffsets[parent][pkg.id];
+  if (!offset) return;
+  pkgCenters[pkg.id] = {
+    x: pkgCenters[parent].x + offset.x,
+    y: pkgCenters[parent].y + offset.y,
+  };
+});
+
+// Place nodes on ring inside their package
+// Packages with children: own modules go on the outer ring to avoid overlapping children
+// Leaf packages: own modules go on their calculated ring
+DATA.packages.forEach(pkg => {
+  const center = pkgCenters[pkg.id];
+  const hasChildren = pkgTree[pkg.id].children.length > 0;
+  const r = hasChildren
+    ? pkgR[pkg.id] + 6
+    : minRingR(pkg.modules.length);
+  pkg.modules.forEach((mod, mi) => {
+    const node = nodeMap[mod.id];
+    if (!node || !center) return;
+    const a = (2 * Math.PI * mi) / Math.max(pkg.modules.length, 1);
+    node.x = center.x + Math.cos(a) * r;
+    node.y = center.y + Math.sin(a) * r;
+  });
+});
+
+// Force simulation — only within packages, anchored to fixed package centers
+function simulate(iterations) {
+  const k = NODE_R * 2.5;
+
+  for (let iter = 0; iter < iterations; iter++) {
+    const temp = Math.pow(1 - iter / iterations, 2);
+    for (const n of allNodes) { n.fx = 0; n.fy = 0; }
+
+    // Repulsion between nodes in the same package
+    for (let i = 0; i < allNodes.length; i++) {
+      for (let j = i + 1; j < allNodes.length; j++) {
+        const a = allNodes[i], b = allNodes[j];
+        if (a.package !== b.package) continue;
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.1;
+        const force = k * k / dist;
+        a.fx += force * dx / dist; a.fy += force * dy / dist;
+        b.fx -= force * dx / dist; b.fy -= force * dy / dist;
+      }
+    }
+
+    // Strong anchor toward package center
+    for (const n of allNodes) {
+      const center = pkgCenters[n.package];
+      if (!center) continue;
+      n.fx += (center.x - n.x) * 0.4;
+      n.fy += (center.y - n.y) * 0.4;
+    }
+
+    // Apply forces with cooling
+    for (const n of allNodes) {
+      const mag = Math.sqrt(n.fx * n.fx + n.fy * n.fy) || 1;
+      const clamp = Math.min(mag, 20 * temp + 1);
+      n.x += n.fx / mag * clamp;
+      n.y += n.fy / mag * clamp;
+    }
+  }
+}
+
+simulate(0);
+
+const pkgDrawOrder = [...DATA.packages].sort((a, b) => pkgR[b.id] - pkgR[a.id]);
+
+function zoomToFit() {
+  const padding = 60;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const pkg of DATA.packages) {
+    const c = pkgCenters[pkg.id];
+    if (!c) continue;
+    const r = pkgR[pkg.id] + NODE_R + 10;
+    minX = Math.min(minX, c.x - r); maxX = Math.max(maxX, c.x + r);
+    minY = Math.min(minY, c.y - r); maxY = Math.max(maxY, c.y + r);
+  }
+  const bw = maxX - minX, bh = maxY - minY;
+  scale = Math.min((W - padding * 2) / bw, (H - padding * 2) / bh);
+  minScale = scale;
+  panX = (W - bw * scale) / 2 - minX * scale;
+  panY = (H - bh * scale) / 2 - minY * scale;
+  draw();
+}
+
+function zoomToPackage(pkg) {
+  const c = pkgCenters[pkg.id];
+  if (!c) return;
+  const r = pkgR[pkg.id] + NODE_R + 10;
+  const padding = 60;
+  scale = Math.min((W - padding * 2) / (r * 2), (H - padding * 2) / (r * 2));
+  panX = W / 2 - c.x * scale;
+  panY = H / 2 - c.y * scale;
+  draw();
+}
+
+// Node fill: blue (0 commits) → red (max commits), fixed lightness for text readability
+const _commitMax = Math.max(...allNodes.map(n => n.n_commits), 1);
+function nodeColor(node) {
+  const t = node.n_commits / _commitMax;   // 0 = untouched, 1 = hottest file
+  const hue = Math.round(220 - t * 220);   // 220 (blue) → 0 (red)
+  return `hsl(${hue}, 60%, 72%)`;           // pastel: high lightness, softer saturation
+}
+
+// Package border brightness: bright at top level, dark at deepest nesting
+const _maxPkgDepth = Math.max(...DATA.packages.map(p => p.id.split('.').filter(Boolean).length), 1);
+function pkgBorderColor(depth) {
+  const ratio = depth / _maxPkgDepth;
+  const l = Math.round(65 - ratio * 42);   // 65% (bright) → 23% (dim)
+  return `hsl(210, 18%, ${l}%)`;
+}
+
+// Compute the smallest enclosing circle for a set of nodes
+function enclosingCircle(nodes) {
+  if (!nodes.length) return { x: 0, y: 0, r: 0 };
+  const cx = nodes.reduce((s, n) => s + n.x, 0) / nodes.length;
+  const cy = nodes.reduce((s, n) => s + n.y, 0) / nodes.length;
+  let r = 0;
+  for (const n of nodes) {
+    const d = Math.sqrt((n.x - cx) ** 2 + (n.y - cy) ** 2) + n.r + 24;
+    if (d > r) r = d;
+  }
+  return { x: cx, y: cy, r: Math.max(r, 50) };
+}
+
+// Draw a directed arrow between two points
+const MIN_ARROW_LEN = 20;
+
+function drawArrow(x1, y1, x2, y2, color) {
+  const headLen = 10;
+  const dx = x2 - x1, dy = y2 - y1;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  if (dist < 2 * 22 + MIN_ARROW_LEN) return;
+  const ux = dx / dist, uy = dy / dist;
+  const sx = x1 + ux * 22, sy = y1 + uy * 22;
+  const ex = x2 - ux * 22, ey = y2 - uy * 22;
+
+  ctx.beginPath();
+  ctx.setLineDash([]);
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(ex, ey);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  const angle = Math.atan2(dy, dx);
+  ctx.beginPath();
+  ctx.moveTo(ex, ey);
+  ctx.lineTo(ex - headLen * Math.cos(angle - 0.4), ey - headLen * Math.sin(angle - 0.4));
+  ctx.lineTo(ex - headLen * Math.cos(angle + 0.4), ey - headLen * Math.sin(angle + 0.4));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+// Test filter
+let showTests = false;
+function isTest(id) { return id.toLowerCase().includes('test'); }
+
+// Pan, zoom, and selection state
+let panX = 0, panY = 0, scale = 1, minScale = 0.05;
+let isPanning = false, panStartX = 0, panStartY = 0;
+let selectedNode = null;
+
+function toWorldX(screenX) { return (screenX - panX) / scale; }
+function toWorldY(screenY) { return (screenY - panY) / scale; }
+
+canvas.addEventListener('mousedown', (e) => {
+  if (e.button === 1) { e.preventDefault(); isPanning = true; panStartX = e.clientX - panX; panStartY = e.clientY - panY; }
+});
+canvas.addEventListener('mouseup', () => { isPanning = false; });
+canvas.addEventListener('mouseleave', () => { isPanning = false; });
+
+// Touch: single finger = pan, two fingers = pinch zoom
+let touchStartPan = null, lastPinchDist = null;
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault();
+  if (e.touches.length === 1) {
+    touchStartPan = { x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY };
+    lastPinchDist = null;
+  } else if (e.touches.length === 2) {
+    touchStartPan = null;
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    lastPinchDist = Math.sqrt(dx*dx + dy*dy);
+  }
+}, { passive: false });
+canvas.addEventListener('touchmove', (e) => {
+  e.preventDefault();
+  if (e.touches.length === 1 && touchStartPan) {
+    panX = e.touches[0].clientX - touchStartPan.x;
+    panY = e.touches[0].clientY - touchStartPan.y;
+    scheduleDraw();
+  } else if (e.touches.length === 2 && lastPinchDist !== null) {
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const ratio = dist / lastPinchDist;
+    const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+    const my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+    const newScale = Math.max(minScale, Math.min(5, scale * ratio));
+    const applied = newScale / scale;
+    panX = mx - (mx - panX) * applied;
+    panY = my - (my - panY) * applied;
+    scale = newScale;
+    lastPinchDist = dist;
+    scheduleDraw();
+  }
+}, { passive: false });
+canvas.addEventListener('touchend', (e) => {
+  if (e.touches.length === 0) { touchStartPan = null; lastPinchDist = null; }
+  if (e.touches.length === 1) { touchStartPan = { x: e.touches[0].clientX - panX, y: e.touches[0].clientY - panY }; }
+}, { passive: false });
+
+let rafPending = false;
+function scheduleDraw() {
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(() => { rafPending = false; draw(); });
+}
+
+canvas.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  const delta = e.deltaY > 0 ? 0.9 : 1.1;
+  const newScale = Math.max(minScale, Math.min(5, scale * delta));
+  const applied = newScale / scale;   // actual ratio after clamping
+  panX = mx - (mx - panX) * applied;
+  panY = my - (my - panY) * applied;
+  scale = newScale;
+  scheduleDraw();
+}, { passive: false });
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(panX, panY);
+  ctx.scale(scale, scale);
+
+  // Package circles — largest first so parents render behind children
+  for (const pkg of pkgDrawOrder) {
+    if (!showTests && isTest(pkg.id)) continue;
+    const center = pkgCenters[pkg.id];
+    if (!center) continue;
+    const r = pkgR[pkg.id] + NODE_R + 10;
+    const depth = pkg.id.split('.').filter(Boolean).length;
+    const fills = ['rgba(22,27,34,0.7)', 'rgba(33,38,45,0.7)', 'rgba(44,51,58,0.7)', 'rgba(55,62,70,0.7)'];
+    const fill = fills[Math.min(depth, fills.length - 1)];
+
+    ctx.beginPath();
+    ctx.arc(center.x, center.y, r, 0, 2 * Math.PI);
+    ctx.fillStyle = fill;
+    ctx.fill();
+    ctx.strokeStyle = pkgBorderColor(depth);
+    ctx.lineWidth = Math.max(0.8, 2 - depth * 0.3);
+    ctx.setLineDash([6, 3]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.font = `${depth === 0 ? 13 : 11}px Fira Code, monospace`;
+    ctx.textAlign = 'center';
+    ctx.shadowColor = 'rgba(0,0,0,0.9)';
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = '#e6edf3';
+    ctx.fillText(pkg.id, center.x, center.y - r + 16);
+    ctx.shadowBlur = 0;
+  }
+
+  // Edges
+  for (const edge of allEdges) {
+    if (!showTests && (isTest(edge.source.id) || isTest(edge.target.id))) continue;
+    const key = edge.source.id + '->' + edge.target.id;
+    const color = cycleEdgeSet.has(key) ? 'rgba(218,54,51,0.9)' : 'rgba(139,148,158,0.6)';
+    drawArrow(edge.source.x, edge.source.y, edge.target.x, edge.target.y, color);
+  }
+
+  // Module nodes
+  for (const node of allNodes) {
+    if (!showTests && isTest(node.id)) continue;
+
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, node.r, 0, 2 * Math.PI);
+    ctx.fillStyle = nodeColor(node);
+    ctx.fill();
+    ctx.strokeStyle = '#0d1117';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Selection ring
+    if (node === selectedNode) {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.r + 5, 0, 2 * Math.PI);
+      ctx.strokeStyle = '#58a6ff';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    const label = node.id.split('.').pop();
+    ctx.font = '10px Fira Code, monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowBlur = 3;
+    ctx.fillStyle = '#e6edf3';
+    ctx.fillText(label, node.x, node.y);
+    ctx.shadowBlur = 0;
+    ctx.textBaseline = 'alphabetic';
+  }
+  ctx.restore();
+}
+
+draw();
+zoomToFit();
+
+// Interaction
+let hoveredNode = null;
+
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  if (isPanning) {
+    panX = e.clientX - panStartX;
+    panY = e.clientY - panStartY;
+    scheduleDraw();
+  }
+  const mx = toWorldX(e.clientX - rect.left), my = toWorldY(e.clientY - rect.top);
+  hoveredNode = null;
+  for (const node of allNodes) {
+    if (Math.sqrt((mx - node.x) ** 2 + (my - node.y) ** 2) < node.r) {
+      hoveredNode = node;
+      break;
+    }
+  }
+  if (hoveredNode) {
+    canvas.style.cursor = 'pointer';
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 14) + 'px';
+    tooltip.style.top = (e.clientY - 10) + 'px';
+    tooltip.innerHTML =
+      '<strong>' + hoveredNode.id + '</strong><br>' +
+      'Commits: ' + hoveredNode.n_commits + '<br>' +
+      'Churn: +' + hoveredNode.added_lines + '/-' + hoveredNode.removed_lines;
+  } else {
+    canvas.style.cursor = 'default';
+    tooltip.style.display = 'none';
+  }
+});
+
+canvas.addEventListener('click', (e) => {
+  const target = hoveredNode;
+  if (!target) {
+    const rect = canvas.getBoundingClientRect();
+    const wx = toWorldX(e.clientX - rect.left);
+    const wy = toWorldY(e.clientY - rect.top);
+    // Find smallest package containing the click (most nested wins)
+    const hit = DATA.packages
+      .filter(pkg => {
+        if (!showTests && isTest(pkg.id)) return false;
+        const c = pkgCenters[pkg.id];
+        if (!c) return false;
+        const r = pkgR[pkg.id] + NODE_R + 10;
+        const dx = wx - c.x, dy = wy - c.y;
+        return Math.sqrt(dx*dx + dy*dy) < r;
+      })
+      .sort((a, b) => pkgR[a.id] - pkgR[b.id])[0];
+    if (hit) { zoomToPackage(hit); return; }
+    selectedNode = null;
+    draw();
+    return;
+  }
+  selectedNode = target;
+  draw();
+  openModal(target);
+});
+
+function openModal(n) {
+  modalTitle.textContent = n.id;
+  modalBody.innerHTML =
+    '<div id="modal-stats">' +
+    '<div class="row"><span class="label">Commits</span><span class="value">' + n.n_commits + '</span></div>' +
+    '<div class="row"><span class="label">Fan-in</span><span class="value">' + n.fan_in + '</span></div>' +
+    '<div class="row"><span class="label">Fan-out</span><span class="value">' + n.fan_out + '</span></div>' +
+    '<div class="row"><span class="label">Lines added</span><span class="value">+' + n.added_lines + '</span></div>' +
+    '<div class="row"><span class="label">Lines removed</span><span class="value">-' + n.removed_lines + '</span></div>' +
+    '<div class="row full"><span class="label">Last author</span><span class="value">' + (n.last_author || '&mdash;') + '</span></div>' +
+    '</div>' +
+    '<div class="edges"><h3>Imports (' + n.edges.length + ')</h3>' +
+    (n.edges.filter(e => nodeMap[e]).map(e => '<div class="edge-item edge-nav" data-node-id="' + e + '">&rarr; ' + e + '</div>').join('') ||
+      '<div style="color:#8b949e;font-size:12px">None</div>') +
+    '</div>' +
+    (function() {
+      const incoming = (inEdges[n.id] || []).filter(id => nodeMap[id] && !(!showTests && isTest(id)));
+      return '<div class="edges"><h3>Imported by (' + incoming.length + ')</h3>' +
+        (incoming.map(e => '<div class="edge-item edge-nav" data-node-id="' + e + '">&larr; ' + e + '</div>').join('') ||
+          '<div style="color:#8b949e;font-size:12px">None</div>') +
+        '</div>';
+    })() +
+    (function() {
+      const unused = n.symbols_to_review || [];
+      if (!unused.length) return '';
+      return '<div class="edges"><h3 style="color:#da3633">Review (' + unused.length + ')</h3>' +
+        unused.map(d => '<div class="edge-item" style="color:#da3633">' + d.split('.').pop() + '</div>').join('') +
+        '</div>';
+    })();
+  modal.style.display = 'block';
+  overlay.style.display = 'block';
+}
+
+modalBody.addEventListener('click', (e) => {
+  const id = e.target.dataset.nodeId;
+  if (!id || !nodeMap[id]) return;
+  selectedNode = nodeMap[id];
+  draw();
+  openModal(nodeMap[id]);
+});
+
+document.getElementById('btn-fit').addEventListener('click', zoomToFit);
+document.getElementById('modal-close').addEventListener('click', closeModal);
+overlay.addEventListener('click', closeModal);
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    selectedNode = null;
+    draw();
+    searchInput.value = '';
+    searchResults.style.display = 'none';
+  }
+  if (e.key === 'f' || e.key === 'F') zoomToFit();
+});
+document.getElementById('toggle-tests').addEventListener('change', (e) => {
+  showTests = e.target.checked;
+  draw();
+});
+
+// Search
+const searchInput = document.getElementById('search-input');
+const searchResults = document.getElementById('search-results');
+let activeIdx = -1;
+
+function fuzzyScore(query, str) {
+  let qi = 0, score = 0, lastMatch = -1;
+  for (let i = 0; i < str.length && qi < query.length; i++) {
+    if (str[i].toLowerCase() === query[qi].toLowerCase()) {
+      score += (lastMatch === i - 1) ? 2 : 1;
+      lastMatch = i;
+      qi++;
+    }
+  }
+  return qi === query.length ? score : -1;
+}
+
+function fuzzyHighlight(query, str) {
+  let qi = 0, out = '';
+  for (let i = 0; i < str.length; i++) {
+    if (qi < query.length && str[i].toLowerCase() === query[qi].toLowerCase()) {
+      out += '<span class="search-match">' + str[i] + '</span>';
+      qi++;
+    } else {
+      out += str[i];
+    }
+  }
+  return out;
+}
+
+function zoomToNode(node) {
+  const padding = 120;
+  scale = Math.min((W - padding * 2) / (NODE_R * 6), (H - padding * 2) / (NODE_R * 6), 4);
+  panX = W / 2 - node.x * scale;
+  panY = H / 2 - node.y * scale;
+  selectedNode = node;
+  draw();
+  openModal(node);
+}
+
+function runSearch() {
+  const q = searchInput.value.trim();
+  searchResults.innerHTML = '';
+  activeIdx = -1;
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const results = allNodes
+    .filter(n => !(!showTests && isTest(n.id)))
+    .map(n => ({ node: n, score: fuzzyScore(q, n.id) }))
+    .filter(r => r.score >= 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10);
+  if (!results.length) { searchResults.style.display = 'none'; return; }
+  results.forEach(r => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.innerHTML = fuzzyHighlight(q, r.node.id);
+    el.addEventListener('mousedown', e => {
+      e.preventDefault();
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      zoomToNode(r.node);
+    });
+    searchResults.appendChild(el);
+  });
+  searchResults.style.display = 'block';
+}
+
+searchInput.addEventListener('input', runSearch);
+
+searchInput.addEventListener('keydown', e => {
+  const items = searchResults.querySelectorAll('.search-item');
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    activeIdx = Math.min(activeIdx + 1, items.length - 1);
+    items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    activeIdx = Math.max(activeIdx - 1, 0);
+    items.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+  } else if (e.key === 'Enter') {
+    const target = activeIdx >= 0 ? items[activeIdx] : items[0];
+    if (target) target.dispatchEvent(new MouseEvent('mousedown'));
+  } else if (e.key === 'Escape') {
+    searchInput.value = '';
+    searchResults.style.display = 'none';
+    searchInput.blur();
+  }
+});
+
+searchInput.addEventListener('blur', () => {
+  setTimeout(() => { searchResults.style.display = 'none'; }, 150);
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== searchInput) {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+});
+
+function closeModal() {
+  modal.style.display = 'none';
+  overlay.style.display = 'none';
+}
+</script>
+
+</body>
+</html>

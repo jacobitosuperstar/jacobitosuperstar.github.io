@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script>
+    var lang = (navigator.languages && navigator.languages[0]) || navigator.language || 'en';
+    window.location.replace(lang.toLowerCase().startsWith('es') ? '/es/' : '/en/');
+  </script>
+  <!-- fallback for no-JS: default to English -->
+  <meta http-equiv="refresh" content="0; url=/en/">
+</head>
+<body></body>
+</html>
