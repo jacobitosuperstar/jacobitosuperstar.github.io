@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design Showcase — Light — jacobitosuperstar</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;700&family=IBM+Plex+Mono:wght@300;400;700&family=JetBrains+Mono:wght@300;400;700&family=Space+Mono:wght@400;700&family=Source+Code+Pro:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design tokens ─────────────────────────────────────── */
+    :root {
+      --a1: #fa8072;
+      --a2: #c9952a;
+      --font: 'Fira Code', monospace;
+    }
+
+    body {
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.6;
+      background: #f7f5f0;
+      color: #111;
+    }
+
+    /* ── Theme switcher link ───────────────────────────────── */
+    .theme-switch {
+      position: fixed;
+      top: 0.75rem;
+      left: 1.25rem;
+      z-index: 9999;
+      font-family: var(--font);
+      font-size: 0.55rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.25);
+      text-decoration: none;
+    }
+    .theme-switch:hover { color: rgba(0,0,0,0.6); }
+
+    /* ══════════════════════════════════════════════════════
+       POP-CARD COMPONENT
+    ══════════════════════════════════════════════════════ */
+    .pc-outer {
+      position: relative;
+    }
+    .pc-outer::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      background-image: radial-gradient(circle, var(--a1) 1.5px, transparent 1.5px);
+      background-size: 8px 8px;
+    }
+    .pc-outer:hover::after { opacity: 1; }
+    .pc-outer:hover .pc { transform: translate(-4px, -4px); }
+
+    .pc {
+      position: relative;
+      z-index: 1;
+      background: #f7f5f0;
+      padding: 1.25rem 1.5rem;
+      border: 1.5px solid var(--a1);
+      transition: transform 0.2s ease;
+    }
+    .pc.pc-alt { border-color: var(--a2); }
+
+    .pc-outer.pc-outer-alt::after {
+      background-image: radial-gradient(circle, var(--a2) 1.5px, transparent 1.5px);
+      background-size: 8px 8px;
+    }
+
+    /* ── Pattern overrides on body ─────────────────────── */
+    body.pat-net .pc-outer:not(.pc-outer-alt)::after {
+      background-image:
+        linear-gradient(45deg, var(--a1) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a1) 1px, transparent 1px);
+      background-size: 10px 10px;
+    }
+    body.pat-net .pc-outer.pc-outer-alt::after {
+      background-image:
+        linear-gradient(45deg, var(--a2) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a2) 1px, transparent 1px);
+      background-size: 10px 10px;
+    }
+
+    body.pat-zigzag .pc-outer:not(.pc-outer-alt)::after {
+      background-image:
+        linear-gradient(135deg, var(--a1) 25%, transparent 25%),
+        linear-gradient(225deg, var(--a1) 25%, transparent 25%),
+        linear-gradient(315deg, var(--a1) 25%, transparent 25%),
+        linear-gradient(45deg,  var(--a1) 25%, transparent 25%);
+      background-size: 10px 10px;
+      background-position: -5px 0, -5px 0, 0 0, 0 0;
+    }
+    body.pat-zigzag .pc-outer.pc-outer-alt::after {
+      background-image:
+        linear-gradient(135deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(225deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(315deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(45deg,  var(--a2) 25%, transparent 25%);
+      background-size: 10px 10px;
+      background-position: -5px 0, -5px 0, 0 0, 0 0;
+    }
+
+    body.pat-stepped .pc-outer:not(.pc-outer-alt)::after {
+      background-image:
+        linear-gradient(45deg, transparent 33.33%, var(--a1) 33.33%, var(--a1) 50%, transparent 50%, transparent 83.33%, var(--a1) 83.33%),
+        linear-gradient(45deg, var(--a1) 16.66%, transparent 16.66%, transparent 66.66%, var(--a1) 66.66%);
+      background-size: 6px 6px;
+    }
+    body.pat-stepped .pc-outer.pc-outer-alt::after {
+      background-image:
+        linear-gradient(45deg, transparent 33.33%, var(--a2) 33.33%, var(--a2) 50%, transparent 50%, transparent 83.33%, var(--a2) 83.33%),
+        linear-gradient(45deg, var(--a2) 16.66%, transparent 16.66%, transparent 66.66%, var(--a2) 66.66%);
+      background-size: 6px 6px;
+    }
+
+    body.pat-diamond .pc-outer:not(.pc-outer-alt)::after {
+      background-image:
+        linear-gradient(45deg,  var(--a1) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a1) 1px, transparent 1px),
+        radial-gradient(circle,  var(--a1) 1px, transparent 1px);
+      background-size: 10px 10px, 10px 10px, 8px 8px;
+      background-position: 0 0, 0 0, 4px 4px;
+    }
+    body.pat-diamond .pc-outer.pc-outer-alt::after {
+      background-image:
+        linear-gradient(45deg,  var(--a2) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a2) 1px, transparent 1px),
+        radial-gradient(circle,  var(--a2) 1px, transparent 1px);
+      background-size: 10px 10px, 10px 10px, 8px 8px;
+      background-position: 0 0, 0 0, 4px 4px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       LAYOUT / SECTIONS
+    ══════════════════════════════════════════════════════ */
+    .section-light {
+      background: #f7f5f0;
+      padding: 3rem 2.5rem 4rem;
+    }
+    .section-patterns-light {
+      background: #f7f5f0;
+      padding: 3rem 2.5rem 4rem;
+      border-top: 1px solid #e0ddd8;
+    }
+
+    .section-wrap { max-width: 960px; margin: 0 auto; }
+
+    .section-eyebrow {
+      font-size: 0.55rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--a1);
+      margin-bottom: 0.5rem;
+    }
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 2.5rem;
+      color: #111;
+    }
+
+    /* ── Navbar mockup ─────────────────────────────────── */
+    .nav-mock {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.12);
+      margin-bottom: 2.5rem;
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--a1);
+      letter-spacing: 0.02em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.75rem;
+      color: #888;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+    }
+    .nav-links a.active {
+      color: var(--a1);
+      border-bottom: 1.5px solid var(--a1);
+      padding-bottom: 1px;
+    }
+
+    /* ── Typography scale ──────────────────────────────── */
+    .type-scale { margin-bottom: 2.5rem; }
+    .type-scale h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.5rem;
+      color: #111;
+    }
+    .type-scale h2 {
+      font-size: 1.35rem;
+      font-weight: 400;
+      line-height: 1.3;
+      color: var(--a1);
+      margin-bottom: 0.5rem;
+    }
+    .type-scale h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 0.75rem;
+    }
+    .type-scale p {
+      font-size: 0.8rem;
+      color: #555;
+      max-width: 540px;
+      margin-bottom: 0.75rem;
+    }
+    .type-scale code {
+      font-size: 0.75rem;
+      background: #e8e4df;
+      color: var(--a1);
+      padding: 0.15rem 0.4rem;
+      border: 1px solid #ccc;
+    }
+
+    /* ── Cards grid ────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .card-tag {
+      font-size: 0.5rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 0.5rem;
+    }
+    .card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--a1);
+      margin-bottom: 0.4rem;
+    }
+    .pc-alt .card-title { color: var(--a2); }
+    .card-desc {
+      font-size: 0.65rem;
+      color: #777;
+      line-height: 1.5;
+    }
+
+    /* ── Code block ────────────────────────────────────── */
+    .code-block {
+      background: #e8e4df;
+      border: 1px solid #ccc;
+      padding: 1.25rem 1.5rem;
+      font-size: 0.72rem;
+      line-height: 1.7;
+      color: #555;
+      overflow-x: auto;
+    }
+    .code-block pre {
+      font-family: var(--font);
+    }
+    .code-block .kw  { color: var(--a1); }
+    .code-block .fn  { color: #8a6a00; }
+    .code-block .st  { color: #2d7a4a; }
+    .code-block .cm  { color: #aaa; }
+    .code-block .nm  { color: #333; }
+
+    /* ══════════════════════════════════════════════════════
+       PATTERN MATRIX
+    ══════════════════════════════════════════════════════ */
+    .pattern-matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.25rem;
+    }
+    .pm-outer { position: relative; }
+    .pm-card {
+      position: relative;
+      z-index: 1;
+      background: var(--a1);
+      padding: 1rem 1rem 0.875rem;
+      transform: translate(-4px, -4px);
+    }
+    .pm-outer::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    .pm-dots::after {
+      background-image: radial-gradient(circle, var(--a2) 1.5px, transparent 1.5px);
+      background-size: 8px 8px;
+    }
+    .pm-net::after {
+      background-image:
+        linear-gradient(45deg, var(--a2) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a2) 1px, transparent 1px);
+      background-size: 10px 10px;
+    }
+    .pm-zigzag::after {
+      background-image:
+        linear-gradient(135deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(225deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(315deg, var(--a2) 25%, transparent 25%),
+        linear-gradient(45deg,  var(--a2) 25%, transparent 25%);
+      background-size: 10px 10px;
+      background-position: -5px 0, -5px 0, 0 0, 0 0;
+    }
+    .pm-stepped::after {
+      background-image:
+        linear-gradient(45deg, transparent 33.33%, var(--a2) 33.33%, var(--a2) 50%, transparent 50%, transparent 83.33%, var(--a2) 83.33%),
+        linear-gradient(45deg, var(--a2) 16.66%, transparent 16.66%, transparent 66.66%, var(--a2) 66.66%);
+      background-size: 6px 6px;
+    }
+    .pm-diamond::after {
+      background-image:
+        linear-gradient(45deg,  var(--a2) 1px, transparent 1px),
+        linear-gradient(135deg, var(--a2) 1px, transparent 1px),
+        radial-gradient(circle,  var(--a2) 1px, transparent 1px);
+      background-size: 10px 10px, 10px 10px, 8px 8px;
+      background-position: 0 0, 0 0, 4px 4px;
+    }
+
+    .pm-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 0.2rem;
+    }
+    .pm-ref {
+      font-size: 0.5rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.4);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CONTROLS PANEL
+    ══════════════════════════════════════════════════════ */
+    .ctrl-panel {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      z-index: 9999;
+      background: #0e0e0e;
+      border: 1.5px solid #2a2a2a;
+      padding: 1rem 1.25rem;
+      min-width: 260px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .ctrl-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+    }
+    .ctrl-row:last-child { margin-bottom: 0; }
+    .ctrl-label {
+      width: 68px;
+      flex-shrink: 0;
+      color: rgba(255,255,255,0.25);
+    }
+    .ctrl-patterns { display: flex; gap: 4px; }
+    .pat-btn {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid #2a2a2a;
+      background: #111;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.15s;
+    }
+    .pat-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .pat-btn:hover { border-color: #555; }
+    .pat-btn.active { border-color: #fff; }
+
+    .pat-btn[data-pat=""]::after {
+      background-image: radial-gradient(circle, #888 1.5px, transparent 1.5px);
+      background-size: 8px 8px;
+    }
+    .pat-btn[data-pat="pat-net"]::after {
+      background-image:
+        linear-gradient(45deg, #888 1px, transparent 1px),
+        linear-gradient(135deg, #888 1px, transparent 1px);
+      background-size: 10px 10px;
+    }
+    .pat-btn[data-pat="pat-zigzag"]::after {
+      background-image:
+        linear-gradient(135deg, #888 25%, transparent 25%),
+        linear-gradient(225deg, #888 25%, transparent 25%),
+        linear-gradient(315deg, #888 25%, transparent 25%),
+        linear-gradient(45deg,  #888 25%, transparent 25%);
+      background-size: 10px 10px;
+      background-position: -5px 0, -5px 0, 0 0, 0 0;
+    }
+    .pat-btn[data-pat="pat-stepped"]::after {
+      background-image:
+        linear-gradient(45deg, transparent 33.33%, #888 33.33%, #888 50%, transparent 50%, transparent 83.33%, #888 83.33%),
+        linear-gradient(45deg, #888 16.66%, transparent 16.66%, transparent 66.66%, #888 66.66%);
+      background-size: 6px 6px;
+    }
+    .pat-btn[data-pat="pat-diamond"]::after {
+      background-image:
+        linear-gradient(45deg,  #888 1px, transparent 1px),
+        linear-gradient(135deg, #888 1px, transparent 1px),
+        radial-gradient(circle,  #888 1px, transparent 1px);
+      background-size: 10px 10px, 10px 10px, 8px 8px;
+      background-position: 0 0, 0 0, 4px 4px;
+    }
+
+    .ctrl-swatches { display: flex; flex-wrap: wrap; gap: 4px; }
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.12s;
+    }
+    .swatch:hover { border-color: rgba(255,255,255,0.5); }
+    .swatch.active { border-color: #fff; }
+
+    .ctrl-select {
+      background: #111;
+      border: 1px solid #2a2a2a;
+      color: rgba(255,255,255,0.6);
+      font-family: 'Fira Code', monospace;
+      font-size: 0.6rem;
+      padding: 0.25rem 0.4rem;
+      cursor: pointer;
+      outline: none;
+      flex: 1;
+    }
+    .ctrl-select:hover { border-color: #444; }
+
+    .ctrl-pat-names {
+      display: flex;
+      gap: 4px;
+      margin-top: 2px;
+      padding-left: calc(68px + 0.6rem);
+    }
+    .ctrl-pat-name {
+      width: 32px;
+      text-align: center;
+      font-size: 0.42rem;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+
+<a class="theme-switch" href="logo-prototype-dark.html">→ dark</a>
+
+<!-- ════════════════════════════════════════════════════════
+     LIGHT SHOWCASE SECTION
+════════════════════════════════════════════════════════ -->
+<section class="section-light">
+  <div class="section-wrap">
+    <p class="section-eyebrow">Light background showcase</p>
+    <p class="section-title">Components on off-white</p>
+
+    <nav class="nav-mock">
+      <span class="nav-brand">jacobitosuperstar</span>
+      <ul class="nav-links">
+        <li><a href="#" class="active">proyectos</a></li>
+        <li><a href="#">escritura</a></li>
+        <li><a href="#">cv</a></li>
+        <li><a href="#">contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="type-scale">
+      <h1>Jacobo Bedoya</h1>
+      <h2>Software Engineer</h2>
+      <h3>Projects &amp; Writing</h3>
+      <p>Building systems that are simple, fast, and honest. Interested in the intersection of concurrency, distributed systems, and developer tooling. Currently writing about <code>asyncio</code> and cooperative scheduling.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <div class="pc-outer">
+        <div class="pc">
+          <div class="card-tag">proyecto</div>
+          <div class="card-title">DependaMan</div>
+          <div class="card-desc">Automated dependency graph analysis and upgrade orchestration for monorepos. Zero config, unopinionated output.</div>
+        </div>
+      </div>
+
+      <div class="pc-outer pc-outer-alt">
+        <div class="pc pc-alt">
+          <div class="card-tag">artículo</div>
+          <div class="card-title" style="color: var(--a1);">On Concurrency</div>
+          <div class="card-desc">Why "concurrency" is the right umbrella term — covering both I/O-bound cooperative models and CPU-bound parallel execution.</div>
+        </div>
+      </div>
+
+      <div class="pc-outer">
+        <div class="pc">
+          <div class="card-tag">cv</div>
+          <div class="card-title">Experience</div>
+          <div class="card-desc">Five years across fintech, logistics, and open source. Comfortable with Python, Go, and whatever the job needs.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="code-block"><pre><span class="cm"># dependency_walker.py</span>
+<span class="kw">import</span> <span class="nm">asyncio</span>
+<span class="kw">from</span> <span class="nm">collections</span> <span class="kw">import</span> <span class="nm">defaultdict</span>
+
+<span class="kw">async def</span> <span class="fn">resolve</span>(pkg: <span class="nm">str</span>, seen: <span class="nm">set</span>) -> <span class="nm">dict</span>:
+    <span class="kw">if</span> pkg <span class="kw">in</span> seen:
+        <span class="kw">return</span> {}
+    seen.add(pkg)
+    deps = <span class="kw">await</span> <span class="fn">fetch_deps</span>(pkg)
+    results = <span class="kw">await</span> asyncio.<span class="fn">gather</span>(*[<span class="fn">resolve</span>(d, seen) <span class="kw">for</span> d <span class="kw">in</span> deps])
+    <span class="kw">return</span> {pkg: results}</pre></div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     LIGHT PATTERN REFERENCE
+════════════════════════════════════════════════════════ -->
+<section class="section-patterns-light">
+  <div class="section-wrap">
+    <p class="section-eyebrow">Static reference</p>
+    <p class="section-title">Pattern reference</p>
+
+    <div class="pattern-matrix">
+
+      <div class="pm-outer pm-dots">
+        <div class="pm-card">
+          <div class="pm-name">Dots</div>
+          <div class="pm-ref">dot grid</div>
+        </div>
+      </div>
+
+      <div class="pm-outer pm-net">
+        <div class="pm-card">
+          <div class="pm-name">Net</div>
+          <div class="pm-ref">vueltiao weave</div>
+        </div>
+      </div>
+
+      <div class="pm-outer pm-zigzag">
+        <div class="pm-card">
+          <div class="pm-name">Zigzag</div>
+          <div class="pm-ref">textile border</div>
+        </div>
+      </div>
+
+      <div class="pm-outer pm-stepped">
+        <div class="pm-card">
+          <div class="pm-name">Stepped</div>
+          <div class="pm-ref">Andean / Muisca</div>
+        </div>
+      </div>
+
+      <div class="pm-outer pm-diamond">
+        <div class="pm-card">
+          <div class="pm-name">Diamond</div>
+          <div class="pm-ref">Wayuu mochila</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     CONTROLS PANEL
+════════════════════════════════════════════════════════ -->
+<div class="ctrl-panel">
+
+  <div class="ctrl-row">
+    <span class="ctrl-label">Pattern</span>
+    <div class="ctrl-patterns">
+      <button class="pat-btn active" data-pat="" title="dots"></button>
+      <button class="pat-btn" data-pat="pat-net" title="net"></button>
+      <button class="pat-btn" data-pat="pat-zigzag" title="zigzag"></button>
+      <button class="pat-btn" data-pat="pat-stepped" title="stepped"></button>
+      <button class="pat-btn" data-pat="pat-diamond" title="diamond"></button>
+    </div>
+  </div>
+  <div class="ctrl-pat-names">
+    <span class="ctrl-pat-name">dots</span>
+    <span class="ctrl-pat-name">net</span>
+    <span class="ctrl-pat-name">zig</span>
+    <span class="ctrl-pat-name">step</span>
+    <span class="ctrl-pat-name">dia</span>
+  </div>
+
+  <div class="ctrl-row" style="margin-top: 0.6rem;">
+    <span class="ctrl-label">Primary</span>
+    <div class="ctrl-swatches">
+      <div class="swatch active" data-a1="#fa8072" style="background:#fa8072;" title="salmon"></div>
+      <div class="swatch" data-a1="#c0392b" style="background:#c0392b;" title="rojo"></div>
+      <div class="swatch" data-a1="#e67e22" style="background:#e67e22;" title="naranja"></div>
+      <div class="swatch" data-a1="#e8c44a" style="background:#e8c44a;" title="amarillo"></div>
+      <div class="swatch" data-a1="#27ae60" style="background:#27ae60;" title="verde"></div>
+      <div class="swatch" data-a1="#2980b9" style="background:#2980b9;" title="azul"></div>
+      <div class="swatch" data-a1="#8e44ad" style="background:#8e44ad;" title="violeta"></div>
+      <div class="swatch" data-a1="#c9952a" style="background:#c9952a;" title="oro viejo"></div>
+      <div class="swatch" data-a1="#b5541a" style="background:#b5541a;" title="cobre"></div>
+      <div class="swatch" data-a1="#1a7a4a" style="background:#1a7a4a;" title="esmeralda"></div>
+    </div>
+  </div>
+
+  <div class="ctrl-row">
+    <span class="ctrl-label">Secondary</span>
+    <div class="ctrl-swatches">
+      <div class="swatch" data-a2="#fa8072" style="background:#fa8072;" title="salmon"></div>
+      <div class="swatch" data-a2="#c0392b" style="background:#c0392b;" title="rojo"></div>
+      <div class="swatch" data-a2="#e67e22" style="background:#e67e22;" title="naranja"></div>
+      <div class="swatch" data-a2="#e8c44a" style="background:#e8c44a;" title="amarillo"></div>
+      <div class="swatch" data-a2="#27ae60" style="background:#27ae60;" title="verde"></div>
+      <div class="swatch" data-a2="#2980b9" style="background:#2980b9;" title="azul"></div>
+      <div class="swatch" data-a2="#8e44ad" style="background:#8e44ad;" title="violeta"></div>
+      <div class="swatch active" data-a2="#c9952a" style="background:#c9952a;" title="oro viejo"></div>
+      <div class="swatch" data-a2="#b5541a" style="background:#b5541a;" title="cobre"></div>
+      <div class="swatch" data-a2="#1a7a4a" style="background:#1a7a4a;" title="esmeralda"></div>
+    </div>
+  </div>
+
+  <div class="ctrl-row">
+    <span class="ctrl-label">Font</span>
+    <select class="ctrl-select" id="font-select">
+      <option value="'Fira Code', monospace">Fira Code</option>
+      <option value="'IBM Plex Mono', monospace">IBM Plex Mono</option>
+      <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+      <option value="'Space Mono', monospace">Space Mono</option>
+      <option value="'Source Code Pro', monospace">Source Code Pro</option>
+    </select>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('[data-a1]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      document.documentElement.style.setProperty('--a1', el.dataset.a1);
+      document.querySelectorAll('[data-a1]').forEach(function(s) { s.classList.remove('active'); });
+      el.classList.add('active');
+    });
+  });
+
+  document.querySelectorAll('[data-a2]').forEach(function(el) {
+    el.addEventListener('click', function() {
+      document.documentElement.style.setProperty('--a2', el.dataset.a2);
+      document.querySelectorAll('[data-a2]').forEach(function(s) { s.classList.remove('active'); });
+      el.classList.add('active');
+    });
+  });
+
+  var PATTERNS = ['', 'pat-net', 'pat-zigzag', 'pat-stepped', 'pat-diamond'];
+  document.querySelectorAll('.pat-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var pat = btn.dataset.pat;
+      PATTERNS.forEach(function(p) { if (p) document.body.classList.remove(p); });
+      if (pat) document.body.classList.add(pat);
+      document.querySelectorAll('.pat-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+
+  document.getElementById('font-select').addEventListener('change', function() {
+    var f = this.value;
+    document.documentElement.style.setProperty('--font', f);
+    document.body.style.fontFamily = f;
+  });
+</script>
+
+</body>
+</html>
