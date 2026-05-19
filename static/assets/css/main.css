@@ -132,7 +132,7 @@ main {
     justify-content: center;
 }
 
-.cv-job-company { flex: 0 0 auto; }
+.cv-job-company { flex: 0 1 auto; min-width: 0; max-width: 55%; }
 .cv-job-details  { flex: 1 1 0; min-width: 0; }
 
 @media (max-width: 600px) {
