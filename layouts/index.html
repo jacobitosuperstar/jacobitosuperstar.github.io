@@ -10,14 +10,18 @@
       {{ if eq .Language.Lang "es" }}Proyectos{{ else }}Projects{{ end }}
     </h2>
     {{ range $projects }}
-    <div class="pop-card-outer" onclick="window.location='{{ .Permalink }}';">
+    {{ $dest := .Permalink }}{{ with .Params.project_website }}{{ $dest = . }}{{ end }}
+    <div class="pop-card-outer" onclick="window.open('{{ $dest }}','_blank');">
       <div class="pop-card">
         <h3 style="margin: 0 0 0.3rem 0;">
           <a
-            href="{{ .Permalink }}"
+            href="{{ $dest }}"
+            target="_blank"
+            rel="noopener noreferrer"
             style="color: palegoldenrod; text-decoration: none;"
             onmouseover="this.style.color='orange'"
             onmouseout="this.style.color='palegoldenrod'"
+            onclick="event.stopPropagation();"
           >
             {{ .Title }}
           </a>
