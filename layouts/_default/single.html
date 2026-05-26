@@ -27,14 +27,7 @@
   {{ end }}
   {{ end }}
 
-  <div style="
-    text-align: justify;
-    font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.3rem);
-    line-height: 1.7;
-    color: whitesmoke;
-  ">
-    {{ .Content }}
-  </div>
+  {{ .Content }}
 
   {{ with .Params.project_link }}
   <div style="margin-top: 2rem; padding-top: 1rem;">

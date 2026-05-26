@@ -22,23 +22,6 @@
         <a href="{{ .Permalink }}" {{ if $active }}class="nav-active"{{ end }}><b>{{ .Title }}</b></a>
       </li>
       {{ end }}
-
-      {{ if hugo.IsMultilingual }}
-      <li id="nav-dropdown" class="nav-dropdown">
-        <button id="nav-dropdown-btn" class="nav-dropdown-btn">
-          {{ .Language.Label }}
-        </button>
-        <ul class="nav-dropdown-menu">
-          {{ range .AllTranslations }}
-          {{ if ne .Lang $currentLang }}
-          <li>
-            <a href="{{ .Permalink }}" hreflang="{{ .Lang }}">{{ .Language.Label }}</a>
-          </li>
-          {{ end }}
-          {{ end }}
-        </ul>
-      </li>
-      {{ end }}
     </ul>
   </div>
 </nav>
