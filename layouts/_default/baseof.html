@@ -24,6 +24,18 @@
             });
           }
 
+          var themeBtn = document.getElementById('theme-toggle');
+          if (themeBtn) {
+            themeBtn.addEventListener('click', function () {
+              var forced = document.documentElement.getAttribute('data-theme');
+              var current = forced ||
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+              var next = current === 'dark' ? 'light' : 'dark';
+              document.documentElement.setAttribute('data-theme', next);
+              localStorage.setItem('theme', next);
+            });
+          }
+
           if (dropBtn && dropdown) {
             dropBtn.addEventListener('click', function (e) {
               e.stopPropagation();
@@ -34,7 +46,7 @@
             });
           }
 
-          var grid = 8;
+          var grid = 10;
           function snap() {
             document.querySelectorAll('.pop-card-outer').forEach(function (el) {
               var w = Math.round(el.offsetWidth  / grid) * grid;

@@ -9,7 +9,7 @@
 
         {{ $image := .Resources.GetMatch .Params.image }}
         {{ if $image }}
-          <div style="aspect-ratio: 16/9; overflow: hidden; background: black;">
+          <div style="aspect-ratio: 16/9; overflow: hidden; background: var(--bg);">
             {{ $processed := $image.Fit "1200x675 webp" }}
             <img
               style="width: 100%; height: 100%; object-fit: cover;"
@@ -21,13 +21,13 @@
             >
           </div>
           <div style="padding: 1.25rem; text-align: center; flex-grow: 1; display: flex; align-items: center; justify-content: center;">
-            <h3 style="color: palegoldenrod; margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem); text-transform: uppercase;">
+            <h3 style="color: var(--accent-2); margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.2rem); text-transform: uppercase;">
               {{ .Title }}
             </h3>
           </div>
         {{ else }}
           <div style="padding: 2rem 1.25rem; text-align: center; display: flex; align-items: center; justify-content: center; min-height: 200px; flex-grow: 1;">
-            <h2 style="color: palegoldenrod; margin: 0; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem); text-transform: uppercase;">
+            <h2 style="color: var(--accent-2); margin: 0; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem); text-transform: uppercase;">
               {{ .Title }}
             </h2>
           </div>

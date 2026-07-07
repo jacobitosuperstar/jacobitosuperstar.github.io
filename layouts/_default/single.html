@@ -5,7 +5,7 @@
   <h1 style="
     text-align: left;
     text-transform: uppercase;
-    color: salmon;
+    color: var(--accent);
     margin-bottom: 0.5rem;
   ">
     {{ .Title }}
@@ -13,14 +13,14 @@
 
   {{ with .Params.project_dates }}
   <div style="margin-bottom: 2rem;">
-    <span style="color: rgba(250, 128, 114, 0.7); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
+    <span style="color: var(--accent-soft); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
       {{ . }}
     </span>
   </div>
   {{ else }}
   {{ with .Date }}
   <div style="margin-bottom: 2rem;">
-    <span style="color: rgba(250, 128, 114, 0.7); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
+    <span style="color: var(--accent-soft); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em;">
       {{ .Format "January 2, 2006" }}
     </span>
   </div>
@@ -32,9 +32,7 @@
   {{ with .Params.project_link }}
   <div style="margin-top: 2rem; padding-top: 1rem;">
     <a href="{{ . }}" target="_blank" rel="noopener noreferrer"
-       style="color: pink; text-decoration: none;"
-       onmouseover="this.style.color='salmon'"
-       onmouseout="this.style.color='pink'">
+       class="link-soft">
       View code →
     </a>
   </div>
@@ -42,8 +40,8 @@
 
   {{ with .Params.tags }}
   <div style="margin-top: 1rem;">
-    <b style="color: salmon;">Tags:</b>
-    <span style="color: pink;">{{ delimit . ", " }}</span>
+    <b style="color: var(--accent);">Tags:</b>
+    <span style="color: var(--link-soft);">{{ delimit . ", " }}</span>
   </div>
   {{ end }}
 

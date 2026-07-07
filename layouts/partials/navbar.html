@@ -13,8 +13,6 @@
     </a>
     {{ end }}
 
-    <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-
     <ul id="nav-menu" class="nav-menu">
       {{ range (where (where site.Pages "Params.in_navbar" true) "Lang" $currentLang).ByWeight }}
       {{ $active := or (eq .Permalink $currentPage.Permalink) ($currentPage.IsDescendant .) }}
@@ -23,5 +21,10 @@
       </li>
       {{ end }}
     </ul>
+
+    <div class="nav-controls">
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle color theme"></button>
+      <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    </div>
   </div>
 </nav>

@@ -39,6 +39,45 @@
   box-sizing: border-box;
 }
 
+/* Design tokens: light-dark(light value, dark value).
+   Dark values are the original palette; light values come from the
+   Colombian palette candidates in .ideas/DesignLanguage.md. */
+:root {
+  color-scheme: light dark;
+
+  /* base */
+  --bg:          light-dark(#f7f5f0, #000);
+  --text:        light-dark(#111, whitesmoke);
+  --text-muted:  light-dark(#666, #888);
+
+  /* accents: primary (salmon) and secondary (gold) */
+  --accent:      salmon;
+  --accent-soft: light-dark(rgba(192, 57, 43, 0.85), rgba(250, 128, 114, 0.7));
+  --accent-hot:  light-dark(#c0392b, red);
+  --accent-2:    light-dark(#c9952a, palegoldenrod);
+
+  /* links */
+  --link-soft:   light-dark(#b5541a, pink);
+  --hover-warm:  light-dark(#c0392b, orange);
+
+  /* footer icons */
+  --icon:        light-dark(#1a7a4a, mediumspringgreen);
+  --icon-hover:  light-dark(#27ae60, mediumturquoise);
+
+  /* rally car tire tracks: black on the off-white "snow" in light mode */
+  --track:       light-dark(#111, salmon);
+
+  /* lines and tints */
+  --line:        light-dark(rgba(0, 0, 0, 0.15), rgba(255, 255, 255, 0.12));
+  --line-faint:  light-dark(rgba(0, 0, 0, 0.07), rgba(255, 255, 255, 0.06));
+  --line-strong: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.35));
+  --gold-tint:   light-dark(rgba(201, 149, 42, 0.15), rgba(184, 134, 11, 0.15));
+}
+
+/* manual override set by the navbar toggle; auto (OS) when absent */
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
 /* cuerpo */
 html {
     height: 100%;
@@ -52,8 +91,8 @@ html::-webkit-scrollbar {
 
 body {
     font-family: 'Fira Sans', system-ui, sans-serif;
-    color: whitesmoke;
-    background: black;
+    color: var(--text);
+    background: var(--bg);
     margin: 0;
     min-height: 100%;
     display: flex;
@@ -75,7 +114,7 @@ h1 {
 h2 {
   font-family: 'Fira Code', monospace;
   font-weight: 700;
-  color: palegoldenrod;
+  color: var(--accent-2);
   font-size: clamp(1.4rem, 1.2rem + 1vw, 2rem);
   text-align: left;
   line-height: 1.1;
@@ -84,7 +123,7 @@ h2 {
 h3 {
   font-family: 'Fira Code', monospace;
   font-weight: 400;
-  color: salmon;
+  color: var(--accent);
   font-size: clamp(1.1rem, 1rem + 0.5vw, 1.5rem);
   text-align: left;
   line-height: 1.15;
@@ -114,9 +153,9 @@ main {
 
 /* footer */
 .footer {
-    color: whitesmoke;
-    background-color: black;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+    background-color: var(--bg);
+    border-top: 1px solid var(--line);
     padding: 0.75rem 1rem;
     width: 100%;
     position: fixed;
@@ -132,6 +171,15 @@ main {
     justify-content: center;
     align-items: center;
 }
+
+.footer-icon {
+    height: 1.5rem;
+    width: auto;
+    pointer-events: none;
+    fill: var(--icon);
+}
+
+.footer-icons a:hover .footer-icon { fill: var(--icon-hover); }
 
 .img-fluid {
     max-width: 100%;
@@ -196,7 +244,7 @@ pre {
 
 .about-me hr {
     border: none;
-    border-top: 1.5px solid salmon;
+    border-top: 1.5px solid var(--accent);
     margin: 2rem 0;
     opacity: 0.6;
 }
@@ -208,9 +256,9 @@ pre {
   left: 0;
   right: 0;
   z-index: 1030;
-  background: black;
+  background: var(--bg);
   font-family: 'Fira Code', monospace;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid var(--line);
 }
 
 .nav-inner {
@@ -224,7 +272,7 @@ pre {
 }
 
 .nav-brand {
-  color: salmon;
+  color: var(--accent);
   text-decoration: none;
   position: relative;
   padding-top: 2.2rem;
@@ -233,15 +281,45 @@ pre {
   flex-shrink: 0;
 }
 
-.nav-brand:hover { color: red; }
+.nav-brand:hover { color: var(--accent-hot); }
+
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--link-soft);
+  font-family: 'Fira Code', monospace;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.theme-toggle:hover { color: var(--accent); }
+
+/* icon shows the mode the button switches to */
+.theme-toggle::after { content: '☾'; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .theme-toggle::after { content: '☀'; }
+}
+
+:root[data-theme="dark"] .theme-toggle::after { content: '☀'; }
+:root[data-theme="light"] .theme-toggle::after { content: '☾'; }
 
 .nav-toggle {
   display: none;
   background: none;
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid var(--line-strong);
   padding: 5px 9px;
   cursor: pointer;
-  color: whitesmoke;
+  color: var(--text);
   font-size: 1.1rem;
   line-height: 1;
 }
@@ -260,7 +338,7 @@ pre {
 /* shared style: nav links + language button */
 .nav-menu a,
 .nav-dropdown-btn {
-  color: pink;
+  color: var(--link-soft);
   text-decoration: none;
   padding: 0.5rem 0.75rem;
   display: block;
@@ -274,12 +352,21 @@ pre {
 }
 
 .nav-menu a:hover,
-.nav-dropdown-btn:hover { color: salmon; }
+.nav-dropdown-btn:hover { color: var(--accent); }
 
 .nav-menu a.nav-active {
-  color: salmon;
-  border-bottom: 1.5px solid salmon;
+  color: var(--accent);
+  border-bottom: 1.5px solid var(--accent);
 }
+
+/* Themed link roles (shared by list/single templates) */
+.link-accent { color: var(--accent); text-decoration: none; }
+.link-gold   { color: var(--accent-2); text-decoration: none; }
+.link-accent:hover,
+.link-gold:hover { color: var(--hover-warm); }
+
+.link-soft { color: var(--link-soft); text-decoration: none; }
+.link-soft:hover { color: var(--accent); }
 
 /* Language dropdown */
 .nav-dropdown { position: relative; }
@@ -304,8 +391,8 @@ pre {
   position: absolute;
   right: 0;
   top: 100%;
-  background: black;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: var(--bg);
+  border: 1px solid var(--line);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -318,14 +405,14 @@ pre {
 .nav-dropdown-menu a {
   display: block;
   padding: 0.5rem 0.75rem;
-  color: palegoldenrod;
+  color: var(--accent-2);
   white-space: nowrap;
   background: none;
 }
 
 .nav-dropdown-menu a:hover {
-  color: orange;
-  background: rgba(184, 134, 11, 0.15);
+  color: var(--hover-warm);
+  background: var(--gold-tint);
 }
 
 /* Mobile */
@@ -341,9 +428,9 @@ pre {
     right: 0;
     flex-direction: column;
     align-items: stretch;
-    background: black;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
     padding: 0;
     z-index: 10;
   }
@@ -353,7 +440,7 @@ pre {
   .nav-menu > li > a,
   .nav-dropdown-btn {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--line-faint);
     width: 100%;
     text-align: left;
   }
@@ -362,11 +449,11 @@ pre {
     position: static;
     border: none;
     padding-left: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid var(--line-faint);
   }
 }
 
-/* Pop card hover effect with dotted shadow */
+/* Pop card hover effect with zigzag shadow */
 .pop-card-outer {
   position: relative;
   margin-bottom: 1.5rem;
@@ -379,9 +466,13 @@ pre {
   left: 8px;
   width: var(--shadow-w, 100%);
   height: var(--shadow-h, 100%);
-  background-image: radial-gradient(circle, salmon 1.5px, transparent 1.5px);
-  background-size: 8px 8px;
-  background-position: 0 0;
+  background-image:
+    linear-gradient(135deg, var(--accent) 25%, transparent 25%),
+    linear-gradient(225deg, var(--accent) 25%, transparent 25%),
+    linear-gradient(315deg, var(--accent) 25%, transparent 25%),
+    linear-gradient(45deg,  var(--accent) 25%, transparent 25%);
+  background-size: 10px 10px;
+  background-position: -5px 0, -5px 0, 0 0, 0 0;
   z-index: 0;
   opacity: 0;
   transition: opacity 0.2s ease;
@@ -389,7 +480,11 @@ pre {
 }
 
 .pop-card-outer.pop-gold::after {
-  background-image: radial-gradient(circle, palegoldenrod 1.5px, transparent 1.5px);
+  background-image:
+    linear-gradient(135deg, var(--accent-2) 25%, transparent 25%),
+    linear-gradient(225deg, var(--accent-2) 25%, transparent 25%),
+    linear-gradient(315deg, var(--accent-2) 25%, transparent 25%),
+    linear-gradient(45deg,  var(--accent-2) 25%, transparent 25%);
 }
 
 .pop-card-outer:hover::after { opacity: 1; }
@@ -397,14 +492,14 @@ pre {
 .pop-card {
   position: relative;
   z-index: 1;
-  background: black;
-  border: 1.5px solid salmon;
+  background: var(--bg);
+  border: 1.5px solid var(--accent);
   padding: 1.5rem;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
 
-.pop-card.pop-gold { border-color: palegoldenrod; }
+.pop-card.pop-gold { border-color: var(--accent-2); }
 
 .pop-card-outer:hover .pop-card { transform: translate(-4px, -4px); }
 

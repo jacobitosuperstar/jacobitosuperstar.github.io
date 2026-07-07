@@ -1,12 +1,12 @@
 {{ define "content" }}
 
-<div class="content-wrap" style="color: whitesmoke">
+<div class="content-wrap">
 
   <!-- Projects Section -->
   {{ $projects := where (where .Site.RegularPages "Params.is_project" true) "Lang" .Language.Lang }}
   {{ if $projects }}
   <section style="margin-bottom: 3rem;">
-    <h2 style="color: salmon; text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid salmon; padding-bottom: 0.5rem;">
+    <h2 style="color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid var(--accent); padding-bottom: 0.5rem;">
       {{ if eq .Language.Lang "es" }}Proyectos{{ else }}Projects{{ end }}
     </h2>
     {{ range $projects }}
@@ -18,18 +18,16 @@
             href="{{ $dest }}"
             target="_blank"
             rel="noopener noreferrer"
-            style="color: palegoldenrod; text-decoration: none;"
-            onmouseover="this.style.color='orange'"
-            onmouseout="this.style.color='palegoldenrod'"
+            class="link-gold"
             onclick="event.stopPropagation();"
           >
             {{ .Title }}
           </a>
         </h3>
         {{ with .Params.project_dates }}
-        <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">{{ . }}</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 0.5rem 0;">{{ . }}</p>
         {{ end }}
-        <p style="margin: 0; color: whitesmoke; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem); line-height: 1.6;">
+        <p style="margin: 0; font-size: clamp(0.9rem, 0.8rem + 0.5vw, 1.1rem); line-height: 1.6;">
           {{ .Params.project_description }}
         </p>
         {{ with .Params.project_link }}
@@ -38,9 +36,7 @@
             href="{{ . }}"
             target="_blank"
             rel="noopener noreferrer"
-            style="color: pink; text-decoration: none;"
-            onmouseover="this.style.color='salmon'"
-            onmouseout="this.style.color='pink'"
+            class="link-soft"
             onclick="event.stopPropagation();"
           >
             {{ if eq $.Language.Lang "es" }}Ver código{{ else }}View code{{ end }} →
@@ -57,7 +53,7 @@
   {{ $posts := where (where .Site.RegularPages "Type" "posts") "Lang" .Language.Lang }}
   {{ if $posts }}
   <section>
-    <h2 style="color: salmon; text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid salmon; padding-bottom: 0.5rem;">
+    <h2 style="color: var(--accent); text-transform: uppercase; margin-bottom: 1.5rem; border-bottom: 1px solid var(--accent); padding-bottom: 0.5rem;">
       {{ if eq .Language.Lang "es" }}Artículos{{ else }}Articles{{ end }}
     </h2>
     {{ range $index, $element := $posts }}
@@ -68,18 +64,16 @@
         <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
           <a
             href="{{ .Permalink }}"
-            style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
-            onmouseover="this.style.color='orange'"
-            onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
+            class="{{ if modBool $index 2 }}link-gold{{ else }}link-accent{{ end }}"
           >
             {{ .Title }}
           </a>
         </h3>
-        <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 0.5rem 0;">
           {{ .Date.Format "02/01/2006" }}
         </p>
-        <p style="color: #888; font-size: 0.9rem; margin: 0;">
-          <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
+          <b style="color: {{ if modBool $index 2 }}var(--accent-2){{ else }}var(--accent){{ end }};">Tags:</b>
           {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
         </p>
       </div>

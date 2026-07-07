@@ -1,6 +1,5 @@
 baseURL = "//jacobobedoya.com/"
 title = "jacobitosuperstar"
-assetDir = "static/assets/"
 DefaultContentLanguage = "es"
 defaultContentLanguageInSubdir = true
 summaryLength = 70
@@ -29,7 +28,7 @@ staticDir = "static"
     lineNoStart = 1
     lineNos = false
     lineNumbersInTable = true
-    noClasses = true
+    noClasses = false
     noHl = false
     # style = 'vim'
     style = 'modus-vivendi'

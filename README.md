@@ -25,11 +25,13 @@ Preview them at: https://xyproto.github.io/splash/docs/
 - No extra CSS file needed.
 - Downside: you cannot override the background or colors from your own CSS (inline styles win).
 
-**Class-based** (`noClasses = false`):
+**Class-based** (`noClasses = false`, what this site uses):
 - Chroma outputs CSS class names instead of inline styles.
-- You must generate and load a separate CSS file:
+- With no chroma stylesheet loaded, code renders as plain text inheriting
+  the page colors (transparent background, adapts to light/dark theme).
+- To get token colors back, generate and load a CSS file:
   ```bash
-  hugo gen chromastyles --style=tango > static/assets/css/syntax.css
+  hugo gen chromastyles --style=tango > assets/css/syntax.css
   ```
   Then link it in `layouts/partials/head.html`:
   ```html

@@ -1,6 +1,17 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- restore forced theme before first paint -->
+  <script>
+    (function () {
+      var theme = localStorage.getItem('theme');
+      if (theme === 'light' || theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', theme);
+      }
+    })();
+  </script>
 
   <!-- customized CSS -->
   {{ $style := resources.Get "css/main.css" }}

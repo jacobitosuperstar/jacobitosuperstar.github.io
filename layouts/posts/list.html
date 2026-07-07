@@ -1,6 +1,6 @@
 {{ define "content" }}
 
-<div class="content-wrap" style="color: whitesmoke">
+<div class="content-wrap">
   {{ range $index, $element := where (where .Site.RegularPages "Type" "posts") "Lang" .Language.Lang }}
   <div class="pop-card-outer {{ if modBool $index 2 }}pop-gold{{ end }}"
     style="margin-bottom: 2rem;"
@@ -9,18 +9,16 @@
       <h3 style="text-align: left; text-transform: uppercase; margin-bottom: 0.3rem;">
         <a
           href="{{ .Permalink }}"
-          style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}; text-decoration: none"
-          onmouseover="this.style.color='orange'"
-          onmouseout="this.style.color='{{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }}'"
+          class="{{ if modBool $index 2 }}link-gold{{ else }}link-accent{{ end }}"
         >
           {{ .Title }}
         </a>
       </h3>
-      <p style="color: #888; font-size: 0.9rem; margin: 0 0 0.5rem 0;">
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 0.5rem 0;">
         {{ .Date.Format "02/01/2006" }}
       </p>
-      <p style="color: #888; font-size: 0.9rem; margin: 0;">
-        <b style="color: {{ if modBool $index 2 }}palegoldenrod{{ else }}salmon{{ end }};">Tags:</b>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">
+        <b style="color: {{ if modBool $index 2 }}var(--accent-2){{ else }}var(--accent){{ end }};">Tags:</b>
         {{ with .Params.tags }}{{ delimit . ", " }}{{ end }}
       </p>
     </div>
