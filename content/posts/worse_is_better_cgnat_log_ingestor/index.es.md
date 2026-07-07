@@ -267,15 +267,9 @@ después del TTL nominal, y una cantidad mínima de archivos derivada del TTL, d
 largo de la ventana y de la cantidad de shards, así que siempre se equivoca
 hacia conservar datos. Y como los archivos sellados son solo archivos, un
 reinicio recarga lo que no haya expirado: el arranque en caliente necesita cero
-código de recuperación, porque los archivos en disco _son_ la metadata. Cuando el
-sistema se reinicia, solo se pierde la ventana de almacenamiento actual, más el
-tiempo que el contenedor necesita para reiniciarse.
-
-Si este plan te suena familiar, es porque es el plan que el almacén de columnas
-anchas corre internamente: una tabla de escritura en memoria, volcada a archivos
-inmutables y ordenados que los lectores usan, con la expiración manejada botando
-archivos enteros. No inventé un motor de almacenamiento, tomé el plan del grande
-y le quité el clúster de alrededor.
+código de recuperación, porque los archivos en disco _son_ la metadata. Cuando
+el sistema se reinicia, solo se pierde la ventana de almacenamiento actual, más
+el tiempo que el contenedor necesita para reiniciarse.
 
 ## Datos en tiempo real
 

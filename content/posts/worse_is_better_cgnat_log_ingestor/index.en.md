@@ -78,8 +78,8 @@ which messages arrive from the rate at which they are parsed. And for storage I
 needed something that could swallow tens of thousands of writes per second.
 
 Because the amount of records outmatches the amount of writes that a database
-can handle, I had to think of another structure, like an iterable collection,
-to batch all the records that come.
+can handle, I had to think of another structure, like an iterable collection, to
+batch all the records that come.
 
 Those two things divide the software into two main parts: the ingestor, which
 needs to be light and agile, and the writer, which needs to parse and prepare
@@ -198,8 +198,8 @@ A simpler solution was created. It keeps the idea of using partitions for the
 writes, where what I wanted to offload was the storage process, but the
 partition becomes a goroutine instead of a broker partition. The shard count is
 derived from `runtime.GOMAXPROCS(0)`, which represents the number of processors
-the container has, as more shards buy nothing on a CPU-bound path, which in
-this case is the write path.
+the container has, as more shards buy nothing on a CPU-bound path, which in this
+case is the write path.
 
 ```
     syslog (UDP)
@@ -249,15 +249,9 @@ dropped by unlinking whole files, never by row deletes. The cleaner keeps a
 safety margin comfortably past the nominal TTL, and a minimum file count derived
 from the TTL, the window length and the shard count, so it always errs toward
 keeping data. And because sealed files are just files, a restart re-loads
-whatever has not expired: warm start needs zero recovery code, because the
-files on disk _are_ the metadata. When the system restarts, only the current
-storage window is lost, plus the time that the container needs to reset.
-
-If this plan sounds familiar, it is because it is the plan the wide-column store
-runs internally: an in-memory write table, flushed into immutable sorted files
-that readers use, with expiry handled by dropping whole files. I did not invent
-a storage engine, I took the plan of the big one and removed the cluster around
-it.
+whatever has not expired: warm start needs zero recovery code, because the files
+on disk _are_ the metadata. When the system restarts, only the current storage
+window is lost, plus the time that the container needs to reset.
 
 ## Real-Time Data
 
