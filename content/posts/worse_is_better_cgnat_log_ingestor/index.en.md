@@ -1,5 +1,5 @@
 ---
-title: '"Worse is Better", Building a CGNAT Log Ingestor'
+title: '"Worse is Better", Building a CGNAT Log Ingestor in Go'
 date: 2026-07-03T12:00:00-05:00
 draft: false
 
@@ -8,55 +8,94 @@ tags: ["go", "SQLite", "Kafka", "Architecture", "CGNAT"]
 categories: ["programming"]
 ---
 
-There is an old essay by Richard Gabriel, *The Rise of Worse is Better*, that
-argues that the system that is simple to implement and covers most of the
-cases beats the complete, correct, complex one in practice. I did not plan to
-re-run that experiment at work, but it happened anyway: we designed a CGNAT
-log ingestor for infinite horizontal scale, and then we shipped one Go process
-in one container instead.
+There is an old essay by Richard Gabriel, _The Rise of Worse is Better_, that
+argues that the system that is simple to implement and covers most of the cases
+beats the complete, correct, complex one in practice. Startup culture ended up
+proving the point without meaning to: getting to market fast with a good idea
+half executed, and turning it into a real product eventually, is worth more than
+arriving late with the perfect one.
 
-This article is the story of that walk-back: why the big design existed, what
-made us re-evaluate it, how far the "worse" system actually goes, and why the
-big one is still waiting at the end of the road. To follow along you should
-have a general knowledge of Go and be familiar with how Kafka-style ingestion
-pipelines are usually put together.
+At the same time, in a counterintuitive and contradictory way, with the unicorns
+and the growth-based companies came the opposite idea: that every system has to
+be infinitely scalable, designed from day one for an endless stream of features
+and for horizontal growth. What that leaves behind, as far as I am concerned, is
+badly made software distributed across every product a cloud vendor is willing
+to sell you.
 
-## The Problem Is a Cache Wearing a Database Costume
+This article presents a CGNAT log ingestor that, under the current ideas of
+software, would be classified as "worse". With it I want to question the very
+notion we keep being sold, that solving for today's problem instead of
+tomorrow's is technical debt, while also showing how to deal with the
+complications that keeping everything simple brings with it.
+
+## The Problem
 
 Carrier-Grade NAT (CGNAT) is how an ISP puts thousands of subscribers behind a
 small pool of public IPv4 addresses. Every CGNAT device emits a log line for
-every session it maps, and the people operating that network need to answer
-one question fast: *which subscriber was behind this public IP and PORT a
-moment ago?* The same information is needed from three different directions:
-by public address and port, by private address and port, and by subscriber.
+every session it handles, from creation, through periodic sustains, to release,
+and the people operating that network need to answer one question fast: _which
+subscriber was behind this public IP and PORT a moment ago?_ The same
+information is needed from three different directions: by public address and
+port, by private address and port, and by subscriber.
 
 Three properties of this workload drive every decision downstream:
 
-* **Extremely high write rate**: tens of thousands of log lines per second
+- **Extremely high write rate**: tens of thousands of log lines per second
   arrive over syslog, continuously.
-* **Extremely short retention**: a mapping only matters for minutes. After
-  that, nobody will ever ask for it again.
-* **Most-recent-wins reads**: every lookup wants the single latest mapping for
-  a key, never a range, never history.
+- **Extremely short retention**: a mapping only matters for minutes. The idea is
+  to have a real-time capture of what is happening in the network.
+- **Most-recent-wins reads**: every lookup requires the latest mapping for a
+  key.
 
-Look at those three together and a reframe suggests itself: this is not a
-database, it is a **self-healing lookup cache**. It regenerates itself every
-few seconds from the log firehose, and if you lose it, it re-warms on its own.
-Hold that thought, because it took us a whole distributed system to see it.
+## The Initial Approach
 
-## Designing for Infinity
+The initial idea was a distributed system capable of redirecting a sequential
+log-generation process into a distributed processor of those logs.
 
-The first system was born from the requirement everybody states and nobody
-interrogates: *it has to scale*. And it is the design you would sketch in any
-system design interview. A receiver takes the syslog stream and produces every
-raw line into Kafka. A consumer group of parsers batch-writes into a
-distributed wide-column store, with one denormalized table per query axis, and
-time-windowed compaction so that expired data is dropped as whole files
-instead of row by row. Delivery is at-least-once, committing offsets only
-after a successful write, with idempotent upserts so replays are harmless.
+To get there, I followed a single CGNAT record through the chain of
+transformations it would live through:
 
 ```
-             CGNAT devices (syslog UDP/TCP)
+ Carrier SysLog -> receiver -> parsing -> storage <- query api <- user
+```
+
+For one record, I picked up the different parts of the process. The main idea is
+to check out how each part of the process plays out in a sequential manner,
+trying to distance myself from concurrency models first, as non-deterministic
+execution can throw a wrench in all of my understanding.
+
+When I am done with that, I try to analyze the system with two records and try
+to find the common parts between the processes. When I see two records at the
+same time, I can find two crossing points, the receiver, as all the messages
+come sequentially at max speed, and in the storage, as there is where all of the
+messages in the current Time To Live window will co-exist.
+
+That told me which two data structures I had to choose well. After reception I
+needed something that lets the receiver hand a message off and return to the
+socket immediately, because a datagram the receiver is not ready for is a
+datagram lost: a bounded queue, absorbing the bursts and decoupling the rate at
+which messages arrive from the rate at which they are parsed. And for storage I
+needed something that could swallow tens of thousands of writes per second.
+
+Because the amount of records outmatches the amount of writes that a database
+can handle, I had to think of another structure, like an iterable collection,
+to batch all the records that come.
+
+Those two things divide the software into two main parts: the ingestor, which
+needs to be light and agile, and the writer, which needs to parse and prepare
+the data for the database writing.
+
+## Complexity Sold as Simplicity
+
+As a question for all systems as they are being designed, _How does the solution
+scale?_ was presented. That seemed simple enough: as the receiver needs to
+receive the messages from the UDP sequentially, it became the main performance
+bottleneck, and because I would store everything into queues, the serialized
+work becomes horizontally scalable, as different writers can pick from different
+parts of the queue as it fills out. And the system starts to look like this:
+
+```
+             CGNAT devices (syslog UDP)
                           │
                           ▼
                  ┌─────────────────┐
@@ -69,7 +108,7 @@ after a successful write, with idempotent upserts so replays are harmless.
              ┌────────────┼────────────┐
              ▼            ▼            ▼
         ┌─────────┐  ┌─────────┐  ┌─────────┐
-        │ parser  │  │ parser  │  │ parser  │  parse · batch · write
+        │ writer  │  │ writer  │  │ writer  │  parse · batch · write
         └────┬────┘  └────┬────┘  └────┬────┘  (one per partition)
              └────────────┼────────────┘
                           ▼
@@ -86,88 +125,111 @@ after a successful write, with idempotent upserts so replays are harmless.
 ```
 
 Each piece is there for a reason. Kafka is the elastic buffer that absorbs
-bursts when the store lags, and it gives you replay when a parser crashes.
-Partitions are the scale-out lever: add brokers, add consumers, and the
-pipeline follows. The consumer group gives you crash recovery without writing
-any coordination code. Scaled out, this design tracks the full firehose of a
-large carrier: **one million plus messages per second**, with no single
-machine being special.
+bursts when the store lags, and it gives you replay when a writer crashes.
+Partitions are the scale-out lever: add partitions and writers, and the pipeline
+follows. The consumer group gives you crash recovery without writing any
+coordination code. Scaled out, this design tracks the full firehose of a large
+carrier: **one million plus messages per second**.
 
-This design is correct. The point of this article is not that it is wrong.
+For storage, I picked Cassandra, because it is built for exactly this shape of
+workload. A distributed wide-column database partitions the data by key across
+the cluster, so write capacity scales horizontally by adding nodes. Its storage
+engine is log-structured: incoming writes land in an in-memory table that is
+periodically flushed into immutable, sorted files on disk, and reads are served
+from those same immutable files, so writers never rewrite what readers are using
+and concurrent reads and writes barely touch each other. Record removal is in
+the storage layout: rows carry a TTL, and with time-windowed compaction the rows
+of a time window end up in the same files, so expired data is dropped as whole
+files instead of row by row.
 
-## The Bill Arrives
+This design is correct. The point of this article is not that it is wrong. But
+it wasn't until we started the deployment of it that it began to dawn on me.
+_"Could you tell me what are the actual numbers of the messages per second that
+their CGNAT is producing?"_, I asked. _"**25k** messages that can burst into 34k
+messages per second"_, I was told.
 
-Then we priced it, in money and in brains.
+5 different containers, for a number that was a fraction of what the design is
+possibly capable of, was not only a waste of resources, it felt like I had
+overbuilt the solution. The parts of the system are simple on their own, but
+extremely complex to integrate, debug and maintain.
 
-The infinite design is five services before the first byte flows: receiver,
-broker, parsers, store, and something watching all of them. The brokers need
-disks, replicas and partition planning. The store needs capacity planning and
-compaction tuning. Every hop is a contract to version, a dashboard to build,
-a failure mode to rehearse. None of this is wasted at one million messages
-per second, it is exactly what that scale costs.
+## What Technical Debt Really Is
 
-But the first real networks we had to serve were emitting tens of thousands
-of messages per second, not a million. We were about to operate a particle
-accelerator to crack a walnut. So we audited what the workload actually
-demands:
+Because of the notion that most software that we run is single core and single
+threaded, we tend to associate non-horizontal scalability with debt, but that is
+not the reality at all; we just have to create a more robust design for us to be
+able to use the full capabilities of the machines that we work with. The main
+point of technical debt is the creation of software whose process and specific
+requirements we don't understand.
 
-* **Retention is minutes.** A durable log is a machine for not losing data,
-  but here the data expires before durability can pay for itself.
-  "Durability" means surviving one storage window, not surviving a
-  datacenter.
-* **The source is UDP syslog.** The transport is lossy before we ever touch
-  the message, so exactly-once was never on the table. The best any pipeline
-  can do is not add loss of its own.
-* **The deployment unit is one machine anyway.** For these deployments the
-  whole pipeline runs together, so "distributed" never actually crossed a
-  machine boundary. We were paying coordination costs between processes that
-  did not need to be separate processes.
+When creating the first solution, I feel that I really didn't understand the
+requirements of the software, as I created a general solution that didn't really
+quite fit the necessities of the client. Decisions have a time and a place.
+Current design decisions, if made properly, respond to the current understanding
+of the problem, and if in the future the requirements, problems or behaviour
+characteristics change, we shouldn't be afraid to refactor our code.
 
-What survived the audit was the **contract**: three lookup axes, short TTL,
-per-source parsing rules, most-recent-wins. What did not survive was the
-**topology**. So we built the worse system: the whole pipeline, receive,
-parse, store, query, as **one Go process in one container**, with two bounded
-channels where Kafka used to be and windowed SQLite where the distributed
-store used to be.
+A subscriber session produces one message when it is created, one every few
+minutes while it stays alive, and one when it is released, giving us a fraction
+of a message per second per user. Flip the relation around, and for the 25k
+messages per second we measure, bursting into 34k at rush hour, to merely
+double, the client would need to gain millions of subscribers overnight. Against
+that, the infrastructure we deployed was rated at more than a million messages
+per second, roughly thirty times the rush hour. User growth was never the thing
+to design for here; no carrier gains millions of subscribers unannounced.
+
+## Simplicity
+
+Starting over, this time from the requirements instead of from the architecture,
+I asked what the workload actually demands now:
+
+- **Retention is minutes.** "Durability" means surviving one storage window.
+- **The source is UDP syslog.** The transport is lossy before the message ever
+  reaches the software, so the best any pipeline can do is not add loss of its
+  own.
+- **We are targeting first a single machine as the deploy unit.** The whole
+  pipeline ships together, so "distributed" never actually crosses a machine
+  boundary, but it does cross a software one. If the performance is not there we
+  can start separating the solution again, but by parts.
 
 ## Cores as Shards, the One Scaling Knob
 
-The small edition keeps the sharding idea from Kafka partitions, but the
-shard becomes a goroutine instead of a broker partition. The shard count is
-derived from `runtime.GOMAXPROCS(0)`, which in modern Go is cgroup-aware, so
-it tracks the CPU limit of the container. It is deliberately not a
-configuration knob: more shards than cores buys nothing on a CPU-bound path,
-so there is nothing for an operator to get wrong.
+A simpler solution was created. It keeps the idea of using partitions for the
+writes, where what I wanted to offload was the storage process, but the
+partition becomes a goroutine instead of a broker partition. The shard count is
+derived from `runtime.GOMAXPROCS(0)`, which represents the number of processors
+the container has, as more shards buy nothing on a CPU-bound path, which in
+this case is the write path.
 
 ```
-    syslog (UDP/TCP)
+    syslog (UDP)
          │
          ▼
     listener ──► parse queue ──► parse workers ──► store queue ──► store
                    (chan)                            (chan)       workers
                                                                  (1 per core)
-                                                                      │
-                                        in-memory SQLite window  ◄────┘
-                                                 │ seal
-                                                 ▼
-        query API  ◄────  sealed, indexed, read-only files · dropped
-                          after TTL
+                                                          ┌───────────┘
+                                                          ▼
+                            in-memory map  +  in-memory SQLite window
+                                  │                        │ seal
+                                  ▼                        ▼
+        query API  ◄──────── live map first, then sealed, indexed,
+                             read-only files · dropped after TTL
 ```
 
-Each core owns a parse worker, a store worker, its own in-memory SQLite
-window, and its own live key maps. Sealed files embed the shard ID and a
-timestamp in the filename, and reads walk the files newest-first until the
-first hit, so there is no cross-shard coordination anywhere. Throughput
-scales by editing one line in the deployment spec: the CPU limit.
-Rebalancing is replaced by there being nothing to rebalance.
+Each core owns a store worker, its own in-memory SQLite window, and its own live
+key maps. Sealed files embed the shard ID and a timestamp in the filename, and
+reads walk the files newest-first until the first hit, so there is no
+cross-shard coordination anywhere. Throughput scales by editing one line in the
+deployment spec: the CPU limit.
 
-## Windowed SQLite, and the Filesystem as a Commit Protocol
+## Windowed SQLite, and the Storage System as a Sealing Protocol
 
 The write path is an in-memory SQLite database with **zero indexes** and the
 durability pragmas turned off. That sounds reckless until you remember it is
-RAM: the durable copy is the one on disk, so `synchronous = OFF` costs
-nothing. An insert is an index-less append inside a batched transaction, the
-cheapest possible hot path, because no B-tree has to be maintained per row.
+RAM: the durable copy is the one on disk. An insert is an index-less append
+inside a batched transaction, the cheapest possible hot path, because no B-tree
+has to be maintained per row.
 
 Every few seconds, or when the window hits its row cap, the window **seals**:
 
@@ -175,117 +237,71 @@ Every few seconds, or when the window hits its row cap, the window **seals**:
 2. Build the three query indexes on that sealed copy, once, in bulk.
 3. Atomically rename it into place.
 
-The rename is the commit protocol. Readers only glob completed files, so a
+The rename is the sealing protocol. Readers only glob completed files, so a
 half-written seal is invisible to them. Recency is encoded in the timestamped
-filenames, so "newest first" is a filename sort with no manifest and no
-catalog. The seal runs in its own goroutine while the worker opens a fresh
-window and keeps ingesting, so disk I/O never blocks intake.
+filenames, so "newest first" is a filename sort. The seal runs in its own
+goroutine while the worker opens a fresh window and keeps ingesting, so disk I/O
+never blocks intake.
 
 TTL enforcement is the same trick the wide-column store was doing with
 time-windowed compaction, implemented with nothing but files: expired data is
 dropped by unlinking whole files, never by row deletes. The cleaner keeps a
-safety margin comfortably past the nominal TTL, and a minimum file count
-derived from the TTL, the window length and the shard count, so it always
-errs toward keeping data. And because sealed files are just files, a restart
-re-loads whatever has not expired: warm start needs zero recovery code,
-because the on-disk layout *is* the metadata.
+safety margin comfortably past the nominal TTL, and a minimum file count derived
+from the TTL, the window length and the shard count, so it always errs toward
+keeping data. And because sealed files are just files, a restart re-loads
+whatever has not expired: warm start needs zero recovery code, because the
+files on disk _are_ the metadata. When the system restarts, only the current
+storage window is lost, plus the time that the container needs to reset.
 
-## The Freshness Gap, and Backpressure Without a Broker
+If this plan sounds familiar, it is because it is the plan the wide-column store
+runs internally: an in-memory write table, flushed into immutable sorted files
+that readers use, with expiry handled by dropping whole files. I did not invent
+a storage engine, I took the plan of the big one and removed the cluster around
+it.
 
-Two guarantees from the distributed version had to be consciously re-earned.
+## Real-Time Data
 
-The first is freshness. A record is not sealed to disk for up to one window,
-so each shard also keeps live in-memory maps over its open window, one map
-per query axis, all pointing at the same record. "Most recent mapping" falls
-out of map-overwrite semantics, no ordering structure at all. The handoff is
-the part that has to be exact: the new window's maps are registered *before*
-they take traffic, and the old ones are removed only *after* their seal
-finishes writing to disk, so every record is findable in at least one place
-at every instant. And if seals ever fall behind and the registry fills, the
-window degrades to disk-only with a warning instead of blocking ingest:
-write-path availability outranks query freshness, and that is a decision, not
-an accident.
+A record is not sealed to disk for up to one window, so each shard also keeps
+live in-memory maps over its open window, one map per query axis, all pointing
+at the same record. "Most recent mapping" falls out of map-overwrite semantics,
+no ordering structure at all. The handoff is the part that has to be exact: the
+new window's maps are registered _before_ they take traffic, and the old ones
+are removed only _after_ their seal finishes writing to disk, so every record is
+findable in at least one place at every instant. And if seals ever fall behind
+and the registry fills, the window degrades to disk-only with a warning instead
+of blocking ingest as write-path availability outranks query freshness.
 
-The second is backpressure, and it turns out the transports already define
-it. The UDP path does a non-blocking channel send: shed and count.
-
-```go
-select {
-case parseQueue <- msg:
-default:
-    metrics.DroppedUDP.Add(1) // UDP is lossy by contract: shed and count
-}
-```
-
-The TCP path does a plain blocking send, so the socket's own flow control
-becomes the queue and the sender slows down. The semantics Kafka gave you,
-re-derived from what each transport already promises.
-
-## The Queue You Forgot You Had, the Kernel
-
-This is the part where removing the broker sends you a bill.
+## Ports Have Buffers Too
 
 During a seal, a one-core pod pauses ingest for a beat. With Kafka gone, the
-only buffer between that pause and the wire is the kernel's UDP socket
-receive buffer, and at the OS default size it silently drops the overflow.
-The nasty part is where the loss happens: upstream of the application's read
-loop. Every counter we owned read zero drops while packets were vanishing.
-The per-second gauges were lying too, because a CPU-starved process reports
-its own rates late. What exposed it was comparing deltas of monotonic totals
-across the pipeline boundary, sender-emitted versus stored, the only numbers
-that cannot lie.
-
-The fix is a pattern, not a number. Force a receive buffer large enough to
-bank a whole seal's worth of datagrams, not to smooth network jitter, using
-`SO_RCVBUFFORCE` with the capability grant it requires, and fall back to the
-plain `SO_RCVBUF` when the privilege is missing. Then exploit a kernel quirk
-as a health check: Linux reports the doubled value when you read the buffer
-size back, so if `getsockopt` returns less than twice what you asked for, the
-node clamped you, and the process screams about it at startup instead of
-dropping silently for weeks. When a silent failure mode exists, manufacture a
-loud proxy for it at boot.
-
-Two lessons worth keeping. First, that buffer memory is charged to the
-container's cgroup, so oversizing trades packet loss for an OOM kill. Second,
-and more general: when you move work off the hot path into periodic batches,
-the batch's latency shadow has to be budgeted somewhere upstream. The broker
-was absorbing it before. Now the kernel does, but only if you ask.
+only buffer between that pause and the wire is the kernel's UDP socket receive
+buffer, and at the OS default size (about 208 KB) it silently drops the
+overflow, before it reaches our software. Because of this, even though we were
+dropping messages, every counter we owned read zero drops while packets were
+vanishing. The fix was simple: force a receive buffer large enough to bank a
+whole seal's worth of datagrams, using `SO_RCVBUFFORCE`.
 
 ## Vertical Headroom
 
-How far does the worse system go? On a benchmark rig with the pod pinned by
-cgroup limits, **one core ingests, parses and stores 45,000 to 50,000
-messages per second with zero drops**, answering live queries in about 20 ms.
-Shards follow the CPU limit, so a four-core pod clears **150,000+ messages
-per second**, and the scaling lever is still that one line in the deployment
-spec. RAM stays bounded by the live window rather than the retained history,
-and disk holds the retention, so both follow the ingest rate predictably.
+With the current design, each added core (3.6 GHz) buys approximately 45k
+messages per second and costs about 1.4 gigs of RAM and 2.5 gigs of storage,
+while live queries keep answering in around 20 ms.
 
-For most of the networks this system serves, that is already more than the
-entire firehose. The "worse" system is not a compromise at that scale, it is
-simply the right amount of machine.
+To size the machine I worked backwards from failure: what would have to happen
+for this design to be too small? A 4-core pod handles around 180k messages per
+second, more than five times the rush hour, and since every user adds only a
+fraction of a message per second, a jump like that would take millions of new
+subscribers arriving unannounced.
 
-## When Vertical Runs Out
+## End Note
 
-The infinite design did not die, it moved to the back of the queue. Both
-editions answer the same contract: three lookup axes, short TTL, per-source
-parsing, most-recent-wins. So when a deployment's firehose outgrows one
-machine's cores, the full pipeline, Kafka, consumer groups and the
-distributed store, takes over and carries **one million plus messages per
-second**. Graduating is an infrastructure swap, not a product rewrite,
-precisely because the contract was the invariant and the topology never was.
+At the end, the main takeaway is that we should always start small and
+self-contained. Wrap your head around a system that is simple enough to be
+obviously correct, separate which processes need to be sequential, which
+processes can be concurrent, design it, measure it, create headroom for it, and
+try to keep the infinite infrastructure approach in your back pocket. Worse is
+better, until it is not.
 
-The honest ledger of starting small: a crashed window loses at most one
-window of data that was going to expire in minutes anyway; nobody else can
-tap the stream; the ceiling of one machine is real; and a windowed pile of
-SQLite files is something you have to explain to your SRE. In exchange you
-deploy one binary in one container, you control backpressure end to end in
-channel semantics, restart recovery is a directory listing, and per-core
-performance is predictable because no state is shared across shards.
-
-Start with the system that is simple enough to be obviously correct, measure
-the headroom, and keep the infinite one for the day the measurements demand
-it. Worse is better, until it is not, and your metrics will tell you when.
-
-If you want to talk about the pattern, or you think I got a trade-off wrong,
-don't be afraid to contact me, I will gladly help in what I can.
+If you want to discuss things of this nature, tell me that I got it wrong, or
+show me something interesting, don't be afraid to contact me, I will gladly
+respond to your call.
