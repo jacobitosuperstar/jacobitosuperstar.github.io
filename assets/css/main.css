@@ -181,6 +181,55 @@ main {
 
 .footer-icons a:hover .footer-icon { fill: var(--icon-hover); }
 
+.footer-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-switch button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-muted);
+}
+
+.theme-switch button:hover { color: var(--hover-warm); }
+
+.theme-icon {
+  height: 1rem;
+  width: auto;
+  fill: currentColor;
+  pointer-events: none;
+}
+
+/* auto: smaller moon overlapping the sun's lower-right, with a
+   background-colored halo so the shapes stay distinguishable */
+.auto-moon {
+  height: 0.75rem;
+  margin-left: -0.5rem;
+  transform: translateY(0.25rem);
+  stroke: var(--bg);
+  stroke-width: 2;
+  paint-order: stroke;
+}
+
+/* highlight the active choice; auto is active when no override is set */
+:root:not([data-theme]) .theme-switch button[data-set-theme="auto"],
+:root[data-theme="light"] .theme-switch button[data-set-theme="light"],
+:root[data-theme="dark"] .theme-switch button[data-set-theme="dark"] {
+  color: var(--accent);
+}
+
 .img-fluid {
     max-width: 100%;
     height: auto;
@@ -289,29 +338,6 @@ pre {
   gap: 0.25rem;
   flex-shrink: 0;
 }
-
-.theme-toggle {
-  background: none;
-  border: none;
-  padding: 0.5rem;
-  cursor: pointer;
-  color: var(--link-soft);
-  font-family: 'Fira Code', monospace;
-  font-size: 1.1rem;
-  line-height: 1;
-}
-
-.theme-toggle:hover { color: var(--accent); }
-
-/* icon shows the mode the button switches to */
-.theme-toggle::after { content: '☾'; }
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .theme-toggle::after { content: '☀'; }
-}
-
-:root[data-theme="dark"] .theme-toggle::after { content: '☀'; }
-:root[data-theme="light"] .theme-toggle::after { content: '☾'; }
 
 .nav-toggle {
   display: none;

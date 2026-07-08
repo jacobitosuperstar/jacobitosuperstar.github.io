@@ -24,17 +24,18 @@
             });
           }
 
-          var themeBtn = document.getElementById('theme-toggle');
-          if (themeBtn) {
-            themeBtn.addEventListener('click', function () {
-              var forced = document.documentElement.getAttribute('data-theme');
-              var current = forced ||
-                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-              var next = current === 'dark' ? 'light' : 'dark';
-              document.documentElement.setAttribute('data-theme', next);
-              localStorage.setItem('theme', next);
+          document.querySelectorAll('[data-set-theme]').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              var choice = btn.getAttribute('data-set-theme');
+              if (choice === 'auto') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.removeItem('theme');
+              } else {
+                document.documentElement.setAttribute('data-theme', choice);
+                localStorage.setItem('theme', choice);
+              }
             });
-          }
+          });
 
           if (dropBtn && dropdown) {
             dropBtn.addEventListener('click', function (e) {
