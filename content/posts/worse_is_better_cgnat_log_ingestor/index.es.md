@@ -8,96 +8,91 @@ tags: ["go", "SQLite", "Kafka", "Arquitectura", "CGNAT"]
 categories: ["programación"]
 ---
 
-Hay un ensayo viejo de Richard Gabriel, _The Rise of Worse is Better_, que
-argumenta que el sistema que es simple de implementar y cubre la mayoría de los
-casos le gana en la práctica al sistema completo, correcto y complejo. La
-cultura startup terminó demostrando el punto sin proponérselo: llegar rápido al
-mercado con una buena idea a medio ejecutar, y volverla un producto real con el
-tiempo, vale más que llegar tarde con la perfecta.
+Richard Gabriel escribió un ensayo con el nombre _The Rise of Worse is Better_.
+El ensayo dice que un sistema simple que hace la mayoría del trabajo necesario
+es mejor en operación que un sistema completo, correcto y complejo. La cultura
+startup mostró que esta idea es correcta. Es mejor salir al mercado temprano
+con una buena idea en condición parcial, y después hacer un producto completo.
+Es peor llegar tarde con el producto perfecto.
 
-Al mismo tiempo, de manera contraintuitiva y contradictoria, con los unicornios
-y las empresas basadas en crecimiento llegó la idea opuesta: que todo sistema
-tiene que ser infinitamente escalable, diseñado desde el primer día para un
-sinfín de funcionalidades y para el crecimiento horizontal. Lo que eso deja
-atrás, en lo que a mí respecta, es software mal hecho distribuido sobre cada
-producto que un proveedor de nube esté dispuesto a venderte.
+Al mismo tiempo, las grandes empresas de crecimiento nos dieron la idea
+opuesta. Esta idea dice que cada sistema debe escalar sin límites. Desde su
+primer día, el diseño debe estar listo para un flujo ilimitado de funciones y
+para el crecimiento horizontal. Para mí, el resultado es software malo,
+dividido entre cada producto que un proveedor de nube te puede vender.
 
-Este artículo presenta un ingestor de logs de CGNAT que, bajo las ideas actuales
-del software, se clasificaría como "peor". Con él quiero cuestionar esa noción
-que nos siguen vendiendo, que resolver el problema de hoy en vez del de mañana
-es deuda técnica, mientras muestro cómo lidiar con las complicaciones que trae
-mantener todo simple.
+Este artículo muestra un ingestor de logs de CGNAT. Según las ideas actuales
+del diseño de software, este ingestor es "peor". Con este ingestor, quiero
+examinar la idea de que una solución para los problemas de hoy, y no para los
+de mañana, es deuda técnica. También quiero mostrar cómo controlar los
+problemas que causa un diseño simple.
 
 ## El problema
 
-Carrier-Grade NAT (CGNAT) es la forma en que un ISP pone miles de suscriptores
-detrás de un grupo pequeño de direcciones IPv4 públicas. Cada dispositivo CGNAT
-emite una línea de log por cada sesión que maneja, desde la creación, pasando
-por sustains periódicos, hasta la liberación, y la gente que opera esa red
-necesita responder una pregunta rápido: _¿qué suscriptor estaba detrás de esta
-IP pública y este PORT hace un momento?_ La misma información se necesita desde
-tres direcciones distintas: por dirección pública y puerto, por dirección
+Carrier-Grade NAT (CGNAT) es el método con el que un ISP pone miles de
+suscriptores detrás de un grupo pequeño de direcciones IPv4 públicas. Cada
+dispositivo CGNAT escribe un mensaje de log por cada evento de una sesión:
+creación, sustain periódico y liberación. Los operadores de la red deben
+responder una pregunta rápido: ¿qué suscriptor estaba detrás de esta dirección
+IP pública y este puerto un momento antes? Los operadores deben tener los
+mismos datos en tres direcciones: por dirección pública y puerto, por dirección
 privada y puerto, y por suscriptor.
 
-Tres propiedades de esta carga de trabajo dirigen cada decisión que viene
-después:
+Tres propiedades de esta carga de trabajo controlan cada decisión posterior del
+diseño:
 
-- **Tasa de escritura extremadamente alta**: decenas de miles de líneas de log
-  por segundo llegan por syslog, continuamente.
-- **Retención extremadamente corta**: un mapeo solo importa por minutos. La idea
-  es tener una captura en tiempo real de lo que está pasando en la red.
-- **Lecturas de lo más reciente**: cada búsqueda requiere el último mapeo para
-  una llave.
+- **Una tasa de escritura muy alta**: Decenas de miles de mensajes de log
+  llegan cada segundo por syslog, continuamente.
+- **Una retención muy corta**: Un mapeo es importante solo por minutos. La
+  función del sistema es mostrar la actividad de la red en tiempo real.
+- **Lecturas de lo más reciente**: Cada búsqueda debe encontrar el mapeo más
+  reciente para una llave.
 
-## El enfoque inicial
+## El primer diseño
 
-La idea inicial era un sistema distribuido capaz de redirigir un proceso
-secuencial de generación de logs hacia un procesador distribuido de esos logs.
+Mi primera idea fue un sistema distribuido. Este sistema recibe un flujo
+secuencial de logs y divide el trabajo entre muchos procesadores paralelos.
 
-Para llegar ahí, seguí un solo registro del CGNAT a través de la cadena de
-transformaciones que le tocaría vivir:
+Para diseñar el sistema, seguí un registro de CGNAT por cada paso del proceso:
 
 ```
- Carrier SysLog -> receiver -> parsing -> storage <- query api <- user
+ Carrier SysLog -> receiver -> parse -> storage <- query api <- user
 ```
 
-Para un registro, levanté las diferentes partes del proceso. La idea principal
-es revisar cómo se comporta cada parte del proceso de manera secuencial,
-tratando de distanciarme primero de los modelos de concurrencia, ya que la
-ejecución no determinista puede complicar todo mi entendimiento.
+Para un registro, examiné cada parte del proceso, una parte después de la otra.
+No pensé en los modelos de concurrencia en este punto, porque la operación no
+determinista hace difícil el análisis.
 
-Cuando termino con eso, trato de analizar el sistema con dos registros y así
-encontrar las partes comunes entre los procesos. Cuando veo dos registros al
-mismo tiempo, puedo encontrar dos puntos de cruce: el receptor, porque todos los
-mensajes llegan secuencialmente a máxima velocidad, y el almacenamiento, porque
-ahí es donde todos los mensajes de la ventana actual de Time To Live van a
-co-existir.
+Después hice el análisis otra vez con dos registros, para encontrar las partes
+comunes de los dos procesos. Los dos registros tienen dos puntos comunes. El
+primer punto es el receptor, porque todos los mensajes llegan ahí en secuencia,
+a máxima velocidad. El segundo punto es el almacenamiento, porque todos los
+mensajes de la ventana actual de Time-To-Live (TTL) están ahí al mismo tiempo.
 
-Eso me dijo cuáles eran las dos estructuras de datos que tenía que elegir bien.
-Después de la recepción necesitaba algo que le permitiera al receptor entregar
-un mensaje y volver al socket inmediatamente, porque un datagrama para el que el
-receptor no está listo es un datagrama perdido: una cola acotada, que absorbe
-las ráfagas y desacopla la velocidad a la que llegan los mensajes de la
-velocidad a la que se parsean. Y para el almacenamiento necesitaba algo que
-pudiera tragarse decenas de miles de escrituras por segundo.
+Este análisis me mostró las dos estructuras de datos que tenía que seleccionar
+correctamente. El receptor debe enviar cada mensaje hacia adelante y volver al
+socket inmediatamente. Un datagrama que llega cuando el receptor no está listo
+es un datagrama perdido. Por eso la primera estructura es una cola acotada. La
+cola retiene las ráfagas. La cola también desconecta la velocidad de llegada de
+la velocidad del trabajo de parseo.
 
-Como la cantidad de registros supera la cantidad de escrituras que una base de
-datos puede manejar, tuve que pensar en otra estructura, como una colección
-iterable, para agrupar por lotes todos los registros que llegan.
+La segunda estructura es para el almacenamiento. El número de registros es más
+grande que el número de escrituras que una base de datos puede hacer. Por eso
+una estructura de colección debe agrupar los registros en lotes.
 
-Esas dos cosas dividen el software en dos partes principales: el ingestor, que
-necesita ser liviano y ágil, y el escritor, que necesita parsear y preparar los
-datos para la escritura en la base de datos.
+Estas dos estructuras dividen el software en dos partes principales. El
+ingestor debe hacer el mínimo trabajo posible. El escritor debe parsear los
+datos y preparar los datos para la base de datos.
 
-## Complejidad vendida como sencillez
+## El diseño complejo
 
-Como pregunta para todo sistema mientras se diseña, se presentó _¿cómo escala la
-solución?_. Parecía bastante simple: como el receptor necesita recibir los
-mensajes del UDP secuencialmente, se convirtió en el principal cuello de botella
-de rendimiento, y como yo iba a almacenar todo en colas, el trabajo serializado
-se vuelve horizontalmente escalable, ya que distintos escritores pueden tomar de
-distintas partes de la cola a medida que se llena. Y el sistema empieza a verse
-así:
+Durante el diseño, llegó la pregunta usual: ¿cómo escala la solución? El
+receptor debe recibir los mensajes UDP en secuencia. Por eso el receptor es el
+cuello de botella principal del rendimiento. Todo el otro trabajo pasa por
+colas. Escritores diferentes pueden leer de partes diferentes de la cola. Así
+el trabajo serializado se vuelve escalable horizontalmente.
+
+El sistema entonces tiene esta estructura:
 
 ```
              CGNAT devices (syslog UDP)
@@ -129,89 +124,90 @@ así:
                        clients
 ```
 
-Cada pieza está ahí por una razón. Kafka es el buffer elástico que absorbe
-ráfagas cuando el almacén se atrasa, y te da replay cuando un escritor se cae.
-Las particiones son la palanca de escalamiento horizontal: agrega particiones y
-escritores, y el pipeline sigue. El consumer group te da recuperación ante
-caídas sin escribir ningún código de coordinación. Escalado, este diseño sigue
-el chorro completo de un carrier grande: **más de un millón de mensajes por
-segundo**.
+Cada parte del sistema tiene una función. Kafka es el buffer que retiene las
+ráfagas cuando el almacén está lento. Kafka también da replay de los mensajes
+cuando un escritor falla. Las particiones controlan la escala: más particiones
+y más escritores dan más throughput. El consumer group da recuperación después
+de una falla, sin código de coordinación. A escala completa, este diseño puede
+recibir el tráfico completo de un carrier grande: más de 1.000.000 de mensajes
+por segundo.
 
-Para el almacenamiento elegí Cassandra, porque está construida exactamente para
-esta forma de carga de trabajo. Una base de datos distribuida de columnas anchas
-particiona los datos por llave a través del clúster, así que la capacidad de
-escritura escala horizontalmente agregando nodos. Su motor de almacenamiento es
-log-structured: las escrituras entrantes caen en una tabla en memoria que
-periódicamente se vuelca a archivos inmutables y ordenados en disco, y las
-lecturas se sirven desde esos mismos archivos inmutables, así que los escritores
-nunca reescriben lo que los lectores están usando y las lecturas y escrituras
-concurrentes apenas se tocan. La eliminación de registros está en la disposición
-del almacenamiento: las filas llevan un TTL, y con la compactación por ventanas
-de tiempo las filas de una ventana terminan en los mismos archivos, así que los
-datos expirados se botan como archivos enteros en vez de fila por fila.
+Para el almacenamiento, seleccioné Cassandra, porque su diseño es exactamente
+para este tipo de carga de trabajo. Una base de datos distribuida de columnas
+anchas divide los datos por llave a través del clúster. Así la capacidad de
+escritura aumenta cuando agregas nodos. El motor de almacenamiento es
+log-structured. Las escrituras nuevas van primero a una tabla en memoria. A
+intervalos, el motor escribe esta tabla al disco como archivos ordenados que no
+cambian.
 
-Este diseño es correcto. El punto de este artículo no es que esté mal. Pero no
-fue sino hasta que empezamos su despliegue que empezó a caerme la ficha. _"¿Me
-puedes decir cuáles son los números reales de mensajes por segundo que está
-produciendo su CGNAT?"_, pregunté. _"**25k** mensajes que pueden llegar en
-ráfagas de hasta 34k mensajes por segundo"_, me dijeron.
+Las lecturas vienen de esos mismos archivos. Así los escritores no cambian los
+datos que los lectores usan, y las lecturas y las escrituras casi no tienen
+efecto entre sí. La eliminación de registros es parte de la disposición del
+almacenamiento. Cada fila tiene un TTL. La compactación por ventanas de tiempo
+pone las filas de una ventana de tiempo en los mismos archivos. Así el motor
+puede descartar los datos viejos como archivos completos, y no fila por fila.
 
-5 contenedores distintos, para un número que era una fracción de lo que el
-diseño posiblemente es capaz de manejar, no solo era un desperdicio de recursos,
-se sintió como si hubiera sobredimensionado la solución. Las partes del sistema
-son simples por sí solas, pero extremadamente complejas de integrar, depurar y
-mantener.
+Este diseño es correcto. Este artículo no dice que el diseño está mal. Pero
+durante el despliegue, encontré el problema. Pregunté: "¿Cuál es el número real
+de mensajes por segundo de su CGNAT?" La respuesta fue: "25.000 mensajes por
+segundo, con ráfagas de hasta 34.000 mensajes por segundo".
 
-## Qué es realmente la deuda técnica
+El diseño usó cinco contenedores diferentes para una carga que era una parte
+pequeña de su capacidad posible. Esto fue un desperdicio de recursos, y la
+solución era demasiado grande. Cada parte del sistema es simple cuando la parte
+está sola. Pero la integración, el trabajo de depuración y el mantenimiento de
+todas las partes juntas son muy complejos.
 
-Por la noción de que la mayoría del software que corremos es de un solo núcleo y
-un solo hilo, tendemos a asociar la falta de escalabilidad horizontal con deuda,
-pero esa no es para nada la realidad; solo tenemos que crear un diseño más
-robusto para poder usar todas las capacidades de las máquinas con las que
-trabajamos. El punto principal de la deuda técnica es la creación de software
-cuyo proceso y requerimientos específicos no entendemos.
+## La deuda técnica
 
-Al crear la primera solución, siento que realmente no entendí los requerimientos
-del software, ya que creé una solución general que no encajaba del todo con las
-necesidades del cliente. Las decisiones tienen un momento y un lugar. Las
-decisiones de diseño actuales, si se toman bien, responden al entendimiento
-actual del problema, y si en el futuro los requerimientos, los problemas o las
-características de comportamiento cambian, no deberíamos tener miedo de
-refactorizar nuestro código.
+La mayoría del software que usamos es software de un solo núcleo y un solo
+hilo. Por esto, pensamos que el software que no escala horizontalmente es
+deuda. Esto no es correcto. Un mejor diseño nos deja usar la capacidad completa
+de nuestras máquinas. La causa verdadera de la deuda técnica es diferente. La
+deuda técnica ocurre cuando hacemos software, pero no entendemos su proceso y
+sus condiciones específicas.
 
-Una sesión de suscriptor produce un mensaje cuando se crea, uno cada pocos
-minutos mientras sigue viva, y uno cuando se libera, dándonos una fracción de
-mensaje por segundo por usuario. Dale la vuelta a la relación, y para que los
-25k mensajes por segundo que medimos, con ráfagas de 34k en hora pico, apenas se
-dupliquen, el cliente tendría que ganar millones de suscriptores de la noche a
-la mañana. Contra eso, la infraestructura que desplegamos estaba dimensionada
-para más de un millón de mensajes por segundo, unas treinta veces la hora pico.
-El crecimiento de usuarios nunca fue lo que había que diseñar aquí; ningún
-carrier gana millones de suscriptores sin anunciarlo.
+Cuando hice la primera solución, no entendí qué tenía que hacer el software.
+Hice una solución general que no era correcta para el cliente. Una decisión es
+correcta solo para su momento y sus condiciones. Una buena decisión de diseño
+está de acuerdo con el conocimiento actual del problema. Si el problema o el
+comportamiento del sistema cambia en el futuro, entonces debemos refactorizar
+el código.
+
+Una sesión de suscriptor envía un mensaje en su creación, un mensaje a
+intervalos de algunos minutos, y un mensaje en su liberación. Así cada usuario
+produce menos de un mensaje por segundo. Medimos 25.000 mensajes por segundo,
+con ráfagas de 34.000 mensajes en la hora pico. Para hacer este número dos
+veces más grande, millones de suscriptores nuevos deben llegar al cliente en
+una noche.
+
+La infraestructura desplegada tenía una capacidad de más de 1.000.000 de
+mensajes por segundo. Esto es aproximadamente 30 veces la carga de la hora
+pico. El crecimiento del número de usuarios no era el objetivo correcto del
+diseño. Millones de suscriptores nuevos no llegan a un carrier sin aviso.
 
 ## Simplicidad
 
-Empezando de nuevo, esta vez desde los requerimientos y no desde la
-arquitectura, pregunté qué es lo que la carga de trabajo realmente exige ahora:
+Empecé otra vez. Esta vez empecé desde la carga de trabajo, no desde la
+arquitectura. Pregunté: ¿qué es necesario para la carga de trabajo ahora?
 
-- **La retención es de minutos.** "Durabilidad" significa sobrevivir una ventana
-  de almacenamiento.
-- **La fuente es syslog por UDP.** El transporte es lossy antes de que el
-  mensaje llegue al software, así que lo mejor que puede hacer cualquier
-  pipeline es no agregar pérdida propia.
-- **Estamos apuntando primero a una sola máquina como unidad de despliegue.** El
-  pipeline entero se entrega junto, así que "distribuido" nunca cruza realmente
-  el límite de una máquina, pero sí cruza uno de software. Si el rendimiento no
-  está, podemos empezar a separar la solución de nuevo, pero por partes.
+- **La retención es de minutos.** "Durabilidad" significa que los datos están
+  disponibles por una ventana de almacenamiento.
+- **La fuente es syslog por UDP.** El transporte pierde mensajes antes de que
+  los mensajes lleguen al software. Por eso el mejor pipeline es un pipeline
+  que no agrega pérdida propia.
+- **La primera unidad de despliegue es una máquina.** Todas las partes del
+  pipeline van juntas en un despliegue. Así "distribuido" no cruza el límite de
+  una máquina, pero sí cruza un límite de software. Si el rendimiento no es
+  suficiente, podemos dividir la solución otra vez, parte por parte.
 
-## Núcleos como shards, la única perilla de escalamiento
+## Un shard por cada núcleo
 
-Se creó una solución más simple. Mantiene la idea del uso de particiones en la
-escritura, donde lo que yo quería descargar era el proceso de almacenamiento,
-pero la partición se vuelve una goroutine en vez de una partición de broker. La
-cantidad de shards se deriva de `runtime.GOMAXPROCS(0)`, lo cual representa la
-cantidad de procesadores que tiene el contenedor, ya que más shards no compran
-nada en un camino atado a CPU, que en este caso es el camino de escritura.
+Entonces hice una solución más simple. La solución mantiene la idea de
+particiones para las escrituras. Pero cada partición es ahora una goroutine, no
+una partición de broker. El número de shards viene de `runtime.GOMAXPROCS(0)`,
+que da el número de procesadores del contenedor. Más shards no aumentan el
+rendimiento, porque el camino de escritura está limitado por la CPU.
 
 ```
     syslog (UDP)
@@ -229,97 +225,108 @@ nada en un camino atado a CPU, que en este caso es el camino de escritura.
                              read-only files · dropped after TTL
 ```
 
-Cada núcleo es dueño de un store worker, de su propia ventana de SQLite en
-memoria, y de sus propios mapas de llaves en vivo. Los archivos sellados llevan
-el ID del shard y un timestamp en el nombre, y las lecturas recorren los
-archivos del más nuevo al más viejo hasta el primer acierto, así que no hay
-coordinación entre shards en ninguna parte. El throughput escala editando una
-línea en la especificación del despliegue: el límite de CPU.
+Cada núcleo tiene un store worker, una ventana de SQLite en memoria y su propio
+conjunto de mapas de llaves en vivo. El nombre de cada archivo sellado contiene
+el ID del shard y un timestamp. Una lectura examina los archivos del más nuevo
+al más viejo, y para cuando encuentra el registro. Así ninguna coordinación
+entre los shards es necesaria. Para aumentar el throughput, cambias una línea
+en la especificación del despliegue: el límite de CPU.
 
-## SQLite por ventanas, y el sistema de almacenamiento como protocolo de sellado
+## Ventanas de SQLite y el procedimiento de sellado
 
-El camino de escritura es una base de datos SQLite en memoria con **cero
-índices** y los pragmas de durabilidad apagados. Suena imprudente hasta que
-recuerdas que es RAM: la copia durable es la que está en disco. Un insert es un
-append sin índices dentro de una transacción por lotes, el camino caliente más
-barato posible, porque ningún B-tree tiene que mantenerse por fila.
+El camino de escritura es una base de datos SQLite en memoria, con **cero
+índices**, y con los pragmas de durabilidad apagados. Esto no es un riesgo,
+porque la base de datos está en RAM. La copia durable es la copia en el disco.
+Un insert es un append en una transacción por lotes, y el motor no ajusta un
+índice B-tree por cada fila. Así este camino de escritura tiene el costo más
+bajo posible.
 
-Cada pocos segundos, o cuando la ventana llega a su tope de filas, la ventana se
-**sella**:
+La ventana se "sella" a intervalos de algunos segundos, o cuando la ventana
+llega a su límite de filas:
 
-1. `VACUUM INTO` hacia un archivo temporal en disco.
-2. Construir los tres índices de búsqueda sobre esa copia sellada, una vez, en
-   bloque.
-3. Renombrarla atómicamente a su lugar.
+1. El worker escribe la ventana a un archivo temporal en el disco con
+   `VACUUM INTO`.
+2. El worker construye los tres índices de consulta sobre esa copia, una vez,
+   para todas las filas.
+3. El worker renombra el archivo a su nombre final en una operación atómica.
 
-El renombrado es el protocolo de sellado. Los lectores solo listan archivos
-completos, así que un sellado a medio escribir es invisible para ellos. La
-recencia está codificada en los nombres con marca de tiempo, así que "el más
-nuevo primero" es ordenar nombres de archivo. El sellado corre en su propia
-goroutine mientras el worker abre una ventana fresca y sigue ingiriendo, así que
-el I/O de disco nunca bloquea la entrada.
+La operación de renombrado es el protocolo de sellado. Los lectores encuentran
+solo los archivos completos. Así los lectores no pueden ver un sellado escrito
+parcialmente. El timestamp en cada nombre de archivo muestra la edad de los
+datos. Así "el más nuevo primero" es solo un ordenamiento de los nombres de
+archivo.
 
-Hacer cumplir el TTL es el mismo truco que el almacén de columnas anchas hacía
-con la compactación por ventanas de tiempo, implementado con nada más que
-archivos: los datos expirados se botan des-enlazando archivos enteros, nunca con
-eliminaciones por fila. El limpiador mantiene un margen de seguridad cómodamente
-después del TTL nominal, y una cantidad mínima de archivos derivada del TTL, del
-largo de la ventana y de la cantidad de shards, así que siempre se equivoca
-hacia conservar datos. Y como los archivos sellados son solo archivos, un
-reinicio recarga lo que no haya expirado: el arranque en caliente necesita cero
-código de recuperación, porque los archivos en disco _son_ la metadata. Cuando
-el sistema se reinicia, solo se pierde la ventana de almacenamiento actual, más
-el tiempo que el contenedor necesita para reiniciarse.
+La operación de sellado ocurre en su propia goroutine. Al mismo tiempo, el
+worker abre una ventana nueva y continúa la ingestión. Así el I/O de disco no
+detiene la ingestión.
+
+El procedimiento de TTL usa el mismo principio que la compactación por ventanas
+de tiempo del almacén de columnas anchas, pero solo con archivos. El limpiador
+quita los datos viejos cuando borra archivos completos. El limpiador nunca
+borra datos fila por fila. El limpiador mantiene un margen de seguridad después
+del TTL nominal. El limpiador también mantiene un número mínimo de archivos,
+que viene del TTL, del largo de la ventana y del número de shards. Así, si hay
+un error, el limpiador conserva demasiados datos, no muy pocos.
+
+Los archivos sellados son solo archivos. Así, después de un reinicio, el
+sistema carga todos los archivos que no están expirados. Un arranque en
+caliente usa cero código de recuperación, porque los archivos en el disco _son_
+la metadata. Después de un reinicio, la pérdida es solo la ventana de
+almacenamiento actual, más el tiempo que el contenedor usa para arrancar.
 
 ## Datos en tiempo real
 
-Un registro no se sella a disco hasta por una ventana entera, así que cada shard
-también mantiene mapas en memoria sobre su ventana abierta, un mapa por eje de
-búsqueda, todos apuntando al mismo registro. "El mapeo más reciente" sale solo
-de la semántica de sobreescritura de los mapas, sin ninguna estructura de
-ordenamiento. El relevo es la parte que tiene que ser exacta: los mapas de la
-ventana nueva se registran _antes_ de que reciban tráfico, y los viejos se
-quitan solo _después_ de que su sellado termine de escribir a disco, así que
-cada registro se puede encontrar en al menos un lugar en todo instante. Y si los
-sellados se atrasan y el registro de mapas se llena, la ventana se degrada a
-solo-disco con una advertencia en vez de bloquear la ingestión, porque la
-disponibilidad del camino de escritura está por encima de la frescura de las
-consultas.
+Un registro nuevo no va al disco inmediatamente. El registro puede estar en la
+ventana abierta por un máximo del largo de una ventana. Por eso cada shard
+también mantiene mapas en vivo en memoria para su ventana abierta. Hay un mapa
+por cada eje de consulta, y todos los mapas apuntan al mismo registro. La
+operación de sobreescritura de un mapa conserva el mapeo más reciente. Ninguna
+estructura de orden es necesaria.
 
-## Los puertos también tienen buffers
+El cambio de una ventana a la siguiente debe ser exacto. El sistema agrega los
+mapas de la ventana nueva _antes_ de que la ventana nueva reciba tráfico. El
+sistema quita los mapas viejos solo _después_ de que el sellado de la ventana
+vieja está completo en el disco. Así cada registro está disponible en un lugar
+o más, en todo momento. Si los sellados se vuelven lentos y el directorio de
+mapas se llena, la ventana cambia a modo solo-disco y da una advertencia. La
+ingestión no se detiene, porque la disponibilidad del camino de escritura es
+más importante que los datos más recientes de consulta.
 
-Durante un sellado, un pod de un núcleo pausa la ingestión por un instante. Sin
-Kafka, el único buffer entre esa pausa y el cable es el buffer de recepción del
-socket UDP del kernel, y con el tamaño por defecto del sistema operativo (unos
-208 KB) el desborde se pierde en silencio, antes de llegar a nuestro software.
-Por esto, aunque estábamos perdiendo mensajes, cada contador que era nuestro
-marcaba cero pérdidas mientras los paquetes desaparecían. El arreglo fue simple:
-forzar un buffer de recepción lo suficientemente grande para aguantar los
-datagramas de un sellado completo, usando `SO_RCVBUFFORCE`.
+## El buffer del socket UDP
 
-## Espacio para crecer vertical
+Durante un sellado, un pod con un núcleo detiene la ingestión por un tiempo
+corto. Kafka no está en este diseño. Por eso el único buffer entre esa parada y
+la red es el buffer de recepción UDP del kernel. El tamaño por defecto de este
+buffer en el sistema operativo es de aproximadamente 208 KB. Cuando este buffer
+está lleno, el kernel descarta el desborde antes de que los datos lleguen a
+nuestro software, y no da ninguna indicación. Así nuestros contadores mostraban
+cero pérdidas mientras el kernel descartaba paquetes.
 
-Con el diseño actual, cada núcleo agregado (3.6 GHz) compra aproximadamente 45k
-mensajes por segundo y cuesta cerca de 1.4 gigas de RAM y 2.5 gigas de
-almacenamiento, mientras las consultas en vivo siguen respondiendo en unos 20
-ms.
+La corrección fue simple. Pusimos un buffer de recepción suficientemente grande
+para los datagramas de un sellado completo, con la opción `SO_RCVBUFFORCE`.
 
-Para dimensionar la máquina trabajé hacia atrás desde la falla: ¿qué tendría que
-pasar para que este diseño quede pequeño? Un pod de 4 núcleos maneja alrededor
-de 180k mensajes por segundo, más de cinco veces la hora pico, y como cada
-usuario agrega solo una fracción de mensaje por segundo, un salto así requeriría
-millones de suscriptores nuevos llegando sin anunciarse.
+## El margen vertical
+
+Con el diseño actual, cada núcleo agregado (3,6 GHz) agrega capacidad para
+aproximadamente 45.000 mensajes por segundo. Cada núcleo agregado usa
+aproximadamente 1,4 GB de RAM y 2,5 GB de almacenamiento. Las consultas en vivo
+continúan con respuestas en aproximadamente 20 ms.
+
+Para calcular el tamaño de la máquina, empecé desde el punto de falla: ¿qué
+debe ocurrir para que este diseño quede pequeño? Un pod con 4 núcleos puede
+recibir y almacenar aproximadamente 180.000 mensajes por segundo. Esto es más
+de cinco veces la carga de la hora pico. Cada usuario agrega menos de un
+mensaje por segundo. Así un aumento de ese tamaño es posible solo si millones
+de suscriptores nuevos llegan sin aviso.
 
 ## Nota final
 
-Al final, la lección principal es que siempre deberíamos empezar pequeño y
-auto-contenido. Envuelve tu cabeza alrededor de un sistema que sea lo
-suficientemente simple para ser obviamente correcto, separa qué procesos
-necesitan ser secuenciales y qué procesos pueden ser concurrentes, diséñalo,
-mídelo, créale espacio para crecer, y trata de mantener el enfoque de
-infraestructura infinita en el bolsillo de atrás. Peor es mejor, hasta que deja
-de serlo.
+El punto más importante es este: empieza pequeño, y mantén el sistema en una
+unidad. Primero, entiende un sistema que es suficientemente simple para ser
+claramente correcto. Encuentra los procesos que deben ser secuenciales y los
+procesos que pueden ser concurrentes. Diseña el sistema, mide el sistema, y
+dale al sistema un margen de capacidad. Mantén la infraestructura infinita como
+un posible paso posterior. Peor es mejor, hasta que deja de serlo.
 
-Si quieres discutir cosas de esta naturaleza, decirme que me equivoqué, o
-mostrarme algo interesante, no tengas miedo de contactarme, con gusto responderé
-a tu llamado.
+¿Quieres hablar de estos temas? ¿Piensas que estoy equivocado? ¿Tienes algo
+nuevo para mostrarme? Por favor contáctame. Yo responderé.
