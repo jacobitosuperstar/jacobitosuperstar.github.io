@@ -1,6 +1,6 @@
 ---
 title: Metaprograma tus problemas hasta hacerlos desaparecer
-date: 2023-09-13T12:00:00-05:00
+date: 2023-09-13
 draft: false
 
 read_more: Leer más...

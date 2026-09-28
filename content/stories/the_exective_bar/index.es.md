@@ -1,7 +1,7 @@
 ---
 title: la barra ejecutiva
 slug: the_executive_bar
-date: 2022-08-26T19:42:09-05:00
+date: 2022-08-26
 draft: false
 
 categories: ["historia"]

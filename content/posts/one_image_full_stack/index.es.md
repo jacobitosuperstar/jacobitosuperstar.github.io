@@ -1,6 +1,6 @@
 ---
 title: "Una Imagen Vale Más Que Mil Palabras: Integrando una SPA en el Backend"
-date: 2026-01-28T12:00:00-05:00
+date: 2026-01-28
 draft: true
 
 read_more: Leer más...

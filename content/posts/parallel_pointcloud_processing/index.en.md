@@ -1,6 +1,6 @@
 ---
 title: Python Parallelism for Point Cloud Processing
-date: 2023-09-29T12:00:00-05:00
+date: 2023-09-29
 draft: false
 
 read_more: Read more...

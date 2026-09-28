@@ -1,7 +1,7 @@
 ---
 title: mí admiradora número 1
 slug: my_number_1_admirer
-date: 2022-08-26T19:42:53-05:00
+date: 2022-08-26
 draft: false
 
 categories: ["historia"]

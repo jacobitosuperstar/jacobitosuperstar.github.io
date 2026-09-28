@@ -1,7 +1,7 @@
 ---
 title: el mejor día de mi vida
 slug: the_best_day_of_my_life
-date: 2022-08-26T19:41:35-05:00
+date: 2022-08-26
 draft: false
 
 categories: ["historia"]

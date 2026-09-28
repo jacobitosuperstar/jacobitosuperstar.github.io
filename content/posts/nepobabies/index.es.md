@@ -1,6 +1,6 @@
 ---
 title: Los únicos Nepo babies útiles, vistas basadas en clases de Django
-date: 2025-03-05T12:00:00-05:00
+date: 2025-03-05
 draft: false
 
 read_more: Leer más...

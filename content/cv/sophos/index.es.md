@@ -1,6 +1,6 @@
 ---
 title: Sophos Solutions
-date: 2022-04-01T12:00:00-05:00
+date: 2022-04-01
 draft: false
 
 job_title: Desarrollador

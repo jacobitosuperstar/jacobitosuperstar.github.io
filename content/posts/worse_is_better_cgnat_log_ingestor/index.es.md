@@ -1,6 +1,6 @@
 ---
 title: '"Peor es Mejor", construyendo un ingestor de logs CGNAT en Go'
-date: 2026-07-03T12:00:00-05:00
+date: 2026-07-03
 draft: false
 
 read_more: Leer más...

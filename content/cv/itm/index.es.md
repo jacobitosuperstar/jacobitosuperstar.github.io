@@ -1,6 +1,6 @@
 ---
 title: Institución Universitaria ITM
-date: 2016-10-01T12:00:00-05:00
+date: 2016-10-01
 draft: false
 
 job_title: Analista de Datos

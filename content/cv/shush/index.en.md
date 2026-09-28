@@ -1,6 +1,6 @@
 ---
 title: SHUSH
-date: 2026-07-03T12:00:00-05:00
+date: 2026-07-03
 draft: false
 
 job_title: Senior Backend Developer

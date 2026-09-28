@@ -1,6 +1,6 @@
 ---
 title: Endava
-date: 2022-08-01T12:00:00-05:00
+date: 2022-08-01
 draft: false
 
 job_title: Senior Developer

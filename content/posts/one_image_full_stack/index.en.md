@@ -1,6 +1,6 @@
 ---
 title: "One Image Is Worth a Thousand Words: Baking a SPA into the Backend"
-date: 2026-01-28T12:00:00-05:00
+date: 2026-01-28
 draft: true
 
 read_more: Read more...

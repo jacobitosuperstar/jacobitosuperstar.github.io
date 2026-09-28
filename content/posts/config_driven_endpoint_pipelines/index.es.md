@@ -1,6 +1,6 @@
 ---
 title: Tengo 99 problemas pero la configuración de endpoints no es uno de ellos
-date: 2026-02-16T12:00:00-05:00
+date: 2026-02-16
 draft: false
 
 read_more: Leer más...

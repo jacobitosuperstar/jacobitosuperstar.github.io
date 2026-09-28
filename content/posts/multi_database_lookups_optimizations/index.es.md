@@ -1,6 +1,6 @@
 ---
 title: Rupturas y reconciliaciones, resolviendo N+1 a través de límites de bases de datos
-date: 2025-12-12T12:00:00-05:00
+date: 2025-12-12
 draft: false
 
 read_more: Leer más...

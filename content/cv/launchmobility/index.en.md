@@ -1,6 +1,6 @@
 ---
 title: LaunchMobility
-date: 2022-06-01T12:00:00-05:00
+date: 2022-06-01
 draft: false
 
 job_title: Junior Developer

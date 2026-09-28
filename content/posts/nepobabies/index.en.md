@@ -1,6 +1,6 @@
 ---
 title: The only useful Nepo babies, Django class-based views
-date: 2025-03-05T12:00:00-05:00
+date: 2025-03-05
 draft: false
 
 read_more: Read more...

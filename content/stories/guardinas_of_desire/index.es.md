@@ -1,7 +1,7 @@
 ---
 title: guardianes del deseo
 slug: guardians_of_desire
-date: 2022-08-26T19:42:39-05:00
+date: 2022-08-26
 draft: false
 
 categories: ["historias"]

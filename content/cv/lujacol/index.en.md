@@ -1,6 +1,6 @@
 ---
 title: LUJACOL SAS
-date: 2020-03-01T12:00:00-05:00
+date: 2020-03-01
 draft: false
 
 job_title: Owner

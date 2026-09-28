@@ -1,6 +1,6 @@
 ---
 title: Paralelismo en Python para el procesamiento de nubes de puntos
-date: 2023-09-29T12:00:00-05:00
+date: 2023-09-29
 draft: false
 
 read_more: Leer más...

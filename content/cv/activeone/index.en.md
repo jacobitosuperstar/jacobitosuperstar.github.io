@@ -1,6 +1,6 @@
 ---
 title: ActiveOne
-date: 2021-04-01T12:00:00-05:00
+date: 2021-04-01
 draft: false
 
 job_title: Development Analyst

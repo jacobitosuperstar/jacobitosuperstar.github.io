@@ -1,6 +1,6 @@
 ---
 title: I Got 99 Problems but Endpoint Configuration Ain't One
-date: 2026-02-16T12:00:00-05:00
+date: 2026-02-16
 draft: false
 
 read_more: Read more...

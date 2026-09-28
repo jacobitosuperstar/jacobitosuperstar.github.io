@@ -1,6 +1,6 @@
 ---
 title: Metaprogram your problems away
-date: 2023-09-13T12:00:00-05:00
+date: 2023-09-13
 draft: false
 
 read_more: Read more...

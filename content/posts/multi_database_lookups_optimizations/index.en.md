@@ -1,6 +1,6 @@
 ---
 title: Breakups and Reconciliations,  Solving N+1 Across Database Boundaries
-date: 2025-12-12T12:00:00-05:00
+date: 2025-12-12
 draft: false
 
 read_more: Read more...

@@ -1,7 +1,7 @@
 ---
 title: muerte de un padre
 slug: death_of_a_father
-date: 2024-04-27T12:00:00-05:00
+date: 2024-04-27
 draft: false
 
 categories: ["story"]
