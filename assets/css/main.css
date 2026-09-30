@@ -291,6 +291,17 @@ pre {
   font-size: 1em;
 }
 
+.content-wrap table {
+  margin: 1.5rem auto;
+  border-collapse: collapse;
+}
+
+.content-wrap th,
+.content-wrap td {
+  text-align: center;
+  padding: 0.4rem 0.9rem;
+}
+
 .about-me hr {
     border: none;
     border-top: 1.5px solid var(--accent);

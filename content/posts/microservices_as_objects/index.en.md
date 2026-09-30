@@ -1,162 +1,233 @@
 ---
-title: From couples to singles. Microservices as Objects
+title: From couples to single. Microservices as Objects
 date: 2026-09-27
-draft: true
+draft: false
 
 read_more: Read more...
 tags: ["Python", "Go", "Design", "microservices", "microkernel"]
 categories: ["programming"]
 ---
 
-After being dumped by my girlfriend, I regain a lot of time that I had devoted
+After being dumped by my girlfriend, I regained a lot of time that I had devoted
 before, so I started to think about the boundaries of our relationship,
-communications issues, and patterns that instead of making two distinc and
-different persons, made us a singular blob that just happens to be in two places
-at the same time, and then it hit me, I should be using a different architecture
-than microservices for system that have similar designs.
+communication issues, and patterns that instead of making two distinct and
+different people, made us a singular blob that just happens to be in two places
+at the same time. And then it hit me, I should be using a different architecture
+than microservices for systems that have similar designs.
 
-As many of you have, I have also encountered systems that go to the
-microservices design path in search of distributing work, but that keep having a
-singular point of failure and node whose traffic is still proportional to the
-main process or router that distributes that work. Meaning the microservice
-behaves as a subrotuine of the main process (These article won't discuss systems
-where different services can be touched by several main processes). The point of
-that solution is to keep the single point of failure as simple as possible and
-offload work assigned to the different workers that compose the system. So I
-began to think, are microservices the answer for a system like this, is the
-modular monolith the answer or are there other designs that we can check upon to
-attack this types of designs?.
+Like many of you, I have encountered systems that go down the microservices
+design path in search of distributing work, but that keep the main application
+as a single point of failure, with nodes whose traffic is proportional to that
+of the main process that distributes the work. In the case we are going to
+analyse, the main app only does I/O, its microservices also do a bunch of I/O,
+and those microservices depend solely on the traffic of the main application.
+Meaning the microservice behaves as a subroutine.
 
-# THE PROBLEM
+As specific as that sounds, these are really common systems. The point of that
+solution is to keep the single point of failure as simple as possible and
+offload work to the different microservices that compose the system. So I began
+to think, are microservices the answer for a system like this, is the modular
+monolith the answer or are there other designs that we can look into to attack
+these types of designs?
 
-As always, the first thing that one must think of is the problem that You are
-trying to solve. Within this article, and there are two main ones that want to
-tackle.
+There is always a need to define what the boundaries of two domains are, to what
+extent they need to be separated, and how they need to be separated. There are
+cases where **microservices are the only option**, like when we need to encode
+video, process images or do some other CPU-heavy task. Or when a piece of logic
+needs to be used by several systems at the same time, and the boundary between a
+library and a service is clearly defined, because that service requires a
+different environment, language, security model, etc. **Making the network part
+of the problem instead of the overhead around it**.
 
-1. Networking. When we offload the complexity between the main program interface
-   to its workers using networking, what we are doing is adding more latency for
-   a round trip response and adding the fickleness of network connection to main
-   processes of our system.
+## THE PROBLEM
+
+As always, me. But for everything else, the first thing that one must think of
+is what you are actually trying to solve, and there are two things that I want
+to tackle.
+
+1. Networking. When we offload the work from the main program to its
+   microservices, we add the latency of a round trip to every response, and we
+   add the fickleness of network connections to the main processes of our
+   system.
 
 2. Efficiency and Costs. When we start spawning workers that depend directly on
    the traffic of our main service, we are adding more containers than are
    needed for the solution of a problem. Making the problem require more
-   resources for its solution and with the ever increasing expenses of the
-   cloud, you have to really think how many points of your profits can go to
-   infrastructure costs.
+   resources for its solution and, with the ever-increasing costs of renting
+   infrastructure, you have to think about how many points of your profits can
+   be tied to them.
 
-# JUST THINKING ABOUT NEW IDEAS
+## CODE CONSTRAINTS
+
+The main idea of this implementation is to keep as much code as possible from
+the microservices. Meaning, even though there may be more efficient ways to code
+these types of solutions, the point of this is to do a transition, mainly,
+rewrite the adapter between the main process and the microservice in a way that
+we can ditch the network call without having to change the current logic of
+either the microservice or the main application.
+
+## THINKING ABOUT NEW IDEAS
 
 The microservices in this sense give us several advantages that we have to take
 into account when evaluating a solution, and those are,
 
-1. Operational Isolation. When a microservice process fails to start its just a
-   worker that failed to start. Not the hole application.
+1. Operational Isolation. When a microservice process fails to start, it's just
+   a worker that failed to start. Not the whole application.
 
-2. Independent Scaling when the traffic is mix and uneven.
+2. Independent Scaling when the traffic is mixed and uneven.
 
-3. PlugIn design. We can add and route different parts of the system to
+3. Plugin design. We can add and route different parts of the system to
    different workers. For example, if we need to have two of the same worker
    with different configurations, like a worker that sends emails to A and
-   another that sends emails to B, is just a routing conditional and we have two
-   of the same worker serving different purpuses.
+   another that sends emails to B, it is just a routing conditional and we have
+   two of the same worker serving different purposes.
 
-And I though, after all the self reflection and self healing that I did while
-soobing, that there is a system design that covers these things without the need
-of sending those workloads over the network.
+And I thought, after all the self-reflection and self-healing that I did while
+sobbing, that there is a system design that covers these things without the need
+to send those workloads over the network.
 
-There two design architectures that came to my mind,
+Two architectures came to my mind.
 
 **Microkernel** in the sense that we have a minimal core application that owns
-transport, routing, errors and observability, plus plugings that own the domain
+transport, routing, errors and observability, plus plugins that own the domain
 behaviour.
 
 **Hexagonal Architecture** which is what we currently have, but instead of
 leaving the adapters over the network, we would create the interface in the main
-that that interacts with each one of the subprocesses that we are running.
+app that interacts with each one of the objects that we are running.
 
-The modular monolith architecture, how is normally understod, its a big block
-with all of this components initialized together, where each of the well defined
-domains has an API that the main process calls, is not sufficient, so a
-microkernel like approach is added to achieve plugin design and operational
-isolation.
+The modular monolith architecture, as it is normally understood, is a big block
+with all of these components initialized together, where each of the well
+defined domains has an API that the main process calls. That is not sufficient
+for our implementation, so a microkernel-like approach is added to achieve
+plugin design and operational isolation.
 
 For this I thought of objects that hold the logic of the microservice, that can
 carry a state (like a continued connection to a DB, authentication credentials,
 and things like that) while also executing the logical steps that the
 microservice did. And in case of failure, they would have their own retry logic
-elsewhere and if a call from the main process is send here, we will quickly
-return a non available error and not let the system overload or spend cycles on
-non starting processses.
+elsewhere and if a call from the main process is sent here, we will quickly
+return a not-available error and not let the system overload or spend cycles on
+processes that don't start.
 
-# THE DESIGN
+## THE DESIGN
 
 As for the migration from the distributed monolith to this, I thought of three
-parts, the main application, the interface between the main application and the
-processes (this would hold each of the microservices logic). Where the interface
-is the only thing that have in common the main application and the processes
-code. The application routes the jobs through that interface, the processes
-initialize each of the registered objects (like the registered micro service)
-and then each of those objects is loaded into that interface.
-
-For the interface the map is the most flexible structure to hold things like
-this, as we can define the key that routes to that object and for value we can
-have an optional type, so that key can return the object that represents the
-microservice or None. And for key strings that we can modify, create or change
-how we see fit. Those also resemble the string that hold the microservice URL so
-the idea is to have this in case there are similar routing mechanism, mainly
-string manipulation.
-
-Two maps compose the registered processes, one map that hold the succesfully
-initiaded and working processes and another that holds the failed to initialize
-objects and objects that fail after initialization, like, a process that tries
-to connecto to an unavailable database after start up, and have on that other
-map the logic that will retry their initialization at different stages of the
-application (exponential back off or other strategies that you may see fit),
-completelly independent of their in process calls. That way we can quickly
-return failed responses without overloading the system with per request
-evaluations.
-
-Those two maps hold between them all of the initalized processes that the app
-offloaded before into the network.
+parts: the main application, the interface between the main application and the
+objects, and the objects, each one holding the logic of one microservice. The
+interface is the only thing that the main application and the objects' code have
+in common. The application routes the jobs through that interface, each
+registered object (the old microservice) is initialized, and then it is loaded
+into that interface.
 
 ```
-# what the core needs from any worker. Nothing about how it is done.
-interface Worker:
-    handle(operation, request) -> response
+┌──────────────────────────────────────────────────────────┐
+│                       MAIN SYSTEM                        │
+│                                                          │
+│  ┌─────────┐        ┌───────────┐        ┌───────────┐   │
+│  │         │ calls  │           │ feeds  │   MICRO   │   │
+│  │   API   │───────▶│ INTERFACE │◀───────│ SERVICES  │   │
+│  │         │        │           │        │ (objects) │   │
+│  └─────────┘        └───────────┘        └───────────┘   │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
 
-# the map, built once at start-up, only modified in case of well defined types
-# of failures
-REGISTRY: map[key] -> Worker Object
+For the interface, the map is the most flexible structure to hold things like
+this, as we can define the key that routes to that object and as the value we
+can have an optional type, so that key can return the object that represents the
+microservice or NULL. And the keys are strings that we can modify, create or
+change however we see fit. Those also resemble the string that holds the
+microservice URL so the idea is to have this in case there are similar routing
+mechanisms, mainly ones that work through string manipulation.
+
+Two maps compose the registered objects. One holds the objects that initialized
+successfully and are working. The other holds the objects that failed to
+initialize, or that fail after initialization, like an object that tries to
+connect to a database that is unavailable after start-up. That second map has
+the logic that retries their initialization at different stages of the
+application (exponential back off or any other strategy you see fit), completely
+independent of their in-process calls. That way we can quickly return failed
+responses without overloading the system with per-request evaluations.
+
+Between them, those two maps hold every object that the app used to offload to
+the network.
+
+Over the network we never received an exception from a microservice, we received
+a status. The interface keeps that contract, so the answer of a worker is a
+value and not something thrown at us. Three outcomes are enough:
+
+```python
+from dataclasses import dataclass
+from enum import Enum
+from typing import Protocol
+
+class Outcome(Enum):
+    OK     = "ok"       # the work is done
+    ERROR  = "error"    # this request failed, the worker is fine
+    BROKEN = "broken"   # the worker cannot work, take it out of the map
+
+@dataclass
+class Answer:
+    outcome: Outcome
+    body:    dict | None = None
+    status:  int  | None = None   # for ERROR, the status the microservice used to send
+    detail:  str  | None = None
+
+# what the core needs from any worker. Nothing about how it is done.
+class Worker(Protocol):
+    def start(self) -> Answer: ... # connect, authenticate, warm up
+    def handle(self, operation: str, request: dict) -> Answer: ...
+
+REGISTRY:    dict[str, Worker] = {}   # working
+UNAVAILABLE: dict[str, Worker] = {}   # broken, the supervisor is retrying them
 ```
 
 The map could be built from configuration, in case we may need to load different
-kinds of workers for different instances, or self adding objects, which add
-themselfes into the registry after their initializion code is executed. We could
-also add a map evaluation, so no more of the required processes from the main
-app are added into the registry.
+kinds of workers for different instances, or self-adding objects, which add
+themselves into the registry after their initialization code is executed. If
+there is an object representing a microservice that is not being used, it is not
+an issue, as the object would just sit in memory without doing anything, but
+it's not hard to implement an evaluator, just to make sure that we only load the
+objects that we are going to use.
 
-```
+```python
 def build_registry(config):
-    registry = {}
-    for key, spec in config.routes:
-        kind = KNOWN_KINDS.get(spec.kind)
+    for key, spec in config["routes"].items():
+        kind = KNOWN_KINDS.get(spec["kind"])
         if kind is None:
-            fail("unknown kind: " + spec.kind)   # refuse to start, loudly
-        registry[key] = kind(spec.settings)
-    return registry
+            raise SystemExit(f"unknown kind: {spec['kind']}")   # config error, stop
+        worker = kind(spec["settings"])
+        target = REGISTRY if worker.start().outcome is Outcome.OK else UNAVAILABLE
+        target[key] = worker
+
+    missing = config["required_keys"] - REGISTRY.keys() - UNAVAILABLE.keys()
+    if missing:
+        raise SystemExit(f"routes without a worker: {missing}")
 ```
 
 And the route becomes a lookup and a call, the same shape it had when the worker
 was a network call, which is the point:
 
-```
-def route(request):
-    worker = REGISTRY.get(key_of(request))
+```python
+async def route(request):
+    key    = key_of(request)
+    worker = REGISTRY.get(key)
     if worker is None:
-        return 501
-    return worker.handle(request.operation, request)
+        return 503
+
+    answer = await asyncio.to_thread(worker.handle, request.operation, request)
+
+    if answer.outcome is Outcome.BROKEN:
+        move(key, REGISTRY, UNAVAILABLE)   # the next request does not even try
+        return 503
+    if answer.outcome is Outcome.ERROR:
+        return answer.status               # the worker is fine, this request is not
+    return answer.body
 ```
+
+Every failure that the core must act on arrives as a value that it can read. The
+exceptions stay inside each object, where the libraries raise them.
 
 Two workers of the same kind with different settings is now a second entry in
 the map, not another element to deploy:
@@ -167,219 +238,329 @@ routes:
   "notify.b" : { kind: "email", settings: { provider: B } }
 ```
 
-## Isolation is a property of the object, not of the process
+### Isolation is a property of the object, not of the process (double entendre)
 
-This is the part people assume requires separate processes. It doesn't. It
-requires each worker/object to own its own failure state:
+If an object fails, either during initialization or in process, what we need to
+add is just the failsafe mechanism where we move it to the unavailable registry
+and retry its initialization from there. When the requests do the lookup, they
+will get a NULL -> 503 immediately, without taking down the application.
 
-@CLAUDE: this code has the object owing the failure state, but still being
-routed to it. We defined before two maps, one that holds the ready workers, and
-other that holds the failed ones. I think that here we should have retry logic
-for the elements of that map, instead of this.
+The object is the only one that knows which of its failures are normal and which
+of them mean that it cannot work any more:
 
-```
-class Worker:
-    state    = READY
-    retry_at = 0
-
-    def handle(operation, request):
-        if state is BROKEN and now() < retry_at:
-            return 503                      # local, immediate, no cascade
-        if not connected:
-            try:
-                connect()                   # first request, not boot
-            except:
-                state, retry_at = BROKEN, now() + 30s
-                return 503
-        return run(operation, request)
-```
-
-A dependency that is down now costs one route a fast 503, with retries on the
-background. That is exactly the isolation a separate process was buying, only
-the _unreachable_ dependency is deferred.
-
-## The concurrency bound becomes explicit
-
-Because the state of the object it self is not mutable by external processes,
-meaning the interaction with the main application
-
-Depending on the language we can
-
-In the split version, each worker had a thread pool, and that pool silently set
-the capacity of the whole system:
-
-```
-capacity = threads / (dependency latency + work)
-```
-
-Nobody chose that number as a policy. It was a default in a server that nobody
-read. In-process you write it down, per worker, and one slow dependency cannot
-drain the whole application:
-
-```
-class Worker:
-    limiter = Semaphore(N)      # what the worker's thread pool used to be
-
-    def handle(operation, request):
-        if not limiter.acquire(timeout=0):
-            return 503          # shed here, do not queue forever
+```python
+class Email:
+    def start(self):
         try:
-            return run(operation, request)
-        finally:
-            limiter.release()
+            self.connection = connect(self.settings)
+            return Answer(Outcome.OK)
+        except (ConnectionError, AuthError) as error:
+            return Answer(Outcome.BROKEN, detail=str(error))
+
+    def handle(self, operation, request):
+        try:
+            return Answer(Outcome.OK, body=self.run(operation, request))
+        except NotFound:
+            return Answer(Outcome.ERROR, status=404)             # expected, normal
+        except (ConnectionError, AuthError) as error:
+            return Answer(Outcome.BROKEN, detail=str(error))     # I cannot work
+        except Exception as error:
+            return Answer(Outcome.ERROR, status=500, detail=str(error))  # a bug, not an outage
 ```
 
-This is the one place where the in-process version is not merely cheaper but
-better: the bound goes from accidental to chosen.
+Nothing leaves `handle` as an exception. The last `except` is the same thing a
+server did before: an error it didn't expect became a 500, and the process kept
+serving.
 
-# COSTS ANALYSIS
+When one of the objects is in a broken state, it is just checked out by a
+supervisor where we run an exponential back off reinitialization, so we can put
+it back to the router when it's available, but also, we don't waste too many
+resources in case it never recovers.
 
-## The tax is per request, and it never amortises
+```python
+async def supervisor():
+    delay    = {}   # key -> seconds until the next attempt, doubles on each failure
+    retry_at = {}   # key -> when to try again
+    while True:
+        for key, worker in list(UNAVAILABLE.items()):
+            if time.monotonic() < retry_at.get(key, 0):
+                continue
+            if (await asyncio.to_thread(worker.start)).outcome is Outcome.OK:
+                move(key, UNAVAILABLE, REGISTRY)
+                delay.pop(key, None)
+                retry_at.pop(key, None)
+            else:
+                delay[key]    = min(delay.get(key, 0.5) * 2, 300)   # exponential back off
+                retry_at[key] = time.monotonic() + delay[key]
+        await asyncio.sleep(1)
 
-Every call across the boundary pays: serialise, cross a socket, deserialise,
-schedule in a second runtime, and the same again coming back. It does not
-improve with scale and it does not show up in a latency chart, because it hides
-under a millisecond. It shows up in the bill.
 
-## A captive worker can never be filled
-
-This is the structural argument, and it needs no benchmark. A worker with one
-consumer inherits that consumer's duty cycle. When the parent is saturated, the
-worker sits at whatever ratio the work happens to imply, and you cannot sell the
-remainder to anybody, because nothing else calls it. A _shared_ service pools
-demand from many callers and runs hot. A captive one cannot.
-
-## You round up twice
-
+def move(key, source, target):
+    worker = source.pop(key, None)
+    if worker is not None:
+        target[key] = worker
 ```
-pods = ceil(rate / parent_capacity) + ceil(rate / worker_capacity)
-```
 
-Two tiers, two roundings, and the ratio between the two capacities is rarely an
-integer, so the waste never cancels out. One tier rounds once.
+`worker.start()` is blocking code as well, so the supervisor goes through a
+thread too. A worker that reconnects must not stop the loop of everybody else.
 
-## Every process pays an entry fee
+`move` needs no lock. Only `route` and the supervisor touch the maps, and both
+run on the event loop, one step at a time. The threads only ever run `handle`
+and `start`.
 
-A runtime, its libraries and its baseline memory, per replica, before serving a
-single request. Split one program into two and you pay that twice for the same
-work.
+### Clear boundaries, like in a relationship, must exist between the domains too
 
-## The metric that flatters the split
+I took her to my father's grave... Anyway. The main app and the objects don't
+have to share a concurrency model, because they never touch each other. The
+interface sits between them, and how the jobs run is part of its domain, like
+everything else that has to do with the microservices. The main app calls the
+interface in its own model, and the interface runs each job in its own model.
+That way, we can leave the code completely untouched and make the interface do
+the translation job between them.
 
-**Requests per pod goes up when you split**, because the work moved to another
-pod. Anybody measuring that will conclude the split is faster. The honest
-measure is **cost per request**: CPU-seconds and bytes of memory for the same
-unit of work.
+In my case the main app was async Python (FastAPI) and the microservices were
+blocking code (synchronous clients), so every microservice job needs to go
+through `asyncio.to_thread` to be able to run without blocking the main
+application.
 
-## Where the milliseconds go
+This bridge exists because Python has two concurrency models that don't mix,
+async code and blocking code. A language with a single, native concurrency
+model, like Go or Erlang, doesn't need this kind of translation layer between
+the domains.
 
-Before the formula, it helps to see which parts of a request cost what, and
-which of those parts the architecture can remove. These are CPU milliseconds for
-one request, measured on one machine [^1].
+The translation is not free. In my measurements one object call cost 0.065 ms of
+CPU and the work inside it only 0.018 ms, the rest was the jump to the thread
+and back. Still a tenth of the 0.69 ms that the same call cost over gRPC [^2].
+
+Because the thread pool runs several calls of the same object at the same time,
+the object is shared. That is safe as long as the object doesn't change after
+start-up: anything that belongs to one request lives in the parameters and local
+variables of `handle`, never on the object.
+
+## COSTS
+
+### It's not cope when the costs have my back
+
+Forget about my ex, I didn't even love her anyway. The point of all of this is a
+simpler system, that just has a bit more "creativity" in the interface layer,
+with the bonus that it's cheaper to run. A sad meal for one instead of a happy
+meal for two, if you get what I am saying. It's a no-brainer.
+
+Every call across the boundary between the domains costs time: serialise, cross
+a socket, deserialise, schedule in a second runtime, and the same again coming
+back. But also, if the traffic of the worker depends only on the calls of the
+main process, the worker is never full. You pay for that spare capacity. In one
+container the same work scales as one unit, and the CPU and RAM move between the
+parts of the system as the traffic moves.
+
+The **requests per pod go up when you split**, because part of the work moved to
+another pod. Anybody measuring that will conclude the split is faster. The real
+measurement is **cost per request**: CPU-seconds and bytes of memory for the
+same unit of **work**.
+
+The following numbers represent a FastAPI app that offloads work to different
+workers. To put the microservices in their best-case scenario, we will assume
+that all the requests that come to the main application are deferred not to
+several microservices but to just one, in the same network, on the same machine.
+
+It helps to see which parts of a request cost what, and which of those parts the
+architecture can remove. These are CPU milliseconds for one request, measured on
+one machine [^1].
 
 | part of the request                                           | ms    | a faster CPU helps | the split adds it             |
 | ------------------------------------------------------------- | ----- | ------------------ | ----------------------------- |
-| the work: parse, validate, the domain logic, build the answer | 3.28  | yes                | no, it is the same either way |
-| the hop, CPU: serialise, deserialise, wake two schedulers     | ~0.70 | yes                | yes                           |
+| the work: parse, validate, the domain logic, build the answer | 4.00  | yes                | no, it is the same either way |
+| the hop, CPU: serialise, deserialise, wake two schedulers     | ~0.76 | yes                | yes                           |
 | the hop, transit: the kernel and the wire                     | ~0.10 | **no**             | yes                           |
 
-Read the table twice, once for each column on the right.
+**With a faster CPU** the first two rows shrink. The third does not. A socket, a
+system call and a scheduler wake-up take the time they take.
 
-**What a faster CPU changes.** The first two rows shrink. The third does not. A
-socket, a system call and a scheduler wake-up take the time they take.
+**Putting everything together** removes the second and third rows. The first one
+stays exactly as it was, because it is the work you came to do. That is 0.86 ms
+of CPU less for every request, and about 1 ms less of response time: at 200
+requests each second the median went from 6.0 ms to 4.8 ms, and at 250 from 5.9
+ms to 4.9 ms. Also, that hop in Python seems too low to consider, but if you
+were to use a faster language, that hop could be as long as the work we actually
+need to do. It's like saying to your partner that you will be there, and just
+dissociate from everyone, especially her, while working, because you are trying
+to have a career, or something.
 
-**What the architecture changes.** The second and third rows disappear. The
-first one stays exactly as it was, because it is the work you came to do.
+### Let me finish the argument, don't be like her
 
-That is the whole argument in one table. The split does not make your work
-slower. It adds two rows of cost that have nothing to do with your work, and one
-of those rows does not improve when you buy a better machine [^2].
-
-## The arithmetic
-
-The four things above become one calculation. These are the symbols:
-
-```
-R    requests each second the system must answer
-Wm   CPU seconds one request costs inside one process
-Wp   CPU seconds the parent part costs
-Ww   CPU seconds the worker part costs          (Wm = Wp + Ww)
-h    CPU seconds the hop adds, both sides together
-u    the share of a core you are willing to use (0.7 is common)
-```
-
-And this is the pod count:
+All you need is how many requests each second one pod answers at its limit, for
+each shape. The Python numbers come from the same machine as before [^1]. The Go
+values are an illustrative example from another system with the same shape: a
+main app that does I/O and hands every request to one worker that also does I/O,
+and whose traffic comes only from the main app. It is not the same application
+as the Python one, so the numbers are more illustrative than anything else.
 
 ```
-one process     pods = ceil( R * Wm / u )
-
-two processes   parent = ceil( R * (Wp + h/2) / u )
-                worker = ceil( R * (Ww + h/2) / u )
-                pods   = parent + worker
+                   Python (FastAPI)        Go (illustrative)
+main service       350 req/s               2,750 req/s
+microservice       500 req/s               3,900 req/s
+merged service     250 req/s               2,500 req/s
 ```
 
-When the dependency is slow, a second limit can bind before the CPU does:
+For the infrastructure calculation, you round up once for the main app, and once
+more for every worker that you split the work into.
 
 ```
-T    concurrent requests one pod allows (threads, or async slots)
-L    seconds the dependency takes to answer
-
-concurrency pods = ceil( R * (L + W) / T )
-pods = max(cpu pods, concurrency pods)
+merged pods = ceil(R / merged)
+split  pods = ceil(R / main) + workers * ceil((R / workers) / microservice)
 ```
 
-You have to measure `Wm` and `h` on your own system. The two tables below are
-only an example of the shape, with numbers I measured on one machine.
+With one worker the second term is just `ceil(R / microservice)`, because all of
+the traffic goes to it.
 
-### Python: `Wm = 3.28 ms`, `h = 0.8 ms`, `u = 0.7`
+#### Python
 
-| R         | one process | two processes | extra |
-| --------- | ----------- | ------------- | ----- |
-| 100/s     | 1           | 2 (1+1)       | +100% |
-| 1,000/s   | 5           | 7 (4+3)       | +40%  |
-| 10,000/s  | 47          | 59 (36+23)    | +26%  |
-| 100,000/s | 469         | 584 (355+229) | +25%  |
+| Req/s     | merged | split         | additional cost |
+| --------- | ------ | ------------- | --------------- |
+| 100/s     | 1      | 2 (1+1)       | +100%           |
+| 1,000/s   | 4      | 5 (3+2)       | +25%            |
+| 2,000/s   | 8      | 10 (6+4)      | +25%            |
+| 3,000/s   | 12     | 15 (9+6)      | +25%            |
+| 4,000/s   | 16     | 20 (12+8)     | +25%            |
+| 5,000/s   | 20     | 25 (15+10)    | +25%            |
+| 10,000/s  | 40     | 49 (29+20)    | +22%            |
+| 100,000/s | 400    | 486 (286+200) | +22%            |
 
-### Go: `Wm = 0.33 ms`, `h = 0.2 ms`, `u = 0.7`
+#### Go
 
-The work is ten times cheaper. The hop is only four times cheaper, because a
-socket, a system call and a scheduler wake-up have a floor that no language
-removes.
+| Req/s     | merged | split      | additional cost |
+| --------- | ------ | ---------- | --------------- |
+| 100/s     | 1      | 2 (1+1)    | +100%           |
+| 1,000/s   | 1      | 2 (1+1)    | +100%           |
+| 2,000/s   | 1      | 2 (1+1)    | +100%           |
+| 3,000/s   | 2      | 3 (2+1)    | +50%            |
+| 4,000/s   | 2      | 4 (2+2)    | +100%           |
+| 5,000/s   | 2      | 4 (2+2)    | +100%           |
+| 10,000/s  | 4      | 7 (4+3)    | +75%            |
+| 100,000/s | 40     | 63 (37+26) | +57%            |
 
-| R         | one process | two processes | extra |
-| --------- | ----------- | ------------- | ----- |
-| 100/s     | 1           | 2 (1+1)       | +100% |
-| 1,000/s   | 1           | 2 (1+1)       | +100% |
-| 10,000/s  | 5           | 9 (5+4)       | +80%  |
-| 100,000/s | 48          | 77 (45+32)    | +60%  |
+#### Python, with four workers
 
-Three things come out of these tables.
+The two tables above split the work in two. Now cut it in four, which is what
+happens when the domain boundaries follow [Conway's law][1] instead of the
+traffic. The main app receives the requests and routes each one to the worker
+that owns that kind of work. A request still crosses one boundary, so the cost
+of a request does not change.
 
-**The faster the language, the worse the split looks.** In Python the hop is 24%
-of the work. In Go the same hop is 61% of a much smaller number. You removed the
-expensive part and you kept the fixed part. Look at the last row of each table:
-the extra settles at 25% for Python and at 60% for Go. That number is the hop,
-and it is the price you pay for ever.
+| Req/s    | each worker gets | merged | split, four workers | additional cost |
+| -------- | ---------------- | ------ | ------------------- | --------------- |
+| 100/s    | 25/s             | 1      | 5 (1 + 4x1)         | +400%           |
+| 1,000/s  | 250/s            | 4      | 7 (3 + 4x1)         | +75%            |
+| 10,000/s | 2,500/s          | 40     | 49 (29 + 4x5)       | +22%            |
 
-**A split has a floor of two pods, and it never goes away.** Under about 10,000
-requests each second in Go, the whole system fits in one pod, and the split
-still asks you for two. At a small scale the overhead is 100%, and no amount of
-efficiency removes it.
+At 1,000 requests each second each worker receives 250. Between them they need
+two pods of capacity and you rent four, because a worker cannot have half a pod.
+At 100 each second they need a fifth of a pod and you still rent four. At 10,000
+the additional cost is the same as when splitting into a single microservice.
 
-**The number that hides the most money is `u`.** From `u = 0.7` to `u = 0.5`
-every number above is multiplied by 1.4. Most teams choose that value by feel
-and never look at it again, and it costs more than the choice of architecture.
+### Where the additional cost comes from
 
-## How to measure your own numbers
+A pod is indivisible, so the remainder is capacity that you rent and never use,
+and that is what the additional cost is made of. That's why there are points in
+the tables where the extra cost of the infrastructure seems to go down.
 
-You do not need a profiler. You need the same work run both ways:
+What matters is where it stops being waste. So instead of counting pods, count
+how much of each pod carries traffic. At 100 requests each second one worker pod
+is 20% busy and four of them are 5% busy, and that is the whole of the +100% and
+the +400%. At 1,000 the four workers are still half idle. Then at 10,000 every
+pod on both sides is full, or within 2% of it, with one worker and with four
+alike, and the split still costs 22% more, which comes to represent the hop
+between the domains: serialisation, deserialisation and the time of the request
+on the network.
+
+Every cell is the share of the capacity you rent that is busy.
+
+| Req/s    | split shape  | merged pods | main pods | worker pods | additional cost |
+| -------- | ------------ | ----------- | --------- | ----------- | --------------- |
+| 100/s    | one worker   | 40%         | 29%       | 20%         | +100%           |
+| 100/s    | four workers | 40%         | 29%       | 5%          | +400%           |
+| 1,000/s  | one worker   | 100%        | 95%       | 100%        | +25%            |
+| 1,000/s  | four workers | 100%        | 95%       | 50%         | +75%            |
+| 10,000/s | one worker   | 100%        | 98%       | 100%        | +22%            |
+| 10,000/s | four workers | 100%        | 98%       | 100%        | +22%            |
+
+## ISOLATION WITHOUT THE NETWORK
+
+### Because I made my girlfriend my life I don't have friends anymore
+
+Process isolation alone doesn't need network separation, as the problem of
+isolation is totally different from the one of distribution, and completely
+different from scaling. And even though we have known that since the end of the
+60s, what remains in our collective knowledge are the popular implementations,
+containers and microservices, not the ideas behind them. We are still using a
+hexagonal architecture, after all.
+
+The idea is old and it was never about just distributed machines. A
+**microkernel** keeps a minimal core that owns transport, routing and errors,
+and puts the domain behaviour in plug-ins that the core loads, refuses and
+replaces. The word process is everywhere in that literature, back to Brinch
+Hansen's nucleus in 1969, but the part we are borrowing is not the separate
+address space. It is isolation inside one program: a piece that can fail, be
+taken out of the map and be retried without the core going down with it.
+
+**Erlang with OTP** (Open Telecom Platform) is one implementation of that idea,
+and the one that took it furthest. Supervision trees, independent restart and
+fault isolation, with processes that live inside a single virtual machine and
+cost microseconds to create. A supervisor putting a failed worker back is the
+same operational story as a container being rescheduled, without a socket in the
+middle. It has worked that way since the mid nineties.
+
+## CONCLUSION
+
+### Everything is different now, I have changed, I promise
+
+After the migration, a few things about the resulting program are worth saying.
+
+**The main application had no change in behaviour.** Its code didn't change. It
+still asks for a job and gets back the same answers it got before, because the
+interface handles everything that the network used to, and returns what the
+microservice used to return.
+
+**The numbers.** In my system, a main app and three microservices, this is what
+merging them changed:
+
+| measured                               | split   | merged   |
+| -------------------------------------- | ------- | -------- |
+| containers                             | 4       | 1        |
+| memory after start-up                  | ~425 MB | ~130 MB  |
+| CPU of one call to a microservice      | 0.69 ms | 0.065 ms |
+| time of one call to a microservice     | 2.5 ms  | 0.06 ms  |
+| median response time at 200 requests/s | 6.0 ms  | 4.8 ms   |
+| pods for 1,000 requests/s (one worker) | 5       | 4        |
+
+The call rows come from the benchmark of the concurrency section [^2]. The rest
+come from the same machine as the costs section [^1].
+
+There is now **simplification** on several fronts. **Deployment**, as we now
+have several fewer containers to worry about. **Testing** became easier, as
+complex integration tests between containers, plus unit tests for each
+implementation, became just unit tests. **Development**, as when one service
+needs to be updated or changed, the step of protobuf generation and update
+across the different apps is no longer needed. **Costs**, as we no longer pay
+for underutilized infrastructure, and there is a clearer correlation between the
+clients being served and the costs of our infrastructure.
+
+And for the money, the split costs at least 22% more than the merged app, and
+that is the minimum, since this test was done in ideal circumstances. If our I/O
+takes more than an instant, those coroutines/threads stay open, consuming extra
+memory, and our system has to scale not only for its CPU usage but also for its
+RAM usage, shifting the projection towards more costs.
+
+## HOW TO MEASURE YOUR OWN NUMBERS
+
+You do not need a profiler. You need the same work run both ways, and a load
+generator that pushes each pod until it stops answering more:
 
 ```
-Wm = cores the merged app uses / requests each second it answers
-
-split parent = cores the parent uses  / requests each second
-split worker = cores the worker uses  / requests each second
-h  = (split parent + split worker) - Wm
+merged        = requests each second one merged pod answers at its limit
+main          = requests each second one main pod answers at its limit,
+                with enough workers behind it that they are not the bottleneck
+microservice  = requests each second one worker pod answers at its limit
 ```
 
 Two warnings. Measure near saturation, because the processor lowers its clock
@@ -390,42 +571,18 @@ or you are comparing the weather.
 [^1]:
     Intel i5-4570 at 3.4 GHz, one core and 512 MiB for each container, Python
     3.14. If your core is twice as fast, divide the two CPU rows by two. The
-    transit row does not move.
+    transit row does not move. Everything here runs as containers on that one
+    machine, so the transit row is the loopback interface. In production the two
+    processes sit on different nodes and that row becomes 0.5 to 3 milliseconds.
+    It costs almost no CPU, so it barely moves the pod count, but it does change
+    how many requests are in flight at the same time (rate times latency), so a
+    slower wire needs more concurrent slots, and eventually more pods, for the
+    same traffic.
 
 [^2]:
-    These are containers on one machine, so the transit row is the loopback
-    interface. In production the two processes are on different nodes and that
-    row becomes 0.5 to 3 milliseconds. It costs almost no CPU, so it does not
-    change the pod count through the first formula, and it does change it
-    through the second one: the requests in flight are rate times latency, so a
-    slower wire needs more concurrency, and eventually more pods, for the same
-    traffic.
+    The same machine, but using its four cores. The gRPC client and server ran
+    in one process, with OpenTelemetry on both sides, so the 0.69 ms is the CPU
+    of the two sides together, and the 2.5 ms is not the time between two
+    containers. The 0.018 ms is the domain logic of one call alone.
 
-# ISOLATION WITHOUT THE NETWORK
-
-There is an existence proof that isolation and the transport are separable, and
-it is thirty years old. Erlang and OTP give fault isolation, independent restart
-and supervision trees with processes that live inside one virtual machine and
-cost microseconds to create. A supervisor restarting a failed worker is the same
-operational story as a container being rescheduled, without a socket in the
-middle.
-
-Most people defending a captive worker believe they are buying isolation. They
-are buying isolation _plus_ a transport they never needed.
-
-The older name for this decision is **linking versus IPC**. Unix programmers
-split programs into communicating processes deliberately and sparingly, because
-the cost of the pipe was visible to them. Containers made the split the default
-and hid the cost behind a YAML file.
-
-# CONCLUSION
-
-<!-- Draft to rewrite in your own voice. The metaphor from the opening is worth
-     calling back to here: two people who must be in the same place at the same
-     time, communicating through a channel, are not two people. They are one
-     person paying for two apartments. -->
-
-A worker that only ever answers one caller is not a service. It is a subroutine
-that you are paying a process, a runtime and a network hop to call. The
-microkernel keeps everything the split was actually buying, the isolation, the
-plug-in routing, the separate configuration, and gives back the transport.
+[1]: https://en.wikipedia.org/wiki/Conway%27s_law
