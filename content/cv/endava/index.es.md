@@ -8,7 +8,7 @@ start_date: Agosto 2022
 end_date: Diciembre 2024
 ---
 
-### Motor Matemático
+### Motor Matemático (Junio 2024 - Diciembre 2024)
 
 Se desarrolló un motor matemático para el dimensionamiento de cotizaciones y
 análisis de inversiones en préstamos inmobiliarios. Mis principales
@@ -23,17 +23,25 @@ ingresos operativos netos para obtener la cantidad de dinero deseada.
 
 Versión Open Source del paquete cálculador de préstamos en [Go][1]
 
-### Nubes de Puntos
+### Nubes de Puntos (Agosto 2022 - Mayo 2024)
 
-Se desarrolló y se hizo mantenimiento de un programa de escritorio para anotar
-nubes de puntos a través de una interfaz gráfica. Mis principales
-contribuciones al proyecto fueron:
+Se desarrolló y se hizo mantenimiento de un programa de escritorio en PyQt,
+con VTK para el renderizado 3D, para anotar nubes de puntos a través de una
+interfaz gráfica. Mis principales contribuciones al proyecto fueron:
+
+- Liderar la parte de Python en la migración de la aplicación de Python 3.2 a
+Python 3.10, mientras otra persona del equipo lideró las migraciones de PyQt6
+y de VTK, lo que además implicó rehacer el sistema de eventos sobre mensajes y
+señales. Una refactorización mayor, resolviendo los cambios de comportamiento
+y las restricciones de dependencias de una base compilada y con mucha interfaz
+gráfica.
 
 - Crear y liderar la implementación de una arquitectura orientada a eventos
 para funcionalidades pesadas de cálculo, donde desvié la carga de las funciones
 a otros núcleos de la computadora mediante el uso de procesamiento múltiple y
 otras optimizaciones en la creación de objetos para disminuir el impacto en el
-consumo de RAM.
+consumo de RAM, lo que duplicó la velocidad del software y redujo su uso de RAM
+en un 40%.
 
 - Automatizar la creación de planos y otros dibujos técnicos a partir de la
 nube de puntos, mediante el uso de un servidor local que manejaba las

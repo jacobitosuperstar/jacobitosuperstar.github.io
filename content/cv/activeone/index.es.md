@@ -1,11 +1,11 @@
 ---
 title: ActiveOne
-date: 2021-04-01
+date: 2021-05-01
 draft: false
 
 job_title: Analista de Desarrollo
-start_date: Abril 2021
-end_date: Marzo 2022
+start_date: Mayo 2021
+end_date: Abril 2022
 ---
 
 ### Plataforma para Digitalización, Clasificación, Almacenimiento de Expedientes
@@ -16,9 +16,9 @@ AWS.
 
 Dos de mis desarrollos más notables fueron:
 
-- Creación de una herramienta para transferir archivos entre los servicios de
-almacenamiento de AWS y Azure a través de un flujo de datos de un servicio a
-otro.
+- Creación de la herramienta detrás de una migración de almacenamiento entre
+nubes, que transfería los archivos de AWS S3 a Azure Blob Storage a través de
+un flujo de datos de un servicio a otro, sin escribirlos en disco.
 
 - Creación de una Metaclase base y un decorador de funciones para registrar
 toda la funcionalidad de la aplicación sin tener que añadir nada más que la

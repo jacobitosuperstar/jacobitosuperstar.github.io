@@ -3,7 +3,7 @@ title: Sophos Solutions
 date: 2022-04-01
 draft: false
 
-job_title: Developer
+job_title: Software Developer
 start_date: April 2022
 end_date: July 2022
 ---
@@ -12,6 +12,14 @@ end_date: July 2022
 
 Continue the development and scalling of a mine monitoring platform to mitigate
 geological risk.
+
+My work on the platform was:
+
+- The Django REST Framework backend, which consumed the mine sensor events
+that arrived over Kafka.
+
+- The mine-local Flask services that streamed the sensor data from each site
+up to the platform.
 
 Because there was a communication gap between the Spanish speaking team, that
 started the platform and the English speaking team that was going to continue

@@ -3,18 +3,26 @@ title: EarthFuneral
 date: 2025-12-12
 draft: false
 
-job_title: Desarrollador Senior
+job_title: Ingeniero Backend Senior
 start_date: Marzo 2025
 end_date: Diciembre 2025
 ---
+
+Plataforma de monitoreo en tiempo real para una flota de alrededor de 1.000
+máquinas.
 
 - Desarrollé y mantuve el backend de la plataforma usando Django, agregando
   nuevas funcionalidades y mejorando la estabilidad general.
 
 - Construí un sistema de procesamiento de datos en tiempo real con MQTT
   (pub/sub), transmisión WebSocket, caché Redis y ejecución de tareas
-  asíncronas con Celery, permitiendo que la plataforma maneje datos de
-  sensores de alto volumen.
+  asíncronas con Celery, sosteniendo entre 150 y 160 mensajes de sensores
+  por segundo.
+
+- Modelé cada máquina de compostaje como un gemelo digital que los operarios
+  manejan desde la plataforma web, con un vigilante de estado por debajo que
+  reconcilia el equipo físico contra el virtual, y lo corrige cuando los dos
+  se separan.
 
 - Implementé una arquitectura multi-base de datos usando PostgreSQL para datos
   transaccionales y TimescaleDB para almacenamiento de series temporales,
@@ -25,4 +33,5 @@ end_date: Diciembre 2025
   notificaciones inmediatas a tableros de monitoreo vía WebSocket.
 
 - Mejoré el rendimiento general optimizando consultas, agregando índices y
-  usando Redis para acelerar el acceso frecuente a datos.
+  usando Redis para acelerar el acceso frecuente a datos, bajando el uso de la
+  base de datos del 60% al 45%.
